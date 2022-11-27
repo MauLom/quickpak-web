@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -102,3 +103,9 @@ dist
 
 # TernJS port file
 .tern-port
+=======
+node_modules
+.next
+yarn-error.log
+tmp
+>>>>>>> c6b7738dea2dd9383fea0a3e6a666bd7ec9548ed
