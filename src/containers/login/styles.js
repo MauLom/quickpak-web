@@ -12,7 +12,25 @@ export const LoginContainerCardStyle = styled("div", () => ({
 export const CardOverrides = {
     Body: {
         style: () => ({
-            height:"50vh"
+            height:"50vh",
+            alignItems:"center"
+        })
+    }
+}
+
+export const GridOverrides = {
+    Grid: { style: ()=>({
+    
+        width:"60%",
+        rowGap: "3em",
+    })}
+}
+
+export const ButtonOverrides = {
+    BaseButton: {
+        style: () => ({
+            backgroundColor: "#33FFD4",
+            color: "#2A5CAA"
         })
     }
 }
