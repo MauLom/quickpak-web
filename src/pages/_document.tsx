@@ -4,6 +4,8 @@ import {Provider as StyletronProvider} from 'styletron-react';
 import {Server, Sheet} from 'styletron-engine-atomic';
 import {styletron} from '../styletron';
 
+
+
 class MyDocument extends Document<{stylesheets: Sheet[]}> {
   static getInitialProps(props: any) {
     // eslint-disable-next-line react/display-name
@@ -28,9 +30,10 @@ class MyDocument extends Document<{stylesheets: Sheet[]}> {
               data-hydrate={sheet.attrs['data-hydrate']}
               key={i}
             />
-          ))}
-        </Head>
+          ))} 
+          </Head>
         <body>
+ 
           <Main />
           <NextScript />
         </body>
