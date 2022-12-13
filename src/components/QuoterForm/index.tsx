@@ -3,6 +3,7 @@ import { Input } from "baseui/input"
 import { Button } from 'baseui/button';
 import { FormControl } from "baseui/form-control";
 import * as Style from "./styles"
+import * as Api from "../../services/quotes"
 import { Grid, Cell } from 'baseui/layout-grid';
 import { HeadingMedium } from 'baseui/typography';
 import { Card } from 'baseui/card';
@@ -10,7 +11,19 @@ import { Card } from 'baseui/card';
 const QuoterForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log("e", e.target.inputNamed.value)
+        const dataPayloadEstafeta = {
+            height: e.target.height.value,
+            width: e.target.width.value, 
+            package: "true", 
+            lenght: e.target.lenght.value, 
+            weight: e.target.weight.value, 
+            origin_zip: e.target.origin_zip.value, 
+            destiny_zip: e.target.destiny_zip.value, 
+            user_id: "4xUVTqVZ1n1FuBikezmQ", 
+        }
+        const resEndpoint = Api.getRatesEstafeta(dataPayloadEstafeta)
+        console.log("Res endpoint? ", resEndpoint)
+
     }
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,28 +79,28 @@ const QuoterForm = () => {
                             <FormControl
                                 label={() => "Peso"}
                                 caption={() => "fecha de envio del paquete"}>
-                                <Input name="date" />
+                                <Input name="weight" />
                             </FormControl>
                         </Cell>
                         <Cell span={2}>
                             <FormControl
                                 label={() => "Alto"}
                                 caption={() => "codigo postal origen del envio"}>
-                                <Input name="origin_zip" />
+                                <Input name="height" />
                             </FormControl>
                         </Cell>
                         <Cell span={2}>
                             <FormControl
                                 label={() => "Ancho"}
                                 caption={() => "Seleccione una de la lista"}>
-                                <Input name="origin_city" />
+                                <Input name="width" />
                             </FormControl>
                         </Cell>
                         <Cell span={2}>
                             <FormControl
                                 label={() => "Profundidad"}
                                 caption={() => "codigo postal destino del envio"}>
-                                <Input name="destiny_zip" />
+                                <Input name="lenght" />
                             </FormControl>
                         </Cell>
                         <Cell span={2}>
