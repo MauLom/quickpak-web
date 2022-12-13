@@ -6,12 +6,14 @@ export const getDataTableLabels =  (page, liwmit) => {
     const resolved =  getLabels(page, liwmit)
         .then((data) => {
             data.entries.forEach(eachLabel => {
-                let eachTableElement = [eachLabel._id,eachLabel.userId, eachLabel.type]
+                let nombreCliente = eachLabel.userId == "4xUVTqVZ1n1FuBikezmQ"? "RedBox": "SRS Express"
+
+                let eachTableElement = [eachLabel._id,nombreCliente, eachLabel.type]
                 switch (eachLabel.type) {
                     case "Estafeta":
                         eachTableElement.push(eachLabel.request.dataOrigen.direccion.zip)
                         eachTableElement.push(eachLabel.request.dataDestino.direccion.zip)
-                        eachTableElement.push(eachLabel.response.labelPetitionResult.elements[0]?.wayBill || "error")
+                        eachTableElement.push(`${eachLabel.response.labelPetitionResult.elements[0]?.wayBill}` || "error")
                         eachTableElement.push(eachLabel.request.peso)
                         eachTableElement.push(`${eachLabel.request.alto}x${eachLabel.request.ancho}x${eachLabel.request.largo}`)
                         break;
@@ -20,7 +22,7 @@ export const getDataTableLabels =  (page, liwmit) => {
 
                         eachTableElement.push(eachLabel.request.oZip)
                         eachTableElement.push(eachLabel.request.dZip)
-                        eachTableElement.push(eachLabel.response.ShipmentResponse?.ShipmentIdentificationNumber || "error")
+                        eachTableElement.push(`${eachLabel.response.ShipmentResponse?.ShipmentIdentificationNumber}` || "error")
                         eachTableElement.push(typeof weight === "string"? weight : weight.Value)
                         eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Height}x${eachLabel.request.packages[0].Dimensions.Width}x${eachLabel.request.packages[0].Dimensions.Length}`)
                         break;
