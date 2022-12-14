@@ -38,7 +38,7 @@ const AdminDashboardContainer = () => {
             <Tabs
                 activeKey={activeKey}
                 onChange={({ activeKey }) => {
-                    setActiveKey(activeKey);
+                    setActiveKey(activeKey.toString());
                 }}
                 activateOnFocus
             >
