@@ -6,18 +6,20 @@ import * as Styles from "./styles"
 const LoginContainer = () => {
     return (
         <Styles.LoginContainerCardStyle>
+
             <Card overrides={Styles.CardOverrides}>
-                <Grid overrides={Styles.GridOverrides}>
+            
+                {/* <Grid overrides={Styles.GridOverrides}>
                     <Cell span={12}>
-                        <StyledInput inputTitle="Usuario" />
+                        <StyledInput id="user-input" name="username" inputTitle="Usuario" />
                     </Cell>
                     <Cell span={12}>
-                        <StyledInput inputTitle="Clave" type="password" />
+                        <StyledInput  id="password-input" name="password" inputTitle="Clave" type="password" />
                     </Cell>
                     <Cell span={12}>
-                        <Button overrides={Styles.ButtonOverrides} onClick={() => alert("click")}>Iniciar sesion</Button>
+                        <Button overrides={Styles.ButtonOverrides} onClick={() => alert("Redirigiendo...")}>Iniciar sesion</Button>
                     </Cell>
-                </Grid>
+                </Grid> */}
 
             </Card>
         </Styles.LoginContainerCardStyle>
