@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const URL = "https://68.183.17.99:7000/"
+const URL = "http://68.183.17.99:7000/"
 
 export const getRatesEstafeta = (data) => {
     const payload = {
