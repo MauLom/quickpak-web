@@ -27,7 +27,10 @@ const AdminDashboardContainer = () => {
         columParser({ type: "string", title: "Cp Destino", dataIndex: 4, format: "" }),
         columParser({ type: "string", title: "No. Guia", dataIndex: 5, format: "" }),
         columParser({ type: "string", title: "Peso", dataIndex: 6, format: "" }),
-        columParser({ type: "string", title: "Dimensiones", dataIndex: 7, format: "" }),
+        columParser({ type: "string", title: "Alto", dataIndex: 7, format: "" }),
+        columParser({ type: "string", title: "Ancho", dataIndex: 8, format: "" }),
+        columParser({ type: "string", title: "Largo", dataIndex: 9, format: "" }),
+
     ]
 
     return (

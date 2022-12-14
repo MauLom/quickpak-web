@@ -3,28 +3,12 @@ import { Input } from "baseui/input"
 import { Button } from 'baseui/button';
 import { FormControl } from "baseui/form-control";
 import * as Style from "./styles"
-import * as Api from "../../services/quotes"
 import { Grid, Cell } from 'baseui/layout-grid';
 import { HeadingMedium } from 'baseui/typography';
 import { Card } from 'baseui/card';
 
-const QuoterForm = () => {
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const dataPayloadEstafeta = {
-            height: e.target.height.value,
-            width: e.target.width.value, 
-            package: "true", 
-            lenght: e.target.lenght.value, 
-            weight: e.target.weight.value, 
-            origin_zip: e.target.origin_zip.value, 
-            destiny_zip: e.target.destiny_zip.value, 
-            user_id: "4xUVTqVZ1n1FuBikezmQ", 
-        }
-        const resEndpoint = Api.getRatesEstafeta(dataPayloadEstafeta)
-        console.log("Res endpoint? ", resEndpoint)
-
-    }
+const QuoterForm = ({submitAction}) => {
+   
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.currentTarget;
@@ -32,7 +16,7 @@ const QuoterForm = () => {
     };
 
     return (
-        <Style.QuotesFormStyle onSubmit={handleSubmit}>
+        <Style.QuotesFormStyle onSubmit={submitAction}>
             <Card>
                 <HeadingMedium>Informacion de envio</HeadingMedium>
                 <Grid >
