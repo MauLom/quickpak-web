@@ -6,7 +6,7 @@
     "dev": "next",
     "build": "next build",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
-    "start": "next --openssl-legacy-provider start",
+    "start": "next start",
     "test": "jest",
     "tsc": "tsc --noEmit"
   },
