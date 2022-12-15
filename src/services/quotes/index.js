@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2"
+const URL = "http://68.183.17.99:7000/"
 
 export const getRatesEstafeta = (data) => {
     const payload = {
@@ -14,7 +14,14 @@ export const getRatesEstafeta = (data) => {
         "userId": data.user_id
     }
 
-    const result = axios.post(`${URL}getRates/estafeta`, payload)
+    const result = axios.post(`${URL}getRates/estafeta`, payload,
+        {
+            "headers": {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+            }
+        }
+    )
         .then((res) => {
             return res.data
         })
@@ -32,11 +39,17 @@ export const getRatesDHL = (data) => {
         "recipientCity": data.destiny_city,
         "recipientCountryCode": "MX",
         "recipientZip": data.destiny_zip,
-        "packages": [{ "@number": 1, "Weight": { "Value": data.weight, }, "Dimensions": { "Length": data.lenght, "Width": data.width, "Height": data.height} }],
+        "packages": [{ "@number": 1, "Weight": { "Value": data.weight, }, "Dimensions": { "Length": data.lenght, "Width": data.width, "Height": data.height } }],
         "insurance": "0",
         "userId": data.user_id
     }
-    const result = axios.post(`${URL}getRates/`, payload)
+    const result = axios.post(`${URL}getRates/`, payload,
+        {
+            "headers": {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+            }
+        })
         .then((res) => {
             console.log("Inside?", res)
             return res.data
