@@ -13,7 +13,7 @@ const AdminDashboardContainer = () => {
     const [activeKey, setActiveKey] = useState("0");
     useEffect(() => {
         if (dataTable === undefined) {
-            getDataTableLabels(0, 120).then(data => {
+            getDataTableLabels(0, 700).then(data => {
                 setDataTable(data)
             })
         }
