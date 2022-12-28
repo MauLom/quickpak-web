@@ -1,6 +1,7 @@
 import axios from "axios"
 
-const URL = "http://68.183.17.99:7000/"
+// const URL = "http://68.183.17.99:7000/"
+const URL ="http://localhost:8080/"
 
 export const getRatesEstafeta = (data) => {
     const payload = {
