@@ -52,7 +52,7 @@ export const getRatesDHL = (data) => {
             }
         })
         .then((res) => {
-            console.log("Inside?", res)
+            console.log("Inside get service", res)
             return res.data
         })
         .catch(err => { console.error("Error fetching getRates Estafeta: ", err) })

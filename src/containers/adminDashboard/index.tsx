@@ -1,13 +1,10 @@
 import StyledTable from "../../components/StyledTable"
 import { columParser } from "../../utils/tableParser"
 import { getDataTableLabels } from "../../utils/utilities"
-import { Pagination } from "baseui/pagination";
-import { Table } from "baseui/table-semantic";
 import { useEffect, useState } from "react";
-import * as Styles from "./styles"
 import { Tabs, Tab } from "baseui/tabs-motion";
-import EditUserForm from "../../components/EditUserForm";
 import QuotesContainer from "../quotes";
+import UsersDetails from "../../components/UsersDetails";
 const AdminDashboardContainer = () => {
     const [dataTable, setDataTable] = useState(undefined)
     const [activeKey, setActiveKey] = useState("0");
@@ -47,7 +44,7 @@ const AdminDashboardContainer = () => {
                 </Tab>
 
                 <Tab title="Gestion de usuarios">
-                    <EditUserForm />
+                    <UsersDetails />
                 </Tab>
                 <Tab title="Cotizador">
                     <QuotesContainer />

@@ -8,9 +8,6 @@ import Image from 'next/image';
 
 
 const QuotesDetails = ({ quotesArr }) => {
-
-    console.log("quotesArr:", quotesArr)
-
     return (
         <Card>
             <HeadingMedium>Resultados para tu busqueda</HeadingMedium>

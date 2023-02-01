@@ -9,6 +9,8 @@ const QuotesContainer = () => {
     const [dataQuotesList, setDataQuotesList] = useState([])
     const [userQuotes, setUserQuotes] = useState();
     const [userId, setUserId] = useState()
+    const [dateValue, setDateValue] = useState()
+    const [dateFormatted, setDateFormatted] = useState("")
     const handleSubmit = (e) => {
         e.preventDefault()
         if (dataQuotesList.length > 0) {
@@ -25,7 +27,7 @@ const QuotesContainer = () => {
             user_id: userId,
         }
         const dataPayloadDHL = {
-            date: e.target.date.value,
+            date: dateFormatted,
             origin_city: e.target.origin_city.value,
             origin_zip: e.target.origin_zip.value,
             destiny_city: e.target.destiny_city.value,
@@ -52,7 +54,7 @@ const QuotesContainer = () => {
                         quotesArr.push(quoteObj)
                     })
                 }
-                setDataQuotesList(quotesArr)
+                //setDataQuotesList(quotesArr)
             })
         Api.getRatesDHL(dataPayloadDHL)
             .then((res) => {
@@ -60,20 +62,26 @@ const QuotesContainer = () => {
                 if (res?.data && res.data.length > 0) {
                     let quoteObj = {}
                     res.data.forEach(eachQuote => {
-                        quoteObj['parcelLogo'] = EstafetaLogo
-                        quoteObj['serviceType'] = eachQuote.DescripcionServicio
-                        quoteObj['weight'] = eachQuote.Peso
-                        quoteObj['subTotal'] = eachQuote.Subtotal
-                        quoteObj['IVA'] = eachQuote.IVA
-                        quoteObj['Total'] = eachQuote.CostoTotal
-                        setDataQuotesList([
-                            ...dataQuotesList,
-                            quoteObj])
+                        const findCharges = (chargeToBeLooked) =>{
+                            return eachQuote?.Charges.Charge.find(element => element.ChargeType === chargeToBeLooked).ChargeAmount
+                        }
+                        quoteObj['parcelLogo'] = DHLLogo
+                        quoteObj['serviceType'] = eachQuote["@type"]
+                        quoteObj['weight'] = eachQuote.QuotedWeight
+                        quoteObj['subTotal'] = findCharges("SubTotal")
+                        quoteObj['IVA'] = findCharges("IVA")
+                        quoteObj['Total'] = eachQuote.TotalNet.Amount
+                        quotesArr.push(quoteObj)
+                        setDataQuotesList(quotesArr)
                     })
                 }
             })
     }
-
+    const handleDateChangeValue= (newDate) =>{
+        const dateAsType = new Date(newDate[0])
+        setDateValue(newDate)
+        setDateFormatted(dateAsType.toISOString())
+    }
    const optionsUsers=[
         { label: "REDBOX", id: "4xUVTqVZ1n1FuBikezmQ" },
         { label: "SRS Express", id: "enc0UiLq0oNXm1GTFHB8" },
@@ -84,6 +92,7 @@ const QuotesContainer = () => {
         setUserQuotes(params.value)
         setDataQuotesList([])
     }
+    
     return (
         <>
           <Select
@@ -92,7 +101,7 @@ const QuotesContainer = () => {
             placeholder="Selecciona el usuario para cotizar"
             onChange={params => handleChangeUser(params)}
             />
-            <QuoterForm submitAction={handleSubmit} />
+            <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} />
             
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
 
