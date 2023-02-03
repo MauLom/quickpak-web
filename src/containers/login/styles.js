@@ -16,7 +16,8 @@ export const CardOverrides = {
             height: "50vh",
             alignItems: "center",
             display:"flex",
-            justifyContent:"center"
+            justifyContent:"center",
+            width: "100%"
         })
     }
 }
@@ -36,7 +37,8 @@ export const ButtonOverrides = {
     BaseButton: {
         style: () => ({
             backgroundColor: "#33FFD4",
-            color: "#2A5CAA"
+            color: "#2A5CAA",
+            justifyContent: "center"
         })
     }
 }

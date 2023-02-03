@@ -34,7 +34,36 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         // console.log("Actual username: ", dataUser.matriz.Estafeta[labelServiceStr])
         console.log("Estafeta", matrizEstafeta)
         console.log("DHL", matrizDHL)
+        console.log(userName)
         alert("informacion guarda con exito")
+        const URLlogin="http://localhost:8080/getUsers/tabla"
+        fetch(URLlogin, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': 'true',
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+                "user": userName,
+                "matrizEstafeta": matrizEstafeta,
+                "matrizDHL": matrizDHL
+            })
+        })
+            .then(res => {
+                console.log('response', res)
+                return res.json();
+
+            })
+            .then((data) => {
+                console.log('mensaje del servidor: ', data)
+                if (data.data === false || data.data==='data' || data.data===null) {
+                    console.log("ERROR: datos no guardados")
+                } else {
+                    console.log("datos guardados")
+                }
+
+
+            })
     }
 
     React.useEffect(() => {
