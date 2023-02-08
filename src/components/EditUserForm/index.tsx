@@ -21,7 +21,7 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         const labelServiceStr = params.value[0]?.value
         setServiceMatrizDHL(params.value)
         console.log("Matriz? ", dataUser.matriz.DHL[labelServiceStr])
-        setMatrizDHL( dataUser.matriz.DHL[labelServiceStr])
+        setMatrizDHL(dataUser.matriz.DHL[labelServiceStr])
     }
     const handleChangeServicesEstafeta = (params) => {
         const labelServiceStr = params.value[0]?.value
@@ -35,35 +35,44 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         console.log("Estafeta", matrizEstafeta)
         console.log("DHL", matrizDHL)
         console.log(userName)
-        alert("informacion guarda con exito")
-        const URLlogin="http://localhost:8080/getUsers/tabla"
-        fetch(URLlogin, {
-            method: 'POST',
-            headers: {
-                'Access-Control-Allow-Origin': 'true',
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify({
-                "user": userName,
-                "matrizEstafeta": matrizEstafeta,
-                "matrizDHL": matrizDHL
-            })
-        })
-            .then(res => {
-                console.log('response', res)
-                return res.json();
+        var length=20
+        var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+        var charLength = chars.length;
+        var result = '';
+        for (var i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * charLength));
+        }
 
-            })
-            .then((data) => {
-                console.log('mensaje del servidor: ', data)
-                if (data.data === false || data.data==='data' || data.data===null) {
-                    console.log("ERROR: datos no guardados")
-                } else {
-                    console.log("datos guardados")
-                }
+        alert("informacion guarda con exito "+result)
+         const URLlogin = "http://localhost:8080/getUsers/register"
+         fetch(URLlogin, {
+             method: 'POST',
+             headers: {
+                 'Access-Control-Allow-Origin': 'true',
+                 'Content-type': 'application/json; charset=UTF-8',
+             },
+             body: JSON.stringify({
+                 "idServices": result,
+                 "referencia": userName,
+                 "matriz": { "Estafeta": matrizEstafeta, "DHL": matrizDHL }
+
+             })
+         })
+             .then(res => {
+                 console.log('response', res)
+                 return res.json();
+
+             })
+             .then((data) => {
+                 console.log('mensaje del servidor: ', data)
+                 if (data.data === false || data.data === 'data' || data.data === null) {
+                     console.log("ERROR: datos no guardados")
+                 } else {
+                     console.log("datos guardados")
+                 }
 
 
-            })
+             })
     }
 
     React.useEffect(() => {
