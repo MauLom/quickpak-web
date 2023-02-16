@@ -18,9 +18,6 @@ import {
 const StyledTable = ({ cols, data = [] }) => {
     const dataMapped = data.map((r) => ({ id: r[0], data: r }));
     const [rows, setRows] = React.useState(dataMapped);
-    console.log("inside", data)
-
-
     function flagRows(ids: Array<string | number>) {
         const nextRows = rows.map((row) => {
             if (ids.includes(row.id)) {

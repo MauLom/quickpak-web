@@ -6,9 +6,10 @@ import * as Style from "./styles"
 import { Grid, Cell } from 'baseui/layout-grid';
 import { HeadingMedium } from 'baseui/typography';
 import { Card } from 'baseui/card';
+import { DatePicker } from "baseui/datepicker";
 
-const QuoterForm = ({submitAction}) => {
-   
+const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
+
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.currentTarget;
@@ -24,7 +25,14 @@ const QuoterForm = ({submitAction}) => {
                         <FormControl
                             label={() => "Fecha"}
                             caption={() => "fecha de envio del paquete"}>
-                            <Input name="date" />
+                            <DatePicker
+                                value={dateValue}
+                                formatString="yyyy-MM-dd"
+                                onChange={({ date }) =>
+                                    changeDateValue(Array.isArray(date) ? date : [date])
+                                }
+                            />
+                            {/* <Input name="date" /> */}
                         </FormControl>
                     </Cell>
                     <Cell span={2}>
@@ -98,7 +106,7 @@ const QuoterForm = ({submitAction}) => {
                 </Card>
             </Card>
 
-            <Button type="submit">Submit</Button>
+            <Button type="submit"  >Submit</Button>
         </Style.QuotesFormStyle>
 
 

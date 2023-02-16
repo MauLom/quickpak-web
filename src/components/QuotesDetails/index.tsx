@@ -1,16 +1,22 @@
+import * as React from "react"
 import { Card } from 'baseui/card';
 import { HeadingMedium, HeadingXSmall } from 'baseui/typography';
 import { Grid, Cell } from 'baseui/layout-grid';
 import DHLLogo from "../../assets/DHl-Logo.png"
 import EstafetaLogo from "../../assets/Estafeta-Logo.png"
 import Image from 'next/image';
+import { Button } from 'baseui/button';
+import LabelForm from "../LabelForm";
 
 
 
 const QuotesDetails = ({ quotesArr }) => {
+    const [showGenerateLabel, setShowGenerateLabel] = React.useState(false)
 
-    console.log("quotesArr:", quotesArr)
-
+    const handleChangeShowGenerateLabel =() =>{
+        console.log(" Sos un crack guapo!")
+        setShowGenerateLabel(!showGenerateLabel)
+    }
     return (
         <Card>
             <HeadingMedium>Resultados para tu busqueda</HeadingMedium>
@@ -27,40 +33,37 @@ const QuotesDetails = ({ quotesArr }) => {
                 <Cell span={2}>
                     <HeadingXSmall> Sub Total </HeadingXSmall>
                 </Cell>
-                <Cell span={2}>
+                <Cell span={1}>
                     <HeadingXSmall> IVA </HeadingXSmall>
                 </Cell>
-                <Cell span={2}>
+                <Cell span={1}>
                     <HeadingXSmall>Total</HeadingXSmall>
+                </Cell>
+                <Cell span={2}>
+                    <HeadingXSmall>Accion </HeadingXSmall>
                 </Cell>
             </Grid>
             {quotesArr.map(eachQuote => (
                 <Card>
-                    <Grid>
+                    <Grid >
                         <Cell span={2} >
                             <Image src={eachQuote.parcelLogo} />
                         </Cell>
                         <Cell span={2}>{eachQuote.serviceType}</Cell>
                         <Cell span={2}>{eachQuote.weight}</Cell>
                         <Cell span={2}>{eachQuote.subTotal}</Cell>
-                        <Cell span={2}>{eachQuote.IVA}</Cell>
-                        <Cell span={2}>{eachQuote.Total}</Cell>
+                        <Cell span={1}>{eachQuote.IVA}</Cell>
+                        <Cell span={1}>{eachQuote.Total}</Cell>
+                        <Cell span={2}>
+                            <Button onClick={()=>{handleChangeShowGenerateLabel()}}>Generar guia</Button>
+                        </Cell>
                     </Grid>
                 </Card>
             ))}
-            {/* <Card>
 
-                <Grid>
-                    <Cell>
-                        <Image src={DHLLogo} />
-                    </Cell>
-                    <Cell>Service type</Cell>
-                    <Cell>Precio</Cell>
-                    <Cell>Boton</Cell>
-
-
-                </Grid>
-            </Card> */}
+            {showGenerateLabel && 
+               <LabelForm />
+            }
         </Card>
     )
 }

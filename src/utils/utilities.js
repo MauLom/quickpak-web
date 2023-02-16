@@ -1,5 +1,5 @@
 import { getLabels } from "../services/labels"
-
+import { getUsers } from "../services/users"
 export const getDataTableLabels = (page, liwmit) => {
     // [IdCliente, Paqueteria, CP Origen, CP destino, No. Guia, Peso, Dimensiones]
     const arrFormatted = []
@@ -42,4 +42,29 @@ export const getDataTableLabels = (page, liwmit) => {
             return arrFormatted
         })
     return resolved
+}
+
+export const getDataUsers = () =>{
+    const arrUsers = []
+    const resolved = getUsers()
+    .then((data) =>{
+        data.users.forEach(eachUser => {
+            arrUsers.push(eachUser)
+        })
+        return arrUsers
+    })
+    return resolved
+}
+
+export const formatDataTableUsers = (dataUnformatted) => {
+    const arrFormatted = []
+    console.log("dataRaw", dataUnformatted)
+    dataUnformatted.forEach(eachUser => {
+        let eachElement = [
+            eachUser.referencia,
+            eachUser.idServices
+        ]
+        arrFormatted.push(eachElement)
+    })
+    return arrFormatted
 }

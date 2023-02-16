@@ -1,14 +1,12 @@
 import StyledTable from "../../components/StyledTable"
 import { columParser } from "../../utils/tableParser"
 import { getDataTableLabels } from "../../utils/utilities"
-import { Pagination } from "baseui/pagination";
-import { Table } from "baseui/table-semantic";
 import { useEffect, useState } from "react";
-import * as Styles from "./styles"
 import { Tabs, Tab } from "baseui/tabs-motion";
-import EditUserForm from "../../components/EditUserForm";
 import QuotesContainer from "../quotes";
+import UsersDetails from "../../components/UsersDetails";
 const AdminDashboardContainer = () => {
+    const userType = sessionStorage.getItem("userType")
     const [dataTable, setDataTable] = useState(undefined)
     const [activeKey, setActiveKey] = useState("0");
     useEffect(() => {
@@ -35,24 +33,45 @@ const AdminDashboardContainer = () => {
 
     return (
         <>
-            <Tabs
+            {/* <Tabs
                 activeKey={activeKey}
                 onChange={({ activeKey }) => {
                     setActiveKey(activeKey.toString());
                 }}
                 activateOnFocus
-            >
-                <Tab title="Guias Generadas">
-                    <StyledTable cols={columns} data={dataTable} />
-                </Tab>
+            > */}
+            {userType === "admin" ?
+                <Tabs
+                    activeKey={activeKey}
+                    onChange={({ activeKey }) => {
+                        setActiveKey(activeKey.toString());
+                    }}
+                    activateOnFocus
+                >
+                    <Tab title="Guias Generadas">
+                        <StyledTable cols={columns} data={dataTable} />
+                    </Tab>
 
-                <Tab title="Gestion de usuarios">
-                    <EditUserForm />
-                </Tab>
-                <Tab title="Cotizador">
-                    <QuotesContainer />
-                </Tab>
-            </Tabs>
+                    <Tab title="Gestion de usuarios">
+                        <UsersDetails />
+                    </Tab>
+                    <Tab title="Cotizador">
+                        <QuotesContainer />
+                    </Tab>
+                </Tabs>
+                :
+                <Tabs
+                    activeKey={activeKey}
+                    onChange={({ activeKey }) => {
+                        setActiveKey(activeKey.toString());
+                    }}
+                    activateOnFocus
+                >
+                    <Tab title="Cotizador">
+                        <QuotesContainer />
+                    </Tab>
+                </Tabs>}
+
             {/* <StyledTable cols={columns} data={dataTable} /> */}
             {/* <Pagination
                 numPages={20}
