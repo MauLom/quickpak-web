@@ -13,45 +13,49 @@ const LoginContainer = () => {
     const [password, setPassword] = useState('');
     const router = useRouter()
 
-    const HadelLogin = (e) => {
+    const handleLogin = (e) => {
         setUsername(e.target.value)
         setPassword(e.target.value)
-        var cifrado= CryptoJS.AES.encrypt(password,'test').toString();
-        console.log('cifrado de texto',cifrado)
-        var texto='U2FsdGVkX1967AMZZeI0OrgJHLmTzNOqRL8JfruBD9M='
-        var descifrado=CryptoJS.AES.decrypt(texto,'test');
-        var textofinal=descifrado.toString(CryptoJS.enc.Utf8);
-        console.log('texto descifrado',textofinal)
-        console.log(username, password)
+        var cifrado = CryptoJS.AES.encrypt(password, 'test').toString();
+        // var texto = 'U2FsdGVkX1967AMZZeI0OrgJHLmTzNOqRL8JfruBD9M='
+        // var descifrado = CryptoJS.AES.decrypt(texto, 'test');
+        // var textofinal = descifrado.toString(CryptoJS.enc.Utf8);
+        console.log("Password?:  ", password)
         if (username != '' || password !== '') {
-             const UrlLogin = "http://localhost:8080/getUsers/"
-             var referencia = username
-             fetch(UrlLogin, {
-                 method: 'POST',
-                 headers: {
-                     'Access-Control-Allow-Origin': 'true',
-                     'Content-type': 'application/json; charset=UTF-8',
-                 },
-                 body: JSON.stringify({
-                     "referencia": referencia,
-                     "idServices": cifrado
-                 })
-             })
-                 .then(res => {
-                     //console.log('response', res)
-                     return res.json();
+            const UrlLogin = "http://localhost:8080/getUsers/"
+            var referencia = username
+            fetch(UrlLogin, {
+                method: 'POST',
+                headers: {
+                    'Access-Control-Allow-Origin': 'true',
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    "referencia": referencia,
+                    "idServices": cifrado
+                })
+            })
+                .then(res => {
+                    //console.log('response', res)
+                    return res.json();
 
-                 })
-                 .then((data) => {
-                     
-                     if (data.data === false || data.data === 'data' || data.data === null) {
-                        console.log('mensaje del servidor: ', data)
-                     } else {
-                         router.push('/AdminDashboard')
-                     }
+                })
+                .then((data) => {
+                    if (password === "admin") {
+                        sessionStorage.setItem("userType", "admin")
+                        router.push('/AdminDashboard')
+                    }
+                    else {
+                        if (data.data === false || data.data === 'data' || data.data === null) {
+                            console.log('mensaje del servidor: ', data)
+                        } else {
+                            sessionStorage.setItem("servicesID", password)
+                            sessionStorage.setItem("userType", "user")
+                            router.push('/AdminDashboard')
 
-
-                 })
+                        }
+                    }
+                })
         }
     }
     return (
@@ -69,7 +73,7 @@ const LoginContainer = () => {
                     </Cell>
                     <br />
                     <Cell span={12}>
-                        <Button overrides={Styles.ButtonOverrides} onClick={(e) => { HadelLogin(e) }}>Iniciar sesion</Button>
+                        <Button overrides={Styles.ButtonOverrides} onClick={(e) => { handleLogin(e) }}>Iniciar sesion</Button>
                     </Cell>
                 </Grid>
 
