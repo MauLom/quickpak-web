@@ -66,9 +66,7 @@ const LoginContainer = () => {
     }
     return (
         <Styles.LoginContainerCardStyle>
-
             <Card overrides={Styles.CardOverrides}>
-
                 <Grid overrides={Styles.GridOverrides}>
                     <Cell span={12}><h1>LOG IN</h1></Cell>
                     <Cell span={12}>
@@ -82,8 +80,6 @@ const LoginContainer = () => {
                         <Button overrides={Styles.ButtonOverrides} onClick={(e) => { handleLogin(e) }}>Iniciar sesion</Button>
                     </Cell>
                 </Grid>
-
-
             </Card>
         </Styles.LoginContainerCardStyle>
     )
