@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import QuoterForm from "../../components/QuoterForm";
 import QuotesDetails from "../../components/QuotesDetails";
 import * as Api from "../../services/quotes"
-import DHLLogo from "../../assets/DHl-Logo.png"
+import DHLLogo from "../../assets/DHL-Logo.png"
 import EstafetaLogo from "../../assets/Estafeta-Logo.png"
 import { Select } from "baseui/select";
 const QuotesContainer = () => {
