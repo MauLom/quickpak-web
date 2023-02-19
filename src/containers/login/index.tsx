@@ -20,7 +20,6 @@ const LoginContainer = () => {
         // var texto = 'U2FsdGVkX1967AMZZeI0OrgJHLmTzNOqRL8JfruBD9M='
         // var descifrado = CryptoJS.AES.decrypt(texto, 'test');
         // var textofinal = descifrado.toString(CryptoJS.enc.Utf8);
-        console.log("Password?:  ", password)
         if (username != '' || password !== '') {
             const UrlLogin = "http://localhost:8080/getUsers/"
             var referencia = username
@@ -58,6 +57,13 @@ const LoginContainer = () => {
                 })
         }
     }
+
+    const handleChangePassword = (e) => {
+        setUsername(e.target.value)
+    }
+    const handleChangeUsername = (e) => {
+        setPassword(e.target.value)
+    }
     return (
         <Styles.LoginContainerCardStyle>
 
@@ -66,10 +72,10 @@ const LoginContainer = () => {
                 <Grid overrides={Styles.GridOverrides}>
                     <Cell span={12}><h1>LOG IN</h1></Cell>
                     <Cell span={12}>
-                        <Input placeholder="Nombre de usuario" onChange={(e) => { setUsername(e.target.value) }} /><br />
+                        <Input placeholder="Nombre de usuario" onChange={(e) => { handleChangeUsername(e) }} /><br />
                     </Cell>
                     <Cell span={12}>
-                        <Input type="password" placeholder="Contraseña" onChange={(e) => { setPassword(e.target.value) }} />
+                        <Input type="password" placeholder="Contraseña" onChange={(e) => { handleChangePassword(e) }} />
                     </Cell>
                     <br />
                     <Cell span={12}>
