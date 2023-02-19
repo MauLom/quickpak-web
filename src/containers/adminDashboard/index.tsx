@@ -6,10 +6,13 @@ import { Tabs, Tab } from "baseui/tabs-motion";
 import QuotesContainer from "../quotes";
 import UsersDetails from "../../components/UsersDetails";
 const AdminDashboardContainer = () => {
-    const userType = sessionStorage.getItem("userType")
+    let userType = undefined
     const [dataTable, setDataTable] = useState(undefined)
     const [activeKey, setActiveKey] = useState("0");
     useEffect(() => {
+        if (window) {
+           userType = sessionStorage.getItem("userType")
+        }
         if (dataTable === undefined) {
             getDataTableLabels(0, 1500).then(data => {
                 setDataTable(data)
