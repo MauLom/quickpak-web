@@ -3,17 +3,19 @@ import { Button } from 'baseui/button';
 import { useStyletron } from 'baseui';
 import { OrangeCircle, BlueCirlce } from "../styles.js"
 import LoginContainer from '../containers/login/index';
-
+import { UserContextProvider } from '../context/userContext';
 export const sum = (a: number, b: number) => a + b;
 
 const Index: React.FC = () => {
   const [css, theme] = useStyletron();
+
   return (
-    <div>
-      <OrangeCircle />
-      <BlueCirlce />
-      <LoginContainer />
-    </div>
+      <div>
+        <OrangeCircle />
+        <BlueCirlce />
+        <LoginContainer />
+      </div >
+
   );
 };
 

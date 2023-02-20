@@ -7,62 +7,53 @@ import * as Styles from "./styles"
 import { useState } from "react";
 import { useRouter } from "next/dist/client/router";
 import CryptoJS from 'crypto-js'
+import { login } from "../../services/users";
+import * as React from "react"
+import { UserContextProvider, UserCtx } from "../../context/userContext";
 
 const LoginContainer = () => {
+    const userData = React.useContext(UserCtx)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter()
 
     const handleLogin = (e) => {
-        setUsername(e.target.value)
-        setPassword(e.target.value)
+        
         var cifrado = CryptoJS.AES.encrypt(password, 'test').toString();
-        // var texto = 'U2FsdGVkX1967AMZZeI0OrgJHLmTzNOqRL8JfruBD9M='
-        // var descifrado = CryptoJS.AES.decrypt(texto, 'test');
-        // var textofinal = descifrado.toString(CryptoJS.enc.Utf8);
         if (username != '' || password !== '') {
-            const UrlLogin = "http://localhost:8080/getUsers/"
             var referencia = username
-            fetch(UrlLogin, {
-                method: 'POST',
-                headers: {
-                    'Access-Control-Allow-Origin': 'true',
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify({
-                    "referencia": referencia,
-                    "idServices": cifrado
-                })
-            })
-                .then(res => {
-                    //console.log('response', res)
-                    return res.json();
-
-                })
-                .then((data) => {
-                    if (password === "admin") {
-                        sessionStorage.setItem("userType", "admin")
-                        router.push('/AdminDashboard')
-                    }
-                    else {
+            if (password === "admin") {
+                userData.handleChangeUserName("admin")
+                router.push('/AdminDashboard')
+            } else {
+                login(referencia, cifrado)
+                    .then((data) => {
                         if (data.data === false || data.data === 'data' || data.data === null) {
                             console.log('mensaje del servidor: ', data)
                         } else {
-                            sessionStorage.setItem("servicesID", password)
-                            sessionStorage.setItem("userType", "user")
+                            userData.handleChangeUserName(username)
+                            userData.handleChangeServicesId(password)
+                            // sessionStorage.setItem("servicesID", password)
+                            // sessionStorage.setItem("userType", "user")
                             router.push('/AdminDashboard')
 
                         }
-                    }
-                })
+
+                    })
+            }
+
         }
     }
 
     const handleChangePassword = (e) => {
-        setUsername(e.target.value)
+        setPassword(e.target.value)
+        userData.handleChangeServicesId(e.target.value)
+
     }
     const handleChangeUsername = (e) => {
-        setPassword(e.target.value)
+        setUsername(e.target.value)
+        userData.handleChangeUserName(e.target.value)
+
     }
     return (
         <Styles.LoginContainerCardStyle>

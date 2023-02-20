@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useEffect, useState } from "react";
 import QuoterForm from "../../components/QuoterForm";
 import QuotesDetails from "../../components/QuotesDetails";
@@ -5,17 +6,18 @@ import * as Api from "../../services/quotes"
 import DHLLogo from "../../assets/DHL-Logo.png"
 import EstafetaLogo from "../../assets/Estafeta-Logo.png"
 import { Select } from "baseui/select";
+import { UserCtx } from "../../context/userContext";
 const QuotesContainer = () => {
-    const userType = sessionStorage.getItem("userType")
+    const userData = React.useContext(UserCtx)
     const [dataQuotesList, setDataQuotesList] = useState([])
     const [userQuotes, setUserQuotes] = useState();
     const [userId, setUserId] = useState("")
     const [dateValue, setDateValue] = useState()
     const [dateFormatted, setDateFormatted] = useState("")
-    if (userType !== "admin") {
+    if (userData.userName !== "admin") {
         useEffect(() => {
             if (userId === "") {
-                setUserId(sessionStorage.getItem("servicesID"))
+                setUserId(userData.servicesId)
             }
         }, [userId, setUserId])
     }
@@ -105,7 +107,7 @@ const QuotesContainer = () => {
 
     return (
         <>
-            {userType === "admin" && <Select
+            {userData.userName === "admin" && <Select
                 options={optionsUsers}
                 value={userQuotes}
                 placeholder="Selecciona el usuario para cotizar"

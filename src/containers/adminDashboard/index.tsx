@@ -1,3 +1,4 @@
+import * as React from "react"
 import StyledTable from "../../components/StyledTable"
 import { columParser } from "../../utils/tableParser"
 import { getDataTableLabels } from "../../utils/utilities"
@@ -5,14 +6,14 @@ import { useEffect, useState } from "react";
 import { Tabs, Tab } from "baseui/tabs-motion";
 import QuotesContainer from "../quotes";
 import UsersDetails from "../../components/UsersDetails";
+import { UserCtx } from "../../context/userContext";
 const AdminDashboardContainer = () => {
-    let userType = undefined
+    let userData = React.useContext(UserCtx)
     const [dataTable, setDataTable] = useState(undefined)
     const [activeKey, setActiveKey] = useState("0");
+    console.log("userData?", userData)
     useEffect(() => {
-        if (window) {
-           userType = sessionStorage.getItem("userType")
-        }
+       
         if (dataTable === undefined) {
             getDataTableLabels(0, 1500).then(data => {
                 setDataTable(data)
@@ -43,7 +44,7 @@ const AdminDashboardContainer = () => {
                 }}
                 activateOnFocus
             > */}
-            {userType === "admin" ?
+            {userData.userName === "admin" ?
                 <Tabs
                     activeKey={activeKey}
                     onChange={({ activeKey }) => {
