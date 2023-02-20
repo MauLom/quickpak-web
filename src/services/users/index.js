@@ -23,7 +23,7 @@ export const getUsers = async () => {
 export const login = async (referencia, cifrado) => {
   console.log("refe", referencia)
   console.log("cifrado", cifrado)
-  return axios
+  return await axios
     .post(`${URL}/getUsers`, {
       "referencia": referencia,
       "idServices": cifrado

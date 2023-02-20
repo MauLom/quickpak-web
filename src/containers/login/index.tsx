@@ -27,7 +27,7 @@ const LoginContainer = () => {
                 router.push('/AdminDashboard')
             } else {
                 login(referencia, cifrado)
-                    .then((data) => {
+                    .then((data:any) => {
                         if (data.data === false || data.data === 'data' || data.data === null) {
                             console.log('mensaje del servidor: ', data)
                         } else {
