@@ -44,7 +44,7 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         }
 
         alert("informacion guarda con exito "+result)
-         const URLlogin = "https://clownfish-app-b2q4a.ondigitalocean.app/getUsers/register"
+         const URLlogin = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/getUsers/register"
          fetch(URLlogin, {
              method: 'POST',
              headers: {

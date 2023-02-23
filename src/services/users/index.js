@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {CONSTANTS} from '../../utils/consts'
-// const URL = 'https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2';
-const URL = "https://clownfish-app-b2q4a.ondigitalocean.app"
+const URL = 'https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2';
+//const URL = "https://clownfish-app-b2q4a.ondigitalocean.app"
 //const URL = CONSTANTS.URL
 
 export const getUsers = async () => {
