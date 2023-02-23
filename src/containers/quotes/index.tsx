@@ -72,8 +72,8 @@ const QuotesContainer = () => {
             .then((res) => {
                 console.log("res DHL", res)
                 if (res?.data && res.data.length > 0) {
-                    let quoteObj = {}
                     res.data.forEach(eachQuote => {
+                        let quoteObj = {}
                         const findCharges = (chargeToBeLooked) => {
                             return eachQuote?.Charges.Charge.find(element => element.ChargeType === chargeToBeLooked).ChargeAmount
                         }
@@ -84,8 +84,9 @@ const QuotesContainer = () => {
                         quoteObj['IVA'] = findCharges("IVA")
                         quoteObj['Total'] = eachQuote.TotalNet.Amount
                         quotesArr.push(quoteObj)
-                        setDataQuotesList(quotesArr)
                     })
+                    setDataQuotesList(quotesArr)
+
                 }
             })
     }

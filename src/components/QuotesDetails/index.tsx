@@ -14,7 +14,6 @@ const QuotesDetails = ({ quotesArr }) => {
     const [showGenerateLabel, setShowGenerateLabel] = React.useState(false)
 
     const handleChangeShowGenerateLabel =() =>{
-        console.log(" Sos un crack guapo!")
         setShowGenerateLabel(!showGenerateLabel)
     }
     return (
