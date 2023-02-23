@@ -44,7 +44,7 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         }
 
         alert("informacion guarda con exito "+result)
-         const URLlogin = "http://localhost:8080/getUsers/register"
+         const URLlogin = "https://clownfish-app-b2q4a.ondigitalocean.app/getUsers/register"
          fetch(URLlogin, {
              method: 'POST',
              headers: {

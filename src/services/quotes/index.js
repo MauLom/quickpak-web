@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // const URL = "http://68.183.17.99:7000/"
-const URL ="http://localhost:8080/"
+const URL ="https://clownfish-app-b2q4a.ondigitalocean.app"
 
 export const getRatesEstafeta = (data) => {
     const payload = {
