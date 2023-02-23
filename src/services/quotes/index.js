@@ -1,8 +1,14 @@
 import axios from "axios"
 
 // const URL = "http://68.183.17.99:7000/"
-const URL ="https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/"
+const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/"
 
+const CORSHeaders = {
+    "headers": {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+    }
+}
 export const getRatesEstafeta = (data) => {
     const payload = {
         "alto": data.height,
@@ -16,12 +22,7 @@ export const getRatesEstafeta = (data) => {
     }
 
     const result = axios.post(`${URL}getRates/estafeta`, payload,
-        {
-            "headers": {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-            }
-        }
+        CORSHeaders
     )
         .then((res) => {
             return res.data
@@ -45,12 +46,7 @@ export const getRatesDHL = (data) => {
         "userId": data.user_id
     }
     const result = axios.post(`${URL}getRates/`, payload,
-        {
-            "headers": {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-            }
-        })
+        CORSHeaders)
         .then((res) => {
             console.log("Inside get service", res)
             return res.data
