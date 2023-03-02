@@ -1,7 +1,7 @@
 import axios from "axios"
 
-//const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2"
-const URL = "http://localhost:8080"
+const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2"
+//const URL = "http://localhost:8080"
 
 const CORSHEADER =  {
     "headers": {

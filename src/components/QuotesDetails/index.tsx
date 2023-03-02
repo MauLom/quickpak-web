@@ -8,12 +8,27 @@ import Image from 'next/image';
 import { Button } from 'baseui/button';
 import LabelForm from "../LabelForm";
 import * as Styles from "./styles"
+import { UserCtx } from "../../context/userContext";
 
 
 const QuotesDetails = ({ quotesArr }) => {
+    const userData = React.useContext(UserCtx)
     const [showGenerateLabel, setShowGenerateLabel] = React.useState(false)
     const [selectedServiceIndex, setSelectedServiceIndex] = React.useState(-1)
+
     const handleChangeShowGenerateLabel = (idx) => {
+        userData.handleChangeServiceType(quotesArr[idx].serviceType)
+        switch (quotesArr[idx].serviceType) {
+            case "G": case "N":
+                userData.handleChangeServiceProvider("DHL")
+                break;
+            case "Dia Sig.": case "Terrestre":
+                userData.handleChangeServiceProvider("Estafeta")
+                break;
+            default:
+                console.error("No se reconocio el servicio seleccionado")
+                break;
+        }
         setSelectedServiceIndex(idx)
         setShowGenerateLabel(!showGenerateLabel)
     }
@@ -44,7 +59,7 @@ const QuotesDetails = ({ quotesArr }) => {
                 </Cell>
             </Grid>
             {quotesArr.map((eachQuote, idx) => (
-                <Card overrides={selectedServiceIndex === idx && Styles.CardSelected }>
+                <Card overrides={selectedServiceIndex === idx && Styles.CardSelected}>
                     <Grid >
                         <Cell span={2} >
                             <Image src={eachQuote.parcelLogo} />

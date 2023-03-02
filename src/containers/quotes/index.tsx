@@ -50,6 +50,7 @@ const QuotesContainer = () => {
             height: e.target.height.value,
             user_id: userId,
         }
+        userData.handleChangeRateData(dataPayloadDHL)
         const quotesArr = []
         Api.getRatesEstafeta(dataPayloadEstafeta)
             .then((res) => {
@@ -116,9 +117,7 @@ const QuotesContainer = () => {
             />}
 
             <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} />
-
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
-
         </>
     )
 }
