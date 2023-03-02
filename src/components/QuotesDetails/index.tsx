@@ -7,13 +7,14 @@ import EstafetaLogo from "../../assets/Estafeta-Logo.png"
 import Image from 'next/image';
 import { Button } from 'baseui/button';
 import LabelForm from "../LabelForm";
-
+import * as Styles from "./styles"
 
 
 const QuotesDetails = ({ quotesArr }) => {
     const [showGenerateLabel, setShowGenerateLabel] = React.useState(false)
-
-    const handleChangeShowGenerateLabel =() =>{
+    const [selectedServiceIndex, setSelectedServiceIndex] = React.useState(-1)
+    const handleChangeShowGenerateLabel = (idx) => {
+        setSelectedServiceIndex(idx)
         setShowGenerateLabel(!showGenerateLabel)
     }
     return (
@@ -42,8 +43,8 @@ const QuotesDetails = ({ quotesArr }) => {
                     <HeadingXSmall>Accion </HeadingXSmall>
                 </Cell>
             </Grid>
-            {quotesArr.map(eachQuote => (
-                <Card>
+            {quotesArr.map((eachQuote, idx) => (
+                <Card overrides={selectedServiceIndex === idx && Styles.CardSelected }>
                     <Grid >
                         <Cell span={2} >
                             <Image src={eachQuote.parcelLogo} />
@@ -54,14 +55,14 @@ const QuotesDetails = ({ quotesArr }) => {
                         <Cell span={1}>{eachQuote.IVA}</Cell>
                         <Cell span={1}>{eachQuote.Total}</Cell>
                         <Cell span={2}>
-                            <Button onClick={()=>{handleChangeShowGenerateLabel()}}>Generar guia</Button>
+                            <Button onClick={() => { handleChangeShowGenerateLabel(idx) }}>Generar guia</Button>
                         </Cell>
                     </Grid>
                 </Card>
             ))}
 
-            {showGenerateLabel && 
-               <LabelForm />
+            {showGenerateLabel &&
+                <LabelForm />
             }
         </Card>
     )
