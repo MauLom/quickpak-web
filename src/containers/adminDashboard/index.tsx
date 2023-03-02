@@ -7,6 +7,7 @@ import { Tabs, Tab } from "baseui/tabs-motion";
 import QuotesContainer from "../quotes";
 import UsersDetails from "../../components/UsersDetails";
 import { UserCtx } from "../../context/userContext";
+import GeneralValuesSettingsContainer from "../generalValuesSettings";
 const AdminDashboardContainer = () => {
     let userData = React.useContext(UserCtx)
     const [dataTable, setDataTable] = useState(undefined)
@@ -55,12 +56,14 @@ const AdminDashboardContainer = () => {
                     <Tab title="Guias Generadas">
                         <StyledTable cols={columns} data={dataTable} />
                     </Tab>
-
                     <Tab title="Gestion de usuarios">
                         <UsersDetails />
                     </Tab>
                     <Tab title="Cotizador">
                         <QuotesContainer />
+                    </Tab>
+                    <Tab title="Gestion valores">
+                        <GeneralValuesSettingsContainer />
                     </Tab>
                 </Tabs>
                 :
