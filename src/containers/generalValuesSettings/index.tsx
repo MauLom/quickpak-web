@@ -6,11 +6,25 @@ import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { Button } from "baseui/button"
 import * as Styles from "./styles"
-
+import * as Api from "../../services/generalValues"
 const GeneralValuesSettingsContainer = () => {
+    const [aerialValue, setAerialValue] = React.useState("")
+    const [landValue, setLandValue] = React.useState("")
+
+    React.useEffect(() => {
+        if (aerialValue === "" && landValue === "") {
+            Api.getValues()
+                .then((res) => {
+                    setAerialValue(res?.data?.data?.FFTaxes?.aerial)
+                    setLandValue(res?.data?.data?.FFTaxes?.land)
+                })
+        }
+    })
+
     const handleSubmit = (e) => {
-        console.log("Aerial", e.target.aerial.value)
-        console.log("Land", e.target.land.value)
+        e.preventDefault()
+        Api.updateValues({aerial:aerialValue, land: landValue})
+        alert("Valores actualizados")
     }
 
     return (
@@ -27,7 +41,10 @@ const GeneralValuesSettingsContainer = () => {
                                     label={() => "Servicio Aereo"}
                                     caption={() => "Tipo servicio N / Dia Siguiente"}
                                 >
-                                    <Input name="aerial"/>
+                                    <Input 
+                                    onChange={e=>setAerialValue(e.target.value)}
+                                    value={aerialValue}
+                                    name="aerial" />
                                 </FormControl>
                             </Cell>
                             <Cell span={5}>
@@ -35,11 +52,14 @@ const GeneralValuesSettingsContainer = () => {
                                     label={() => "Servicio Terrestre"}
                                     caption={() => "Tipo servicio G / Terrestre"}
                                 >
-                                    <Input name="land"/>
+                                    <Input
+                                    value={landValue} 
+                                    onChange={e=>setLandValue(e.target.value)}
+                                    name="land" />
                                 </FormControl>
                             </Cell>
                             <Cell span={12}>
-                                <Button type="submit" disabled={false} >Guardar</Button>
+                                <Button type="submit" disabled={aerialValue === "" || landValue === ""} >Guardar</Button>
                             </Cell>
                         </Grid>
                     </Styles.GeneralValuesFormStyle>
