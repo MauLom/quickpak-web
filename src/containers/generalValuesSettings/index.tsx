@@ -23,8 +23,15 @@ const GeneralValuesSettingsContainer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        Api.updateValues({aerial:aerialValue, land: landValue})
+        Api.updateValues({ aerial: aerialValue, land: landValue })
         alert("Valores actualizados")
+    }
+
+    const handleChangeAerialValue = (e) => {
+        setAerialValue(e.target.value)
+    }
+    const handleChangeLandValue = (e) => {
+        setLandValue(e.target.value)
     }
 
     return (
@@ -41,10 +48,10 @@ const GeneralValuesSettingsContainer = () => {
                                     label={() => "Servicio Aereo"}
                                     caption={() => "Tipo servicio N / Dia Siguiente"}
                                 >
-                                    <Input 
-                                    onChange={e=>setAerialValue(e.target.value)}
-                                    value={aerialValue}
-                                    name="aerial" />
+                                    <Input
+                                        onChange={e => handleChangeAerialValue(e)}
+                                        value={aerialValue}
+                                        name="aerial" />
                                 </FormControl>
                             </Cell>
                             <Cell span={5}>
@@ -53,9 +60,9 @@ const GeneralValuesSettingsContainer = () => {
                                     caption={() => "Tipo servicio G / Terrestre"}
                                 >
                                     <Input
-                                    value={landValue} 
-                                    onChange={e=>setLandValue(e.target.value)}
-                                    name="land" />
+                                        value={landValue}
+                                        onChange={e => handleChangeLandValue(e)}
+                                        name="land" />
                                 </FormControl>
                             </Cell>
                             <Cell span={12}>
