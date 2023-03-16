@@ -99,6 +99,7 @@ const LabelForm = () => {
             )
             .then((blob) => {
                 // Create blob link to download
+                console.log("readed,", new Blob([blob]))
                 const url = window.URL.createObjectURL(
                     new Blob([blob]),
                 );

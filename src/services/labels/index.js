@@ -33,10 +33,8 @@ export const generateLabelDHL = async (dataPayload) => {
     return result
 }
 export const getImageFroZPL = (zpl) => {
-    const result = axios.post("https://api.labelary.com/v1/printers/8dpmm/labels/4x8/", zpl, {
+    const result = axios.post("http://api.labelary.com/v1/printers/8dpmm/labels/4x8/", zpl, {
         "headers": {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
             'Accept': 'application/pdf'
         }
     })
