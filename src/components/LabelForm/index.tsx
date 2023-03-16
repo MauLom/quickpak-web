@@ -127,7 +127,7 @@ const LabelForm = () => {
             case "DHL":
                 const objDefaultDHL = {
                     "service": userData.serviceType,
-                    "date": dataRate.date,
+                    "date": "2023-03-17",
                     "hora": "T23:55:00 GMT-06:00",
                     "userId": dataRate.user_id,
                     "oZip": dataRate.origin_zip,
