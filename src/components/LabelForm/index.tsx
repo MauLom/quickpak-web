@@ -1,12 +1,14 @@
 import * as React from 'react';
 
 import { Input } from "baseui/input"
-import { Button } from 'baseui/button';
+import { Button, SHAPE } from 'baseui/button';
 import { FormControl } from "baseui/form-control";
 import { Grid, Cell } from 'baseui/layout-grid';
 import * as Styles from "./styles"
 import { UserCtx } from '../../context/userContext';
 import * as Api from "../../services/labels"
+import Upload from 'baseui/icon/upload';
+import { Card } from 'baseui/card';
 
 import {
     Modal,
@@ -23,6 +25,39 @@ const LabelForm = () => {
     const [estafetaLabelString, setEstafetaLabelString] = React.useState("")
     const [ZPLstring, setZPLString] = React.useState("")
     const userData = React.useContext(UserCtx)
+    const [formData, setFormData] = React.useState({
+        oName: "",
+        oCompany: "",
+        oPhone: "",
+        oEmail: "",
+        oStreets1: "",
+        oStreets2: "",
+        oStreets3: "",
+        dName: "",
+        dCompany: "",
+        dPhone: "",
+        dEmail: "",
+        dStreets1: "",
+        dStreets2: "",
+        dStreets3: ""
+    })
+
+    const staticLabelFormData = {
+        oName: "Quickpak",
+        oCompany: "Quickpak",
+        oPhone: "8180808080",
+        oEmail: "mail@origen.com",
+        oStreets1: "Calle 1",
+        oStreets2: "Calle 2",
+        oStreets3: "Calle 3",
+        dName: "Mydas",
+        dCompany: "Mydas",
+        dPhone: "8081818181",
+        dEmail: "mail@destino.com",
+        dStreets1: "Calle 4",
+        dStreets2: "Calle 5",
+        dStreets3: "Calle 6"
+    }
 
     const downloadTheEstafetaLabel = () => {
         console.log("estafetaLabelString", estafetaLabelString)
@@ -92,8 +127,8 @@ const LabelForm = () => {
             case "DHL":
                 const objDefaultDHL = {
                     "service": userData.serviceType,
-                    "date":dataRate.date,
-                    "hora":"T23:55:00 GMT-06:00",
+                    "date": dataRate.date,
+                    "hora": "T23:55:00 GMT-06:00",
                     "userId": dataRate.user_id,
                     "oZip": dataRate.origin_zip,
                     "oCity": dataRate.origin_city,
@@ -211,6 +246,18 @@ const LabelForm = () => {
         }
     }
 
+    const handleChangeFormValues = () => {
+        setFormData(staticLabelFormData)
+    }
+
+    const handleChangeInputValues = (e) => {
+        console.log("e: ", e.target.name)
+        console.log("New value", e.target.value)
+        let data = JSON.parse(JSON.stringify(formData))
+        data[e.target.name] = e.target.value
+        setFormData(data)
+    }
+
     const handleBotonDescarga = () => {
         if (userData.serviceProvider === "Estafeta") {
             downloadTheEstafetaLabel()
@@ -219,146 +266,153 @@ const LabelForm = () => {
         }
     }
     return (
-        <Styles.LabelFormStyle onSubmit={handleSubmit}>
-            <Grid>
-                <Cell span={10}>
-                    <FormControl
-                        label={() => "Descripcion del paquete"}
-                        caption={() => "breve descripcion del contenido del paquete"}>
-                        <Input name="desc" />
-                    </FormControl>
-                </Cell>
+        <Card>
+            <Button shape={SHAPE.circle} onClick={() => handleChangeFormValues()}>
+                <Upload />
+            </Button>
+            <Styles.LabelFormStyle onSubmit={handleSubmit}>
+                <Grid>
+                    <Cell span={10}>
+                        <FormControl
+                            label={() => "Descripcion del paquete"}
+                            caption={() => "breve descripcion del contenido del paquete"}>
+                            <Input name="desc" />
+                        </FormControl>
+                    </Cell>
 
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Nombre del sitio de origen"}
-                        caption={() => "Sitio desde donde envian el paquete"}>
-                        <Input name="oName" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Compania de origen"}
-                        caption={() => "Nombre de compania desde donde se envia"}>
-                        <Input name="oCompany" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Numero de contacto de origen"}
-                        caption={() => "Contacto de origen"}>
-                        <Input name="oPhone" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Email de origen"}
-                        caption={() => "Correo electronico del contacto de origen"}>
-                        <Input name="oEmail" />
-                    </FormControl>
-                </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Nombre del sitio de origen"}
+                            caption={() => "Sitio desde donde envian el paquete"}>
+                            <Input name="oName" value={formData?.oName} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Compania de origen"}
+                            caption={() => "Nombre de compania desde donde se envia"}>
+                            <Input name="oCompany"  value={formData?.oCompany} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Numero de contacto de origen"}
+                            caption={() => "Contacto de origen"}>
+                            <Input name="oPhone" value={formData?.oPhone} onChange={(e) => handleChangeInputValues(e)}/>
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Email de origen"}
+                            caption={() => "Correo electronico del contacto de origen"}>
+                            <Input name="oEmail" value={formData?.oEmail} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
 
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 1 de origen"}
-                        caption={() => "*Opcional, referencia a origen"}>
-                        <Input name="oStreets1" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 2 de origen"}
-                        caption={() => "*Opcional, referencia a origen"}>
-                        <Input name="oStreets2" />
-                    </FormControl>
-                </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 1 de origen"}
+                            caption={() => "*Opcional, referencia a origen"}>
+                            <Input name="oStreets1" value={formData?.oStreets1} onChange={(e) => handleChangeInputValues(e)}  />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 2 de origen"}
+                            caption={() => "*Opcional, referencia a origen"}>
+                            <Input name="oStreets2" value={formData?.oStreets2} onChange={(e) => handleChangeInputValues(e)}  />
+                        </FormControl>
+                    </Cell>
 
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 3 de origen"}
-                        caption={() => "*Opcional, referencia a origen"}>
-                        <Input name="oStreets3" />
-                    </FormControl>
-                </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 3 de origen"}
+                            caption={() => "*Opcional, referencia a origen"}>
+                            <Input name="oStreets3" value={formData?.oStreets3} onChange={(e) => handleChangeInputValues(e)}/>
+                        </FormControl>
+                    </Cell>
 
-                {/*  */}
+                    {/*  */}
 
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Nombre del sitio de destino"}
-                        caption={() => "Sitio a donde envian el paquete"}>
-                        <Input name="dName" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Compania de destino"}
-                        caption={() => "Nombre compania de destino"}>
-                        <Input name="dCompany" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Numero de contacto de destino"}
-                        caption={() => "Numero de contacto del destino"}>
-                        <Input name="dPhone" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Email de destino"}
-                        caption={() => "Correo electronico del contacto de destino"}>
-                        <Input name="dEmail" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 1 de destino"}
-                        caption={() => "*Opcional, referencia a destino"}>
-                        <Input name="dStreets1" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 2 de destino"}
-                        caption={() => "*Opcional, referencia a destino"}>
-                        <Input name="dStreets2" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 3 de destino"}
-                        caption={() => "*Opcional, referencia a destino"}>
-                        <Input name="dStreets3" />
-                    </FormControl>
-                </Cell>
-                <Cell span={12}>
-                    <Button type="submit"  >Generar Guia</Button>
-                </Cell>
-            </Grid>
-            <Modal
-                onClose={() => setIsOpenModal(false)}
-                closeable
-                isOpen={isOpenModal}
-                animate
-                autoFocus
-                size={SIZE.default}
-                role={ROLE.dialog}
-            >
-                <ModalHeader>Se genero exitosamente la guia</ModalHeader>
-                <ModalBody>
-                    Haz click en el boton para descargar tu etiqueta
-                </ModalBody>
-                <ModalFooter>
-                    <ModalButton >
-                        Cancelar
-                    </ModalButton>
-                    <ModalButton onClick={() => handleBotonDescarga()}>
-                        Descargar
-                    </ModalButton>
-                </ModalFooter>
-            </Modal>
-        </Styles.LabelFormStyle>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Nombre del sitio de destino"}
+                            caption={() => "Sitio a donde envian el paquete"}>
+                            <Input name="dName"  value={formData?.dName} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Compania de destino"}
+                            caption={() => "Nombre compania de destino"}>
+                            <Input name="dCompany" value={formData?.dCompany} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Numero de contacto de destino"}
+                            caption={() => "Numero de contacto del destino"}>
+                            <Input name="dPhone" value={formData?.dPhone} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Email de destino"}
+                            caption={() => "Correo electronico del contacto de destino"}>
+                            <Input name="dEmail" value={formData?.dEmail} onChange={(e) => handleChangeInputValues(e)}/>
+                        </FormControl>
+                    </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 1 de destino"}
+                            caption={() => "*Opcional, referencia a destino"}>
+                            <Input name="dStreets1" value={formData?.dStreets1} onChange={(e) => handleChangeInputValues(e)}/>
+                        </FormControl>
+                    </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 2 de destino"}
+                            caption={() => "*Opcional, referencia a destino"}>
+                            <Input name="dStreets2" value={formData?.dStreets2} onChange={(e) => handleChangeInputValues(e)} />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 3 de destino"}
+                            caption={() => "*Opcional, referencia a destino"}>
+                            <Input name="dStreets3" value={formData?.dStreets3} onChange={(e) => handleChangeInputValues(e)}  />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={12}>
+                        <Button type="submit"  >Generar Guia</Button>
+                    </Cell>
+                </Grid>
+                <Modal
+                    onClose={() => setIsOpenModal(false)}
+                    closeable
+                    isOpen={isOpenModal}
+                    animate
+                    autoFocus
+                    size={SIZE.default}
+                    role={ROLE.dialog}
+                >
+                    <ModalHeader>Se genero exitosamente la guia</ModalHeader>
+                    <ModalBody>
+                        Haz click en el boton para descargar tu etiqueta
+                    </ModalBody>
+                    <ModalFooter>
+                        <ModalButton >
+                            Cancelar
+                        </ModalButton>
+                        <ModalButton onClick={() => handleBotonDescarga()}>
+                            Descargar
+                        </ModalButton>
+                    </ModalFooter>
+                </Modal>
+            </Styles.LabelFormStyle>
+
+        </Card>
+
     )
 }
 export default LabelForm
