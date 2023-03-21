@@ -3,13 +3,18 @@ import axios from "axios"
 const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2"
 const CORSHEADER = {
     "headers": {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://clownfish-app-b2q4a.ondigitalocean.app',
         'Content-Type': 'application/json',
     }
 }
 
 export const getLabels = async (page, limit) => {
-    const result = axios.get(`${URL}/labelsData?page=${page}&limit=${limit}`, CORSHEADER)
+    const result = axios.get(`${URL}/labelsData?page=${page}&limit=${limit}`, {
+        "headers": {
+            'Access-Control-Allow-Origin': '*'
+        }
+    }
+    )
         .then(res => {
             return res.data
         })
