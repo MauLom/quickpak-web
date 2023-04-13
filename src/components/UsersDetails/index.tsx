@@ -15,6 +15,9 @@ import {
 import { ParagraphXSmall, ParagraphSmall } from 'baseui/typography';
 import EditUserForm from '../EditUserForm';
 import { formatDataTableUsers, getDataUsers } from '../../utils/utilities';
+import { Tabs, Tab } from "baseui/tabs-motion";
+import DirectionsNotebook from '../DirectionsNotebook';
+
 
 const StyledHeadingCell = withStyle(StyledCell, {
     paddingTop: 0,
@@ -27,6 +30,8 @@ const UsersDetails = () => {
     const [selectedUser, setSelectedUser] = useState({})
     const [rawUsersData, setRawUsersData] = useState(undefined)
     const [dataTableUsers, setDataTableUsers] = useState([])
+    const [activeKey, setActiveKey] = useState("0");
+
     const handlePlusAction = (rowData) => {
         setSelectedUser(rawUsersData.find(element => element.idServices == rowData[1]))
         setShowUserDetail(true)
@@ -78,7 +83,20 @@ const UsersDetails = () => {
                 </StyledBody>
             </StyledTable>
             {showUserDetail && (
-                <EditUserForm dataUser={selectedUser} changeUserData={setSelectedUser} />
+                <Tabs
+                    activeKey={activeKey}
+                    onChange={({ activeKey }) => {
+                        setActiveKey(activeKey.toString());
+                    }}
+                    activateOnFocus
+                >
+                    <Tab title="Informacion de cotizacion">
+                        <EditUserForm dataUser={selectedUser} changeUserData={setSelectedUser} />
+                    </Tab>
+                    <Tab title="Libreta de direcciones">
+                        <DirectionsNotebook dataUser={selectedUser} changeUserData={setSelectedUser} />
+                    </Tab>
+                </Tabs>
             )}
         </div>
     )

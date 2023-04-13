@@ -8,13 +8,14 @@ import QuotesContainer from "../quotes";
 import UsersDetails from "../../components/UsersDetails";
 import { UserCtx } from "../../context/userContext";
 import GeneralValuesSettingsContainer from "../generalValuesSettings";
+import { Button } from "baseui/button";
+import * as XLSX from 'xlsx';
 const AdminDashboardContainer = () => {
     let userData = React.useContext(UserCtx)
     const [dataTable, setDataTable] = useState(undefined)
     const [activeKey, setActiveKey] = useState("0");
-    console.log("userData?", userData)
     useEffect(() => {
-       
+
         if (dataTable === undefined) {
             getDataTableLabels(0, 1500).then(data => {
                 setDataTable(data)
@@ -36,6 +37,16 @@ const AdminDashboardContainer = () => {
 
     ]
 
+    const handleDownloadAsXLSX = () => {
+        console.log("its clicked")
+        const worksheet = XLSX.utils.json_to_sheet(dataTable);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+        //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workbook, "DataSheet.xlsx");
+    }
+
     return (
         <>
             {/* <Tabs
@@ -54,6 +65,7 @@ const AdminDashboardContainer = () => {
                     activateOnFocus
                 >
                     <Tab title="Guias Generadas">
+                        <Button onClick={() => handleDownloadAsXLSX()}>Download as XLSX</Button>
                         <StyledTable cols={columns} data={dataTable} />
                     </Tab>
                     <Tab title="Gestion de usuarios">
