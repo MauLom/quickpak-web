@@ -1,20 +1,14 @@
 import * as React from 'react';
 import { Input } from "baseui/input"
-import { Button } from 'baseui/button';
+import { Button, SHAPE } from 'baseui/button';
 import { FormControl } from "baseui/form-control";
 import * as Style from "./styles"
 import { Grid, Cell } from 'baseui/layout-grid';
 import { HeadingMedium } from 'baseui/typography';
 import { Card } from 'baseui/card';
 import { DatePicker } from "baseui/datepicker";
-
+import { Plus } from 'baseui/icon';
 const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
-
-
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.currentTarget;
-        alert(value)
-    };
 
     return (
         <Style.QuotesFormStyle onSubmit={submitAction}>
@@ -95,13 +89,11 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
                                 <Input name="lenght" />
                             </FormControl>
                         </Cell>
-                        <Cell span={2}>
-                            {/* <FormControl
-                                label={() => "Ciudad de origen"}
-                                caption={() => "Seleccione una de la lista"}>
-                                <Input name="destiny_city" />
-                            </FormControl> */}
-                        </Cell>
+                        {/* <Cell span={2}>
+                            <Button shape={SHAPE.circle}>
+                               <Plus />
+                            </Button>
+                        </Cell> */}
                     </Grid>
                 </Card>
             </Card>

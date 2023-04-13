@@ -3,13 +3,18 @@ import axios from "axios"
 const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2"
 const CORSHEADER = {
     "headers": {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://clownfish-app-b2q4a.ondigitalocean.app',
         'Content-Type': 'application/json',
     }
 }
 
 export const getLabels = async (page, limit) => {
-    const result = axios.get(`${URL}/labelsData?page=${page}&limit=${limit}`, CORSHEADER)
+    const result = axios.get(`${URL}/labelsData?page=${page}&limit=${limit}`, {
+        "headers": {
+            'Access-Control-Allow-Origin': '*'
+        }
+    }
+    )
         .then(res => {
             return res.data
         })
@@ -33,10 +38,8 @@ export const generateLabelDHL = async (dataPayload) => {
     return result
 }
 export const getImageFroZPL = (zpl) => {
-    const result = axios.post("https://api.labelary.com/v1/printers/8dpmm/labels/4x8/", zpl, {
+    const result = axios.post("http://api.labelary.com/v1/printers/8dpmm/labels/4x8/", zpl, {
         "headers": {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
             'Accept': 'application/pdf'
         }
     })
