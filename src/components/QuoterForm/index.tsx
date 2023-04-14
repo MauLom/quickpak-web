@@ -9,6 +9,12 @@ import { Card } from 'baseui/card';
 import { DatePicker } from "baseui/datepicker";
 import { Plus } from 'baseui/icon';
 const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
+    const [piecesArr, setPiecesArr] = React.useState([])
+
+    const handleMultipieces = () => {
+        console.log("this is happening")
+        setPiecesArr([...piecesArr, []])
+    }
 
     return (
         <Style.QuotesFormStyle onSubmit={submitAction}>
@@ -89,15 +95,82 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
                                 <Input name="lenght" />
                             </FormControl>
                         </Cell>
-                        {/* <Cell span={2}>
-                            <Button shape={SHAPE.circle}>
-                               <Plus />
-                            </Button>
-                        </Cell> */}
                     </Grid>
+                    {piecesArr.length > 1 &&
+                        (
+                            <Grid>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Peso"}
+                                        caption={() => "fecha de envio del paquete"}>
+                                        <Input name="weight2" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Alto"}
+                                        caption={() => "codigo postal origen del envio"}>
+                                        <Input name="height2" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Ancho"}
+                                        caption={() => "Seleccione una de la lista"}>
+                                        <Input name="width2" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Profundidad"}
+                                        caption={() => "codigo postal destino del envio"}>
+                                        <Input name="lenght2" />
+                                    </FormControl>
+                                </Cell>
+                            </Grid>
+                        )}
+                    {piecesArr.length >= 2 &&
+                        (
+                            <Grid>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Peso"}
+                                        caption={() => "fecha de envio del paquete"}>
+                                        <Input name="weight3" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Alto"}
+                                        caption={() => "codigo postal origen del envio"}>
+                                        <Input name="height3" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Ancho"}
+                                        caption={() => "Seleccione una de la lista"}>
+                                        <Input name="width3" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Profundidad"}
+                                        caption={() => "codigo postal destino del envio"}>
+                                        <Input name="lenght3" />
+                                    </FormControl>
+                                </Cell>
+                            </Grid>
+                        )}
+                    {piecesArr.length < 2 && (
+                        <Cell span={2}>
+                            <Button type="button" shape={SHAPE.circle} onClick={() => { handleMultipieces() }}>
+                                <Plus />
+                            </Button>
+                        </Cell>
+                    )}
                 </Card>
             </Card>
-
             <Button type="submit"  >Submit</Button>
         </Style.QuotesFormStyle>
 
