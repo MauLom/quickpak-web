@@ -21,3 +21,7 @@ export const updateValues = async (data) => {
     }, CORSHEADER)
     return result
 }
+export const getCityByZip = async (URL) =>{
+    const result = await axios.get(`${URL}`)
+    return result
+}
