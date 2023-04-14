@@ -6,126 +6,100 @@ import { FormControl } from "baseui/form-control";
 import { Grid, Cell } from 'baseui/layout-grid';
 const DirectionsNotebook = ({ dataUser }) => {
 
-    const handleSubmitButton = () =>{
-        console.log("Datauser ", dataUser)
+    const handleSubmitButton = (e) => {
+        e.preventDefault()
+        const direccionData = {
+            referencia:e.target.dnref.value,
+            name:e.target.name.value,
+            company: e.target.company.value,
+            phone: e.target.phone.value,
+            email: e.target.email.value,
+            streets1: e.target.streets1.value,
+            streets2: e.target.streets2.value,
+            streets3: e.target.streets3.value,
+
+        }
+        const URLSaveNotebook = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/getUsers/saveDirection"
+        fetch(URLSaveNotebook, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': 'true',
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+                "idServices": dataUser.idServices,
+                "referencia": e.target.dnref.value,
+                "direccion": direccionData
+            })
+        })
     }
     return (
         <Card>
-            <Grid>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Identificador datos"}
-                        caption={() => "Referencia para buscar datos en direccion"}>
-                        <Input name="dnref" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Nombre del sitio de origen"}
-                        caption={() => "Sitio desde donde envian el paquete"}>
-                        <Input name="oName" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Compania de origen"}
-                        caption={() => "Nombre de compania desde donde se envia"}>
-                        <Input name="oCompany" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Numero de contacto de origen"}
-                        caption={() => "Contacto de origen"}>
-                        <Input name="oPhone" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Email de origen"}
-                        caption={() => "Correo electronico del contacto de origen"}>
-                        <Input name="oEmail" />
-                    </FormControl>
-                </Cell>
+            <form onSubmit={handleSubmitButton}  >
+                <Grid>
+                    <Cell span={12}>
+                        <FormControl
+                            label={() => "Identificador datos"}
+                            caption={() => "Referencia para buscar datos en direccion"}>
+                            <Input name="dnref" />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Nombre del sitio"}
+                            caption={() => "Sitio donde reciben el paquete"}>
+                            <Input name="name" />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Compania"}
+                            caption={() => "Nombre de compania desde donde se recibe"}>
+                            <Input name="company" />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Numero de contacto"}
+                            caption={() => "Contacto"}>
+                            <Input name="phone" />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={3}>
+                        <FormControl
+                            label={() => "Email"}
+                            caption={() => "Correo electronico del contacto"}>
+                            <Input name="email" />
+                        </FormControl>
+                    </Cell>
 
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 1 de origen"}
-                        caption={() => "*Opcional, referencia a origen"}>
-                        <Input name="oStreets1" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 2 de origen"}
-                        caption={() => "*Opcional, referencia a origen"}>
-                        <Input name="oStreets2" />
-                    </FormControl>
-                </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 1"}
+                            caption={() => "*Opcional, referencia a destino"}>
+                            <Input name="streets1" />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 2"}
+                            caption={() => "*Opcional, referencia a destino"}>
+                            <Input name="streets2" />
+                        </FormControl>
+                    </Cell>
 
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 3 de origen"}
-                        caption={() => "*Opcional, referencia a origen"}>
-                        <Input name="oStreets3" />
-                    </FormControl>
-                </Cell>
-
-                {/*  */}
-
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Nombre del sitio de destino"}
-                        caption={() => "Sitio a donde envian el paquete"}>
-                        <Input name="dName" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Compania de destino"}
-                        caption={() => "Nombre compania de destino"}>
-                        <Input name="dCompany" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Numero de contacto de destino"}
-                        caption={() => "Numero de contacto del destino"}>
-                        <Input name="dPhone" />
-                    </FormControl>
-                </Cell>
-                <Cell span={3}>
-                    <FormControl
-                        label={() => "Email de destino"}
-                        caption={() => "Correo electronico del contacto de destino"}>
-                        <Input name="dEmail" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 1 de destino"}
-                        caption={() => "*Opcional, referencia a destino"}>
-                        <Input name="dStreets1" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 2 de destino"}
-                        caption={() => "*Opcional, referencia a destino"}>
-                        <Input name="dStreets2" />
-                    </FormControl>
-                </Cell>
-                <Cell span={4}>
-                    <FormControl
-                        label={() => "Calle de referencia 3 de destino"}
-                        caption={() => "*Opcional, referencia a destino"}>
-                        <Input name="dStreets3" />
-                    </FormControl>
-                </Cell>
-                <Cell span={12}>
-                    <Button onClick={() => handleSubmitButton()}  >Guardar Datos</Button>
-                </Cell>
-            </Grid>
+                    <Cell span={4}>
+                        <FormControl
+                            label={() => "Calle de referencia 3"}
+                            caption={() => "*Opcional, referencia a destino"}>
+                            <Input name="streets3" />
+                        </FormControl>
+                    </Cell>
+                    <Cell span={12}>
+                        <Button type="submit">Guardar Datos</Button>
+                    </Cell>
+                </Grid>
+            </form>
         </Card>
     )
 }

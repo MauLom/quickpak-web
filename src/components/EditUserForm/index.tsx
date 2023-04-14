@@ -30,11 +30,6 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         setMatrizEstafeta(dataUser.matriz.Estafeta[labelServiceStr])
     }
     const handleSubmitButton = () => {
-        // const labelServiceStr = serviceMatrizEstafeta[0]?.value
-        // console.log("Actual username: ", dataUser.matriz.Estafeta[labelServiceStr])
-        console.log("Estafeta", matrizEstafeta)
-        console.log("DHL", matrizDHL)
-        console.log(userName)
         var length=20
         var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
         var charLength = chars.length;
