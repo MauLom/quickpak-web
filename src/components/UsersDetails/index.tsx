@@ -94,7 +94,7 @@ const UsersDetails = () => {
                         <EditUserForm dataUser={selectedUser} changeUserData={setSelectedUser} />
                     </Tab>
                     <Tab title="Libreta de direcciones">
-                        <DirectionsNotebook dataUser={selectedUser} changeUserData={setSelectedUser} />
+                        <DirectionsNotebook dataUser={selectedUser} />
                     </Tab>
                 </Tabs>
             )}
