@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "npm i && next build",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
     "start": "next start",
     "test": "jest",
