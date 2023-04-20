@@ -60,7 +60,6 @@ const LabelForm = () => {
     }
 
     const downloadTheEstafetaLabel = () => {
-        console.log("estafetaLabelString", estafetaLabelString)
         const byteCharacters = atob(estafetaLabelString);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -78,6 +77,38 @@ const LabelForm = () => {
         link.setAttribute(
             'download',
             `etiquetaEstafeta.pdf`,
+        );
+
+        // Append to html link element page
+        document.body.appendChild(link);
+
+        // Start download
+        link.click();
+
+        // Clean up and remove the link
+        link.parentNode.removeChild(link);
+
+    }
+
+    const downloadTheDHLLabel = () => {
+        // console.log("ZPL String", ZPLstring)
+        // const byteCharacters = atob(ZPLstring);
+        const byteNumbers = new Array(ZPLstring.length);
+        for (let i = 0; i < ZPLstring.length; i++) {
+            byteNumbers[i] = ZPLstring.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: '' });
+
+
+        const url = window.URL.createObjectURL(
+            blob,
+        );
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+            'download',
+            `etiquetaDHL.pdf`,
         );
 
         // Append to html link element page
@@ -128,7 +159,7 @@ const LabelForm = () => {
             case "DHL":
                 const objDefaultDHL = {
                     "service": userData.serviceType,
-                    "date":"2023-04-15",
+                    "date":"2023-04-21",
                     "hora":"T23:55:00 GMT-06:00",
                     "userId": dataRate.user_id,
                     "oZip": dataRate.origin_zip,
@@ -263,7 +294,8 @@ const LabelForm = () => {
         if (userData.serviceProvider === "Estafeta") {
             downloadTheEstafetaLabel()
         } else if (userData.serviceProvider === "DHL") {
-            handleConvertZPLToIMG()
+            downloadTheDHLLabel()
+            // window.location.href = `data:application/octet-stream;base64,'${ZPLstring}`
         }
     }
     return (

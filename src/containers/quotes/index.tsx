@@ -54,6 +54,7 @@ const QuotesContainer = () => {
         const quotesArr = []
         Api.getRatesEstafeta(dataPayloadEstafeta)
             .then((res) => {
+                console.log("Res Estafeta:", res)
                 if (res?.data && res.data.length > 0) {
                     res.data.forEach(eachQuote => {
                         console.log("eachQuote", eachQuote)
@@ -84,6 +85,7 @@ const QuotesContainer = () => {
                         quoteObj['subTotal'] = findCharges("SubTotal")
                         quoteObj['IVA'] = findCharges("IVA")
                         quoteObj['Total'] = eachQuote.TotalNet.Amount
+                        quoteObj['TotalChargeTypes'] = eachQuote.Charges.Charge
                         quotesArr.push(quoteObj)
                     })
                     setDataQuotesList(quotesArr)
