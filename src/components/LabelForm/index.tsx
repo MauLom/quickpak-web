@@ -42,7 +42,7 @@ const LabelForm = () => {
         dStreets3: ""
     })
 
-    const staticLabelFormData = {
+    var staticLabelFormData = {
         oName: "Quickpak",
         oCompany: "Quickpak",
         oPhone: "8180808080",
@@ -57,6 +57,44 @@ const LabelForm = () => {
         dStreets1: "Calle 4",
         dStreets2: "Calle 5",
         dStreets3: "Calle 6"
+    }
+
+    const getDirectionFromBD = () => {
+        const URLGetNotebook = "http://localhost:8080/getUsers/getDirection"
+        const response = fetch(URLGetNotebook, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': 'true',
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+                "idServices": userData.rateData.user_id,
+                "id": 0,
+            })
+        }).then(response => response.json())
+            .then(data => {
+                console.log("Data on endpoint: ", data)
+                staticLabelFormData = {
+                    oName: data.data?.name,
+                    oCompany: data.data?.company,
+                    oPhone: data.data?.phone,
+                    oEmail: data.data?.email,
+                    oStreets1: data.data?.streets1,
+                    oStreets2: data.data?.streets2,
+                    oStreets3: data.data?.streets3,
+                    dName: "",
+                    dCompany: "",
+                    dPhone: "",
+                    dEmail: "",
+                    dStreets1: "",
+                    dStreets2: "",
+                    dStreets3: ""
+                }
+                setFormData(staticLabelFormData)
+
+            }
+
+            )
     }
 
     const downloadTheEstafetaLabel = () => {
@@ -159,8 +197,8 @@ const LabelForm = () => {
             case "DHL":
                 const objDefaultDHL = {
                     "service": userData.serviceType,
-                    "date":"2023-04-21",
-                    "hora":"T23:55:00 GMT-06:00",
+                    "date": "2023-05-12",
+                    "hora": "T23:55:00 GMT-06:00",
                     "userId": dataRate.user_id,
                     "oZip": dataRate.origin_zip,
                     "oCity": dataRate.origin_city,
@@ -279,7 +317,7 @@ const LabelForm = () => {
     }
 
     const handleChangeFormValues = () => {
-        setFormData(staticLabelFormData)
+        getDirectionFromBD()
     }
 
     const handleChangeInputValues = (e) => {
@@ -324,14 +362,14 @@ const LabelForm = () => {
                         <FormControl
                             label={() => "Compania de origen"}
                             caption={() => "Nombre de compania desde donde se envia"}>
-                            <Input name="oCompany"  value={formData?.oCompany} onChange={(e) => handleChangeInputValues(e)} />
+                            <Input name="oCompany" value={formData?.oCompany} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
                             label={() => "Numero de contacto de origen"}
                             caption={() => "Contacto de origen"}>
-                            <Input name="oPhone" value={formData?.oPhone} onChange={(e) => handleChangeInputValues(e)}/>
+                            <Input name="oPhone" value={formData?.oPhone} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
@@ -346,14 +384,14 @@ const LabelForm = () => {
                         <FormControl
                             label={() => "Calle de referencia 1 de origen"}
                             caption={() => "*Opcional, referencia a origen"}>
-                            <Input name="oStreets1" value={formData?.oStreets1} onChange={(e) => handleChangeInputValues(e)}  />
+                            <Input name="oStreets1" value={formData?.oStreets1} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
                         <FormControl
                             label={() => "Calle de referencia 2 de origen"}
                             caption={() => "*Opcional, referencia a origen"}>
-                            <Input name="oStreets2" value={formData?.oStreets2} onChange={(e) => handleChangeInputValues(e)}  />
+                            <Input name="oStreets2" value={formData?.oStreets2} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
 
@@ -361,7 +399,7 @@ const LabelForm = () => {
                         <FormControl
                             label={() => "Calle de referencia 3 de origen"}
                             caption={() => "*Opcional, referencia a origen"}>
-                            <Input name="oStreets3" value={formData?.oStreets3} onChange={(e) => handleChangeInputValues(e)}/>
+                            <Input name="oStreets3" value={formData?.oStreets3} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
 
@@ -371,7 +409,7 @@ const LabelForm = () => {
                         <FormControl
                             label={() => "Nombre del sitio de destino"}
                             caption={() => "Sitio a donde envian el paquete"}>
-                            <Input name="dName"  value={formData?.dName} onChange={(e) => handleChangeInputValues(e)} />
+                            <Input name="dName" value={formData?.dName} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
@@ -392,14 +430,14 @@ const LabelForm = () => {
                         <FormControl
                             label={() => "Email de destino"}
                             caption={() => "Correo electronico del contacto de destino"}>
-                            <Input name="dEmail" value={formData?.dEmail} onChange={(e) => handleChangeInputValues(e)}/>
+                            <Input name="dEmail" value={formData?.dEmail} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
                         <FormControl
                             label={() => "Calle de referencia 1 de destino"}
                             caption={() => "*Opcional, referencia a destino"}>
-                            <Input name="dStreets1" value={formData?.dStreets1} onChange={(e) => handleChangeInputValues(e)}/>
+                            <Input name="dStreets1" value={formData?.dStreets1} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
@@ -413,7 +451,7 @@ const LabelForm = () => {
                         <FormControl
                             label={() => "Calle de referencia 3 de destino"}
                             caption={() => "*Opcional, referencia a destino"}>
-                            <Input name="dStreets3" value={formData?.dStreets3} onChange={(e) => handleChangeInputValues(e)}  />
+                            <Input name="dStreets3" value={formData?.dStreets3} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={12}>

@@ -54,7 +54,6 @@ const QuotesContainer = () => {
         const quotesArr = []
         Api.getRatesEstafeta(dataPayloadEstafeta)
             .then((res) => {
-                console.log("Res Estafeta:", res)
                 if (res?.data && res.data.length > 0) {
                     res.data.forEach(eachQuote => {
                         console.log("eachQuote", eachQuote)

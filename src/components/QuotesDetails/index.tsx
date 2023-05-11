@@ -15,7 +15,6 @@ const QuotesDetails = ({ quotesArr }) => {
     const userData = React.useContext(UserCtx)
     const [showGenerateLabel, setShowGenerateLabel] = React.useState(false)
     const [selectedServiceIndex, setSelectedServiceIndex] = React.useState(-1)
-    console.log("quotesArr: ", quotesArr)
     const handleChangeShowGenerateLabel = (idx) => {
         userData.handleChangeServiceType(quotesArr[idx].serviceType)
         switch (quotesArr[idx].serviceType) {
