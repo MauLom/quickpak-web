@@ -10,6 +10,7 @@ import { UserCtx } from "../../context/userContext";
 import GeneralValuesSettingsContainer from "../generalValuesSettings";
 import { Button } from "baseui/button";
 import * as XLSX from 'xlsx';
+import ReportsContainer from "../reportes";
 const AdminDashboardContainer = () => {
     let userData = React.useContext(UserCtx)
     const [dataTable, setDataTable] = useState(undefined)
@@ -76,6 +77,9 @@ const AdminDashboardContainer = () => {
                     </Tab>
                     <Tab title="Gestion valores">
                         <GeneralValuesSettingsContainer />
+                    </Tab>
+                    <Tab title="Reportes">
+                        <ReportsContainer />
                     </Tab>
                 </Tabs>
                 :

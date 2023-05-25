@@ -16,21 +16,23 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
     const [userName, setUserName] = React.useState("")
     const [matrizEstafeta, setMatrizEstafeta] = React.useState([])
     const [matrizDHL, setMatrizDHL] = React.useState([])
-
     const handleChangeServicesDHL = (params) => {
         const labelServiceStr = params.value[0]?.value
         setServiceMatrizDHL(params.value)
-        console.log("Matriz? ", dataUser.matriz.DHL[labelServiceStr])
-        setMatrizDHL(dataUser.matriz.DHL[labelServiceStr])
+
+        if (Object.keys(dataUser).length > 0 && null !== labelServiceStr && undefined !== labelServiceStr) {
+            setMatrizDHL(dataUser.matriz.DHL[labelServiceStr])
+        }
     }
     const handleChangeServicesEstafeta = (params) => {
-        const labelServiceStr = params.value[0]?.value
+        const labelServiceStr = params?.value[0]?.value
         setServiceMatrizEstafeta(params.value)
-        console.log("Matriz? ", dataUser.matriz.Estafeta[labelServiceStr])
-        setMatrizEstafeta(dataUser.matriz.Estafeta[labelServiceStr])
+        if (Object.keys(dataUser).length > 0 && null !== labelServiceStr && undefined !== labelServiceStr) {
+            setMatrizEstafeta(dataUser.matriz.Estafeta[labelServiceStr])
+        }
     }
     const handleSubmitButton = () => {
-        var length=20
+        var length = 20
         var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
         var charLength = chars.length;
         var result = '';
@@ -38,36 +40,72 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
             result += chars.charAt(Math.floor(Math.random() * charLength));
         }
 
-        alert("informacion guarda con exito "+result)
-         const URLlogin = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/getUsers/register"
-         fetch(URLlogin, {
-             method: 'POST',
-             headers: {
-                 'Access-Control-Allow-Origin': 'true',
-                 'Content-type': 'application/json; charset=UTF-8',
-             },
-             body: JSON.stringify({
-                 "idServices": result,
-                 "referencia": userName,
-                 "matriz": { "Estafeta": matrizEstafeta, "DHL": matrizDHL }
+        alert("informacion guarda con exito " + result)
+        const URLlogin = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/getUsers/register"
+        // const estfetaService = serviceMatrizEstafeta;
+        // let estOB:any= {}
+        // estOB[estfetaService] = matrizEstafeta 
+        // const DHLService = serviceMatrizDHL;
+        // const matrizPayload = { "Estafeta": { estfetaService: matrizEstafeta }, "DHL": { serviceMatrizDHL: matrizEstafeta } }
 
-             })
-         })
-             .then(res => {
-                 console.log('response', res)
-                 return res.json();
+        const payloadMatriz = {
+            "Estafeta": {
+                "Dia Sig.": [],
+                "Terrestre": []
+            },
+            "DHL": {
+                "N": [],
+                "G": []
+            }
+        }
+        switch (serviceMatrizDHL[0]?.value) {
+            case "G":
+                payloadMatriz.DHL.G = matrizDHL
+                break;
+            case "N":
+                payloadMatriz.DHL.N = matrizDHL
+                break;
+            default:
+                alert("No se identifica el servicio a guardar")
+        }
+        switch (serviceMatrizEstafeta[0]?.value) {
+            case "Dia Sig.":
+                payloadMatriz.Estafeta['Dia Sig.'] = matrizEstafeta
+                break;
+            case "Terrestre":
+                payloadMatriz.Estafeta['Terrestre'] = matrizEstafeta
+                break;
+            default:
+                alert("No se identifica el servicio a guardar")
+        }
+        fetch(URLlogin, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': 'true',
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+                "idServices": result,
+                "referencia": userName,
+                "matriz": payloadMatriz
 
-             })
-             .then((data) => {
-                 console.log('mensaje del servidor: ', data)
-                 if (data.data === false || data.data === 'data' || data.data === null) {
-                     console.log("ERROR: datos no guardados")
-                 } else {
-                     console.log("datos guardados")
-                 }
+            })
+        })
+            .then(res => {
+                console.log('response', res)
+                return res.json();
+
+            })
+            .then((data) => {
+                console.log('mensaje del servidor: ', data)
+                if (data.data === false || data.data === 'data' || data.data === null) {
+                    console.log("ERROR: datos no guardados")
+                } else {
+                    console.log("datos guardados")
+                }
 
 
-             })
+            })
     }
 
     React.useEffect(() => {
@@ -80,7 +118,7 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
         if (matrizEstafeta.length <= 0) {
             setMatrizEstafeta(StaticData.defaultDatosTabla)
         }
-    })
+    }, [])
     return (
         <Card>
             <DisplaySmall>
@@ -104,7 +142,7 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
                 placeholder={StaticData.copys.services_select_placeholder}
                 onChange={params => handleChangeServicesEstafeta(params)}
             />
-            <Spreadsheet data={matrizEstafeta} onChange={setMatrizEstafeta} />
+            <Spreadsheet data={matrizEstafeta.length > 0 ? matrizEstafeta : StaticData.defaultDatosTabla} onChange={setMatrizEstafeta} />
             <DisplaySmall>
                 {`${StaticData.copys.data_sheet} ${StaticData.copys.currier_DHL}`}
             </DisplaySmall>
@@ -115,7 +153,7 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
                 placeholder={StaticData.copys.services_select_placeholder}
                 onChange={params => handleChangeServicesDHL(params)}
             />
-            <Spreadsheet data={matrizDHL} onChange={setMatrizDHL} />
+            <Spreadsheet data={matrizDHL.length>0? matrizDHL : StaticData.defaultDatosTabla} onChange={setMatrizDHL} />
             <Button onClick={() => handleSubmitButton()}>
                 Continuar
             </Button>
