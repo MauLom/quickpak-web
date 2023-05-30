@@ -37,6 +37,7 @@ const QuotesContainer = () => {
             weight: e.target.weight.value,
             origin_zip: e.target.origin_zip.value,
             destiny_zip: e.target.destiny_zip.value,
+            amount: e.target.amount.value,
             user_id: userId,
         }
         const dataPayloadDHL = {
@@ -49,6 +50,7 @@ const QuotesContainer = () => {
             lenght: e.target.lenght.value,
             width: e.target.width.value,
             height: e.target.height.value,
+            amount: e.target.amount.value,
             user_id: userId,
         }
         userData.handleChangeRateData(dataPayloadDHL)
@@ -122,6 +124,7 @@ const QuotesContainer = () => {
 
             <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} packageparts={setPackageparts} />
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
+            <QuotesDetails quotesArr={dataQuotesList} />
         </>
     )
 }

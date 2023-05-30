@@ -71,7 +71,7 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                         <ModalButton onClick={close}>Okay</ModalButton>
                     </ModalFooter>
                 </Modal>
-                <HeadingMedium>Informacion de envio</HeadingMedium>
+                <HeadingMedium>Información de envio</HeadingMedium>
                 <Grid >
                     <Cell span={2}>
                         <FormControl
@@ -118,32 +118,33 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                     </Cell>
                 </Grid>
                 <Card>
-                    <HeadingMedium>Informacion de paquete(s)</HeadingMedium>
+                    <HeadingMedium>Descripción del embalaje</HeadingMedium>
                     <Grid>
                         <Cell span={2}>
                             <FormControl
-                                label={() => "Peso"}
+                                label={() => "Peso      (Kg)"}
                                 caption={() => "fecha de envio del paquete"}>
                                 <Input name="weight" />
                             </FormControl>
+                            
                         </Cell>
                         <Cell span={2}>
                             <FormControl
-                                label={() => "Alto"}
+                                label={() => "Alto (cm)"}
                                 caption={() => "codigo postal origen del envio"}>
                                 <Input name="height" />
                             </FormControl>
                         </Cell>
                         <Cell span={2}>
                             <FormControl
-                                label={() => "Ancho"}
+                                label={() => "Ancho (cm)"}
                                 caption={() => "Seleccione una de la lista"}>
                                 <Input name="width" />
                             </FormControl>
                         </Cell>
                         <Cell span={2}>
                             <FormControl
-                                label={() => "Profundidad"}
+                                label={() => "Profundidad (cm)"}
                                 caption={() => "codigo postal destino del envio"}>
                                 <Input name="lenght" />
                             </FormControl>
@@ -161,7 +162,7 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                             <FormControl
                                 label={() => "Monto"}
                                 caption={() => "monto  de seguro"}>
-                                <Input name="lenght" />
+                                <Input type='number' name="amount" />
                             </FormControl>
                         </Cell>
                         )}
@@ -171,39 +172,33 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                             <Grid>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Peso"}
+                                        label={() => "Peso   (Kg)"}
                                         caption={() => "fecha de envio del paquete"}>
                                         <Input name="weight2" />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Alto"}
+                                        label={() => "Alto  (cm)"}
                                         caption={() => "codigo postal origen del envio"}>
                                         <Input name="height2" />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Ancho"}
+                                        label={() => "Ancho  (cm)"}
                                         caption={() => "Seleccione una de la lista"}>
                                         <Input name="width2" />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Profundidad"}
+                                        label={() => "Profundidad  (cm)"}
                                         caption={() => "codigo postal destino del envio"}>
                                         <Input name="lenght2" />
                                     </FormControl>
                                 </Cell>
-                                <Cell span={2}>
-                                    <FormControl
-                                        label={() => "Profundidad"}
-                                        caption={() => "codigo postal destino del envio"}>
-                                        <Input name="lenght" />
-                                    </FormControl>
-                                </Cell>
+                                
                             </Grid>
                         )}
                     {piecesArr.length >= 2 &&
@@ -211,39 +206,33 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                             <Grid>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Peso"}
+                                        label={() => "Peso   (Kg)"}
                                         caption={() => "fecha de envio del paquete"}>
                                         <Input name="weight3" />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Alto"}
+                                        label={() => "Alto  (cm)"}
                                         caption={() => "codigo postal origen del envio"}>
                                         <Input name="height3" />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Ancho"}
+                                        label={() => "Ancho  (cm)"}
                                         caption={() => "Seleccione una de la lista"}>
                                         <Input name="width3" />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Profundidad"}
+                                        label={() => "Profundidad  (cm)"}
                                         caption={() => "codigo postal destino del envio"}>
                                         <Input name="lenght3" />
                                     </FormControl>
                                 </Cell>
-                                <Cell span={2}>
-                                    <FormControl
-                                        label={() => "Profundidad"}
-                                        caption={() => "codigo postal destino del envio"}>
-                                        <Input name="lenght" />
-                                    </FormControl>
-                                </Cell>
+                                
                             </Grid>
                         )}
                     {piecesArr.length < 2 && (
@@ -255,7 +244,7 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                     )}
                 </Card>
             </Card>
-            <Button type="submit"  >Submit</Button>
+            <Button type="submit"  >Cotizar</Button>
         </Style.QuotesFormStyle>
 
 

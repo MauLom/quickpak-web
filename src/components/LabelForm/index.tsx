@@ -345,7 +345,7 @@ const LabelForm = () => {
                 <Grid>
                     <Cell span={10}>
                         <FormControl
-                            label={() => "Descripcion del paquete"}
+                            label={() => "Descripcion del contanido"}
                             caption={() => "breve descripcion del contenido del paquete"}>
                             <Input name="desc" />
                         </FormControl>
@@ -353,28 +353,28 @@ const LabelForm = () => {
 
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Nombre del sitio de origen"}
+                            label={() => "Nombre de contacto"}
                             caption={() => "Sitio desde donde envian el paquete"}>
                             <Input name="oName" value={formData?.oName} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Compania de origen"}
+                            label={() => "Nombre de compañia / Empresa"}
                             caption={() => "Nombre de compania desde donde se envia"}>
                             <Input name="oCompany" value={formData?.oCompany} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Numero de contacto de origen"}
+                            label={() => "Teléfono de contacto"}
                             caption={() => "Contacto de origen"}>
                             <Input name="oPhone" value={formData?.oPhone} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Email de origen"}
+                            label={() => "Correo electrónico"}
                             caption={() => "Correo electronico del contacto de origen"}>
                             <Input name="oEmail" value={formData?.oEmail} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
@@ -382,14 +382,14 @@ const LabelForm = () => {
 
                     <Cell span={4}>
                         <FormControl
-                            label={() => "Calle de referencia 1 de origen"}
+                            label={() => "Calle y número"}
                             caption={() => "*Opcional, referencia a origen"}>
                             <Input name="oStreets1" value={formData?.oStreets1} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
                         <FormControl
-                            label={() => "Calle de referencia 2 de origen"}
+                            label={() => "Colonia"}
                             caption={() => "*Opcional, referencia a origen"}>
                             <Input name="oStreets2" value={formData?.oStreets2} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
@@ -397,7 +397,7 @@ const LabelForm = () => {
 
                     <Cell span={4}>
                         <FormControl
-                            label={() => "Calle de referencia 3 de origen"}
+                            label={() => "Referencias"}
                             caption={() => "*Opcional, referencia a origen"}>
                             <Input name="oStreets3" value={formData?.oStreets3} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
