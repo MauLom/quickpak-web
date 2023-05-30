@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Input } from "baseui/input"
 import { Button, SHAPE } from 'baseui/button';
 import { FormControl } from "baseui/form-control";
+import { Modal, ModalBody, ModalHeader, ModalFooter, ModalButton } from 'baseui/modal';
 import * as Style from "./styles"
 import { Grid, Cell } from 'baseui/layout-grid';
 import { HeadingMedium } from 'baseui/typography';
@@ -9,15 +10,29 @@ import { Card } from 'baseui/card';
 import { DatePicker } from "baseui/datepicker";
 import { Plus } from 'baseui/icon';
 import { getCityByZip } from '../../services/generalValues';
-const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
+import {Checkbox} from 'baseui/checkbox';
+const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) => {
     const [piecesArr, setPiecesArr] = React.useState([])
+    const [numpices, setNumpices] = React.useState(1)
     const [cityOrigin, setCityOrigin] = React.useState("A")
     const [cityDestiny, setCityDestiny] = React.useState("B")
+    const [isOpen, setIsOpen] = React.useState(false)
+    const [checked, setChecked] = React.useState(true)
+
     const handleMultipieces = () => {
         setPiecesArr([...piecesArr, []])
+        setNumpices(numpices + 1)
+        packageparts(numpices + 1)
+        if (numpices === 1) {
+            setIsOpen(true)
+
+        }
+
+        console.log('numero de piezas ', piecesArr.length, 'numero de clicks', numpices)
     }
 
     const getCPInfo = (option, event) => {
+
         const zip = event.target.value
         console.log("option", option)
         console.log("zip", zip)
@@ -40,10 +55,22 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
         }
 
     }
+    const close = () => {
+        setIsOpen(false)
+    }
 
     return (
         <Style.QuotesFormStyle onSubmit={submitAction}>
             <Card>
+                <Modal onClose={close} isOpen={isOpen}>
+                    <ModalHeader>Attention</ModalHeader>
+                    <ModalBody>
+                        It is not possible to make a quote in Estafeta if there are multiple pieces.
+                    </ModalBody>
+                    <ModalFooter>
+                        <ModalButton onClick={close}>Okay</ModalButton>
+                    </ModalFooter>
+                </Modal>
                 <HeadingMedium>Informacion de envio</HeadingMedium>
                 <Grid >
                     <Cell span={2}>
@@ -121,6 +148,23 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
                                 <Input name="lenght" />
                             </FormControl>
                         </Cell>
+                        <Cell span={2}>
+                            <Checkbox
+                                checked={checked}
+                                onChange={() => setChecked(!checked)}
+                            >
+                                Agregar seguro
+                            </Checkbox>
+                            </Cell>
+                            {checked === true &&(
+                            <Cell span={2}>   
+                            <FormControl
+                                label={() => "Monto"}
+                                caption={() => "monto  de seguro"}>
+                                <Input name="lenght" />
+                            </FormControl>
+                        </Cell>
+                        )}
                     </Grid>
                     {piecesArr.length > 1 &&
                         (
@@ -151,6 +195,13 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
                                         label={() => "Profundidad"}
                                         caption={() => "codigo postal destino del envio"}>
                                         <Input name="lenght2" />
+                                    </FormControl>
+                                </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Profundidad"}
+                                        caption={() => "codigo postal destino del envio"}>
+                                        <Input name="lenght" />
                                     </FormControl>
                                 </Cell>
                             </Grid>
@@ -186,15 +237,22 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
                                         <Input name="lenght3" />
                                     </FormControl>
                                 </Cell>
+                                <Cell span={2}>
+                                    <FormControl
+                                        label={() => "Profundidad"}
+                                        caption={() => "codigo postal destino del envio"}>
+                                        <Input name="lenght" />
+                                    </FormControl>
+                                </Cell>
                             </Grid>
                         )}
-                    {/* {piecesArr.length < 2 && (
+                    {piecesArr.length < 2 && (
                         <Cell span={2}>
                             <Button type="button" shape={SHAPE.circle} onClick={() => { handleMultipieces() }}>
                                 <Plus />
                             </Button>
                         </Cell>
-                    )} */}
+                    )}
                 </Card>
             </Card>
             <Button type="submit"  >Submit</Button>
