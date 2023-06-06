@@ -124,7 +124,6 @@ const QuotesContainer = () => {
 
             <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} packageparts={setPackageparts} />
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
-            <QuotesDetails quotesArr={dataQuotesList} />
         </>
     )
 }

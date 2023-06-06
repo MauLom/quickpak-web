@@ -24,7 +24,6 @@ const AdminDashboardContainer = () => {
         }
     }, [setDataTable, getDataTableLabels])
 
-
     const columns = [
         columParser({ type: "string", title: "idCliente", dataIndex: 1, format: "" }),
         columParser({ type: "string", title: "Paqueteria", dataIndex: 2, format: "" }),

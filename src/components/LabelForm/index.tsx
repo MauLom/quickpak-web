@@ -407,49 +407,49 @@ const LabelForm = () => {
 
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Nombre del sitio de destino"}
+                            label={() => "Nombre de contacto"}
                             caption={() => "Sitio a donde envian el paquete"}>
                             <Input name="dName" value={formData?.dName} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Compania de destino"}
+                            label={() => "Nombre de compañia / Empresa"}
                             caption={() => "Nombre compania de destino"}>
                             <Input name="dCompany" value={formData?.dCompany} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Numero de contacto de destino"}
+                            label={() => "Teléfono de contacto"}
                             caption={() => "Numero de contacto del destino"}>
                             <Input name="dPhone" value={formData?.dPhone} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={3}>
                         <FormControl
-                            label={() => "Email de destino"}
+                            label={() => "Correo electrónico"}
                             caption={() => "Correo electronico del contacto de destino"}>
                             <Input name="dEmail" value={formData?.dEmail} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
                         <FormControl
-                            label={() => "Calle de referencia 1 de destino"}
+                            label={() => "Calle y número"}
                             caption={() => "*Opcional, referencia a destino"}>
                             <Input name="dStreets1" value={formData?.dStreets1} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
                         <FormControl
-                            label={() => "Calle de referencia 2 de destino"}
+                            label={() => "Colonia"}
                             caption={() => "*Opcional, referencia a destino"}>
                             <Input name="dStreets2" value={formData?.dStreets2} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
                     </Cell>
                     <Cell span={4}>
                         <FormControl
-                            label={() => "Calle de referencia 3 de destino"}
+                            label={() => "Referencias"}
                             caption={() => "*Opcional, referencia a destino"}>
                             <Input name="dStreets3" value={formData?.dStreets3} onChange={(e) => handleChangeInputValues(e)} />
                         </FormControl>
