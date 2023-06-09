@@ -26,19 +26,9 @@ const QuotesContainer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        console.log("datos",e.target.destiny_zip.value,e.target.amount.value )
         if (dataQuotesList.length > 0) {
             setDataQuotesList([])
-        }
-        const dataPayloadEstafeta = {
-            height: e.target.height.value,
-            width: e.target.width.value,
-            package: "true",
-            lenght: e.target.lenght.value,
-            weight: e.target.weight.value,
-            origin_zip: e.target.origin_zip.value,
-            destiny_zip: e.target.destiny_zip.value,
-            amount: e.target.amount.value,
-            user_id: userId,
         }
         const dataPayloadDHL = {
             date: dateFormatted,
@@ -56,6 +46,17 @@ const QuotesContainer = () => {
         userData.handleChangeRateData(dataPayloadDHL)
         const quotesArr = []
         if (packageparts===1){
+            const dataPayloadEstafeta = {
+                height: e.target.height.value,
+                width: e.target.width.value,
+                package: "true",
+                lenght: e.target.lenght.value,
+                weight: e.target.weight.value,
+                origin_zip: e.target.origin_zip.value,
+                destiny_zip: e.target.destiny_zip.value,
+                amount: e.target.amount.value,
+                user_id: userId,
+            }
             Api.getRatesEstafeta(dataPayloadEstafeta)
             .then((res) => {
                 if (res?.data && res.data.length > 0) {

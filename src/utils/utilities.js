@@ -19,6 +19,8 @@ export const getDataTableLabels = (page, liwmit) => {
                         eachTableElement.push(`${eachLabel.request.alto}`)
                         eachTableElement.push(`${eachLabel.request.ancho}`)
                         eachTableElement.push(`${eachLabel.request.largo}`)
+                        eachTableElement.push(`${eachLabel.response.labelPetitionResult.elements[0]?.trackingCode ? eachLabel.response.labelPetitionResult.elements[0].trackingCode : "S/N"}`)
+
 
 
                         break;
@@ -32,6 +34,7 @@ export const getDataTableLabels = (page, liwmit) => {
                         eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Height}`)
                         eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Width}`)
                         eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Length}`)
+                        eachTableElement.push(`${eachLabel.response.ShipmentResponse.PackagesResult?.PackageResult?.TrackingNumber ? eachLabel.response.ShipmentResponse.PackagesResult.PackageResult[0].TrackingNumber:"S/N"}` )
 
                         break;
                     default:
