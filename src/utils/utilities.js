@@ -58,7 +58,6 @@ export const getDataUsers = () =>{
 
 export const formatDataTableUsers = (dataUnformatted) => {
     const arrFormatted = []
-    console.log("dataRaw", dataUnformatted)
     dataUnformatted.forEach(eachUser => {
         let eachElement = [
             eachUser.referencia,

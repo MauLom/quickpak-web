@@ -20,6 +20,22 @@ export const getUsers = async () => {
     });
   return result;
 };
+export const getAllUsers = async () => {
+   const result = axios
+    .get(`${URL}/users`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      console.error('error fetching getLabels', error);
+    });
+  return await result;
+}
 export const login = async (referencia, cifrado) => {
   console.log("refe", referencia)
   console.log("cifrado", cifrado)
