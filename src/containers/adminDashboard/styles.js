@@ -15,7 +15,6 @@ export const PaginationOverrides = {
 export const headerOverrides ={
     Grid: {
         style: ()  => ({
-            backgroundColor: "#1055d5",
             width:"100%",
             height: "50px",
             justifyContent: "end",
