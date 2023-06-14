@@ -18,10 +18,10 @@ const QuotesDetails = ({ quotesArr }) => {
     const handleChangeShowGenerateLabel = (idx) => {
         userData.handleChangeServiceType(quotesArr[idx].serviceType)
         switch (quotesArr[idx].serviceType) {
-            case "G": case "N":
+            case "G": case "N": case "Express Domestic": case "Express Domestic 9:00": case "Express Domestic 10:00": case "Express Domestic 12:00":
                 userData.handleChangeServiceProvider("DHL")
                 break;
-            case "Dia Sig.": case "Terrestre":
+            case "Dia Siguiente": case "Terrestre":
                 userData.handleChangeServiceProvider("Estafeta")
                 break;
             default:

@@ -20,10 +20,10 @@ const AdminDashboardContainer = () => {
         if (dataTable === undefined) {
             getDataTableLabels(0, 1500).then(data => {
                 setDataTable(data)
+                
             })
         }
     }, [setDataTable, getDataTableLabels])
-
 
     const columns = [
         columParser({ type: "string", title: "idCliente", dataIndex: 1, format: "" }),
@@ -35,6 +35,7 @@ const AdminDashboardContainer = () => {
         columParser({ type: "string", title: "Alto", dataIndex: 7, format: "" }),
         columParser({ type: "string", title: "Ancho", dataIndex: 8, format: "" }),
         columParser({ type: "string", title: "Largo", dataIndex: 9, format: "" }),
+        columParser({ type: "string", title:  "Numero de Rastreo", dataIndex: 10, format: ""}),
 
     ]
 
