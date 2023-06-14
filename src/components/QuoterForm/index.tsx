@@ -34,9 +34,6 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
     const getCPInfo = (option, event) => {
 
         const zip = event.target.value
-        console.log("option", option)
-        console.log("zip", zip)
-        console.log("zip L ", zip.length)
         if (zip.length == 5) {
             // const URL = `https://api.copomex.com/query/info_cp/${zip}?type=simplified&token=6a5d6f1f-2f9e-4f43-8e1a-c94b85afb236`
             const URL = `https://app.zipcodebase.com/api/v1/search?apikey=4fbea6d0-a146-11ec-9995-574998514919&codes=${zip}&country=MX`
