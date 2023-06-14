@@ -18,7 +18,8 @@ export const getRatesEstafeta = (data) => {
         "peso": data.weight,
         "originZip": data.origin_zip,
         "destinyZip": data.destiny_zip,
-        "userId": data.user_id
+        "userId": data.user_id,
+        "amount": data.amount
     }
 
     const result = axios.post(`${URL}getRates/estafeta`, payload,
@@ -43,6 +44,7 @@ export const getRatesDHL = (data) => {
         "recipientZip": data.destiny_zip,
         "packages": [{ "@number": 1, "Weight": { "Value": data.weight, }, "Dimensions": { "Length": data.lenght, "Width": data.width, "Height": data.height } }],
         "insurance": "0",
+        "amount": data.amount,
         "userId": data.user_id
     }
     const result = axios.post(`${URL}getRates/`, payload,

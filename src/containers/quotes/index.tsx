@@ -13,6 +13,7 @@ const QuotesContainer = () => {
     const [userQuotes, setUserQuotes] = useState();
     const [userId, setUserId] = useState("")
     const [dateValue, setDateValue] = useState()
+    const [packageparts, setPackageparts] = React.useState(1)
     const [dateFormatted, setDateFormatted] = useState("")
     if (userData.userName !== "admin") {
         useEffect(() => {
@@ -25,18 +26,9 @@ const QuotesContainer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        // console.log("datos",e.target.destiny_zip.value,e.target.amount.value )
         if (dataQuotesList.length > 0) {
             setDataQuotesList([])
-        }
-        const dataPayloadEstafeta = {
-            height: e.target.height.value,
-            width: e.target.width.value,
-            package: "true",
-            lenght: e.target.lenght.value,
-            weight: e.target.weight.value,
-            origin_zip: e.target.origin_zip.value,
-            destiny_zip: e.target.destiny_zip.value,
-            user_id: userId,
         }
         const dataPayloadDHL = {
             date: dateFormatted,
@@ -50,25 +42,43 @@ const QuotesContainer = () => {
             height: e.target.height.value,
             user_id: userId,
         }
+        if (e?.target?.amount?.value) {
+            dataPayloadDHL['amount'] = e.target.amount.value;
+        }
         userData.handleChangeRateData(dataPayloadDHL)
         const quotesArr = []
-        Api.getRatesEstafeta(dataPayloadEstafeta)
-            .then((res) => {
-                if (res?.data && res.data.length > 0) {
-                    res.data.forEach(eachQuote => {
-                        console.log("eachQuote", eachQuote)
-                        let quoteObj = {}
-                        quoteObj['parcelLogo'] = EstafetaLogo
-                        quoteObj['serviceType'] = eachQuote.DescripcionServicio
-                        quoteObj['weight'] = eachQuote.Peso
-                        quoteObj['subTotal'] = eachQuote.Subtotal
-                        quoteObj['IVA'] = eachQuote.IVA
-                        quoteObj['Total'] = eachQuote.CostoTotal
-                        quotesArr.push(quoteObj)
-                    })
-                }
-                //setDataQuotesList(quotesArr)
-            })
+        if (packageparts === 1) {
+            const dataPayloadEstafeta = {
+                height: e.target.height.value,
+                width: e.target.width.value,
+                package: "true",
+                lenght: e.target.lenght.value,
+                weight: e.target.weight.value,
+                origin_zip: e.target.origin_zip.value,
+                destiny_zip: e.target.destiny_zip.value,
+                user_id: userId,
+            }
+            if (e?.target?.amount?.value) {
+                dataPayloadDHL['amount'] = e.target.amount.value;
+            }
+            Api.getRatesEstafeta(dataPayloadEstafeta)
+                .then((res) => {
+                    if (res?.data && res.data.length > 0) {
+                        res.data.forEach(eachQuote => {
+                            console.log("eachQuote", eachQuote)
+                            let quoteObj = {}
+                            quoteObj['parcelLogo'] = EstafetaLogo
+                            quoteObj['serviceType'] = eachQuote.DescripcionServicio
+                            quoteObj['weight'] = eachQuote.Peso
+                            quoteObj['subTotal'] = eachQuote.Subtotal
+                            quoteObj['IVA'] = eachQuote.IVA
+                            quoteObj['Total'] = eachQuote.CostoTotal
+                            quotesArr.push(quoteObj)
+                        })
+                    }
+                    //setDataQuotesList(quotesArr)
+                })
+        } else { console.log('solo DHL') }
         Api.getRatesDHL(dataPayloadDHL)
             .then((res) => {
                 console.log("res DHL", res)
@@ -117,7 +127,7 @@ const QuotesContainer = () => {
                 onChange={params => handleChangeUser(params)}
             />}
 
-            <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} />
+            <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} packageparts={setPackageparts} />
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
         </>
     )

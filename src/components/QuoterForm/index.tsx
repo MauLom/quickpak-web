@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Input } from "baseui/input"
 import { Button, SHAPE } from 'baseui/button';
 import { FormControl } from "baseui/form-control";
+import { Modal, ModalBody, ModalHeader, ModalFooter, ModalButton } from 'baseui/modal';
 import * as Style from "./styles"
 import { Grid, Cell } from 'baseui/layout-grid';
 import { HeadingMedium } from 'baseui/typography';
@@ -9,19 +10,30 @@ import { Card } from 'baseui/card';
 import { DatePicker } from "baseui/datepicker";
 import { Plus } from 'baseui/icon';
 import { getCityByZip } from '../../services/generalValues';
-const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
-    const [piecesArr, setPiecesArr] = React.useState([])
+import { Checkbox } from 'baseui/checkbox';
+const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) => {
+    const [numpices, setNumpices] = React.useState(1)
     const [cityOrigin, setCityOrigin] = React.useState("A")
     const [cityDestiny, setCityDestiny] = React.useState("B")
+    const [isOpen, setIsOpen] = React.useState(false)
+    const [checked, setChecked] = React.useState(true)
+
+    const [arrdatapices, setArrdatapices] = React.useState([
+        [{ "weight": "weight", "height": "height", "width": "width", "lenght": "lenght" }]
+    ])
     const handleMultipieces = () => {
-        setPiecesArr([...piecesArr, []])
+        setNumpices(numpices + 1)
+        packageparts(numpices + 1)
+        let arrdata = [{ "weight": `weight${numpices + 1}`, "height": `height${numpices + 1}`, "width": `width${numpices + 1}`, "lenght": `lenght${numpices + 1}` }]
+        arrdatapices.push(arrdata)
+        if (numpices === 1) {
+            setIsOpen(true)
+        }
     }
 
     const getCPInfo = (option, event) => {
+
         const zip = event.target.value
-        console.log("option", option)
-        console.log("zip", zip)
-        console.log("zip L ", zip.length)
         if (zip.length == 5) {
             // const URL = `https://api.copomex.com/query/info_cp/${zip}?type=simplified&token=6a5d6f1f-2f9e-4f43-8e1a-c94b85afb236`
             const URL = `https://app.zipcodebase.com/api/v1/search?apikey=4fbea6d0-a146-11ec-9995-574998514919&codes=${zip}&country=MX`
@@ -40,11 +52,23 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
         }
 
     }
+    const close = () => {
+        setIsOpen(false)
+    }
 
     return (
         <Style.QuotesFormStyle onSubmit={submitAction}>
             <Card>
-                <HeadingMedium>Informacion de envio</HeadingMedium>
+                <Modal onClose={close} isOpen={isOpen}>
+                    <ModalHeader>Attention</ModalHeader>
+                    <ModalBody>
+                        No es posible cotizar con Estafeta si son varias piezas.
+                    </ModalBody>
+                    <ModalFooter>
+                        <ModalButton onClick={close}>Listo</ModalButton>
+                    </ModalFooter>
+                </Modal>
+                <HeadingMedium>Información de envio</HeadingMedium>
                 <Grid >
                     <Cell span={2}>
                         <FormControl
@@ -91,113 +115,72 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue }) => {
                     </Cell>
                 </Grid>
                 <Card>
-                    <HeadingMedium>Informacion de paquete(s)</HeadingMedium>
+                    <HeadingMedium>Descripción del embalaje</HeadingMedium>
                     <Grid>
                         <Cell span={2}>
-                            <FormControl
-                                label={() => "Peso"}
-                                caption={() => "fecha de envio del paquete"}>
-                                <Input name="weight" />
-                            </FormControl>
+                            <Checkbox
+                                checked={checked}
+                                onChange={() => setChecked(!checked)}
+                            >
+                                Agregar seguro
+                            </Checkbox>
                         </Cell>
-                        <Cell span={2}>
-                            <FormControl
-                                label={() => "Alto"}
-                                caption={() => "codigo postal origen del envio"}>
-                                <Input name="height" />
-                            </FormControl>
-                        </Cell>
-                        <Cell span={2}>
-                            <FormControl
-                                label={() => "Ancho"}
-                                caption={() => "Seleccione una de la lista"}>
-                                <Input name="width" />
-                            </FormControl>
-                        </Cell>
-                        <Cell span={2}>
-                            <FormControl
-                                label={() => "Profundidad"}
-                                caption={() => "codigo postal destino del envio"}>
-                                <Input name="lenght" />
-                            </FormControl>
-                        </Cell>
+                        {checked === true && (
+                            <Cell span={2}>
+                                <FormControl
+                                    label={() => "Monto"}
+                                    caption={() => "monto  de seguro"}>
+                                    <Input type='number' name="amount" />
+                                </FormControl>
+                            </Cell>
+                        )}
                     </Grid>
-                    {piecesArr.length > 1 &&
-                        (
+
+                    {arrdatapices.map((eachRow) => (
+                        eachRow.map((eachCol) => (
                             <Grid>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Peso"}
+                                        label={() => "Peso   (Kg)"}
                                         caption={() => "fecha de envio del paquete"}>
-                                        <Input name="weight2" />
+                                        <Input name={eachCol.weight} />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Alto"}
+                                        label={() => "Alto  (cm)"}
                                         caption={() => "codigo postal origen del envio"}>
-                                        <Input name="height2" />
+                                        <Input name={eachCol.height} />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Ancho"}
+                                        label={() => "Ancho  (cm)"}
                                         caption={() => "Seleccione una de la lista"}>
-                                        <Input name="width2" />
+                                        <Input name={eachCol.width} />
                                     </FormControl>
                                 </Cell>
                                 <Cell span={2}>
                                     <FormControl
-                                        label={() => "Profundidad"}
+                                        label={() => "Profundidad  (cm)"}
                                         caption={() => "codigo postal destino del envio"}>
-                                        <Input name="lenght2" />
+                                        <Input name={eachCol.lenght} />
                                     </FormControl>
                                 </Cell>
+
                             </Grid>
-                        )}
-                    {piecesArr.length >= 2 &&
-                        (
-                            <Grid>
-                                <Cell span={2}>
-                                    <FormControl
-                                        label={() => "Peso"}
-                                        caption={() => "fecha de envio del paquete"}>
-                                        <Input name="weight3" />
-                                    </FormControl>
-                                </Cell>
-                                <Cell span={2}>
-                                    <FormControl
-                                        label={() => "Alto"}
-                                        caption={() => "codigo postal origen del envio"}>
-                                        <Input name="height3" />
-                                    </FormControl>
-                                </Cell>
-                                <Cell span={2}>
-                                    <FormControl
-                                        label={() => "Ancho"}
-                                        caption={() => "Seleccione una de la lista"}>
-                                        <Input name="width3" />
-                                    </FormControl>
-                                </Cell>
-                                <Cell span={2}>
-                                    <FormControl
-                                        label={() => "Profundidad"}
-                                        caption={() => "codigo postal destino del envio"}>
-                                        <Input name="lenght3" />
-                                    </FormControl>
-                                </Cell>
-                            </Grid>
-                        )}
-                    {/* {piecesArr.length < 2 && (
-                        <Cell span={2}>
-                            <Button type="button" shape={SHAPE.circle} onClick={() => { handleMultipieces() }}>
-                                <Plus />
-                            </Button>
-                        </Cell>
-                    )} */}
+                        ))
+                    ))}
+
+                    <Cell span={2}>
+                        <Button type="button" shape={SHAPE.circle} onClick={() => { handleMultipieces() }}>
+                            <Plus />
+                        </Button>
+                    </Cell>
+
                 </Card>
             </Card>
-            <Button type="submit"  >Submit</Button>
+            <Button type="submit"  >Cotizar</Button>
         </Style.QuotesFormStyle>
 
 
