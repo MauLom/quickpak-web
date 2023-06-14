@@ -102,6 +102,7 @@ const QuotesContainer = () => {
         const dateAsType = new Date(newDate[0])
         setDateValue(newDate)
         setDateFormatted(dateAsType.toISOString())
+        console.log('date',dateAsType.toISOString())
     }
     const optionsUsers = [
         { label: "REDBOX", id: "4xUVTqVZ1n1FuBikezmQ" },

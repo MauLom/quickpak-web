@@ -10,24 +10,35 @@ import CryptoJS from 'crypto-js'
 import { login } from "../../services/users";
 import * as React from "react"
 import { UserContextProvider, UserCtx } from "../../context/userContext";
+import { useEffect } from "react";
+
 
 const LoginContainer = () => {
     const userData = React.useContext(UserCtx)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter()
+    
+    useEffect(() => {
+        const userDataHeader= localStorage.getItem("isLoggedIn")
+        if (userDataHeader==="true") {
+            router.push('/AdminDashboard')
+        }
 
+    }, [])
     const handleLogin = (e) => {
-        
+
         var cifrado = CryptoJS.AES.encrypt(password, 'test').toString();
         if (username != '' || password !== '') {
             var referencia = username
             if (password === "admin") {
                 userData.handleChangeUserName("admin")
                 router.push('/AdminDashboard')
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userData", "admin");
             } else {
                 login(referencia, cifrado)
-                    .then((data:any) => {
+                    .then((data: any) => {
                         if (data.data === false || data.data === 'data' || data.data === null) {
                             console.log('mensaje del servidor: ', data)
                         } else {
@@ -36,6 +47,8 @@ const LoginContainer = () => {
                             // sessionStorage.setItem("servicesID", password)
                             // sessionStorage.setItem("userType", "user")
                             router.push('/AdminDashboard')
+                            localStorage.setItem("isLoggedIn", "true");
+                            localStorage.setItem("userData", data.username);
 
                         }
 
