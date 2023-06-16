@@ -5,7 +5,8 @@ export const getDataTableLabels = (page, liwmit) => {
     const arrFormatted = []
     const resolved = getLabels(page, liwmit)
         .then((data) => {
-            //console.log(data.entries)
+
+            console.log(data)
             data.entries.forEach(eachLabel => {
                 let nombreCliente = eachLabel.userId == "4xUVTqVZ1n1FuBikezmQ" ? "RedBox" : "SRS Express"
 
