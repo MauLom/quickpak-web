@@ -343,6 +343,8 @@ const LabelForm = () => {
             </Button>
             <Styles.LabelFormStyle onSubmit={handleSubmit}>
                 <Grid>
+                    <Cell span={12}><h3>Remitente</h3></Cell>
+                    <Cell span={12}><hr /></Cell>
                     <Cell span={10}>
                         <FormControl
                             label={() => "Descripcion del contanido"}
@@ -404,7 +406,8 @@ const LabelForm = () => {
                     </Cell>
 
                     {/*  */}
-
+                    <Cell span={12}> <h3>Destinatario</h3> </Cell>
+                    <Cell span={12}><hr /></Cell>
                     <Cell span={3}>
                         <FormControl
                             label={() => "Nombre de contacto"}
