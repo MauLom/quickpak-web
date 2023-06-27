@@ -48,3 +48,17 @@ export const getImageFroZPL = (zpl) => {
     })
     return result
 }
+export const getdataTracking= async (labeID)=>{
+    const Url = "http://localhost:8080"
+    const result = axios.get(`${Url}/trackingLabel?label=${labeID}`, {
+        "headers": {
+            'Access-Control-Allow-Origin': '*'
+        }
+    }
+    )
+    .then(res => {
+        return res.data
+    })
+    .catch(error => { console.error("error fetching getLabels", error) })
+return result
+}
