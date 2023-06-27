@@ -43,12 +43,12 @@ export const getImageFroZPL = (zpl) => {
             'Accept': 'application/pdf'
         }
     })
-    .then(res => {
-        return res
-    })
+        .then(res => {
+            return res
+        })
     return result
 }
-export const getdataTracking= async (labeID)=>{
+export const getdataTracking = async (labeID) => {
     const Url = "http://localhost:8080"
     const result = axios.get(`${Url}/trackingLabel?label=${labeID}`, {
         "headers": {
@@ -56,9 +56,9 @@ export const getdataTracking= async (labeID)=>{
         }
     }
     )
-    .then(res => {
-        return res.data
-    })
-    .catch(error => { console.error("error fetching getLabels", error) })
-return result
+        .then(res => {
+            return res.data
+        })
+        .catch(error => { console.error("error fetching getLabels", error) })
+    return result
 }
