@@ -4,6 +4,7 @@ import { Card } from "baseui/card";
 import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { Button } from 'baseui/button';
+import { Select } from "baseui/select";
 import {
     Checkbox,
     LABEL_PLACEMENT
@@ -12,13 +13,14 @@ import { useState } from "react";
 
 
 const EditServices = ({ dataUser }) => {
-    const [checked, setChecked] = React.useState(false);
 
     const [G, setG] = React.useState(true)
     const [N, setN] = React.useState(true)
     const [I, setI] = React.useState(true)
     const [O, setO] = React.useState(true)
     const [Uno, setUno] = React.useState(true)
+    const [dhlServicesOption, setDhlServicesOption] = useState();
+
 
 
 
@@ -32,8 +34,8 @@ const EditServices = ({ dataUser }) => {
             Uno: Uno
         }
 
+
         const URLEditServices = "http://localhost:8080/editservices"
-        console.log(URLEditServices)
         fetch(URLEditServices, {
             method: 'POST',
             headers: {
@@ -47,7 +49,28 @@ const EditServices = ({ dataUser }) => {
         }).then(response => response.json())
             .then(data => console.log(data))
     }
+    const handleChangeDHLservices = (params) => {
+        console.log(params.value[0].label)
+        setDhlServicesOption(params.value)
+        const URLEditServices = "http://localhost:8080/editservices/DHL"
+        fetch(URLEditServices, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': 'true',
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+                "data": params.value[0].id,
+                "user": dataUser
+            })
+        }).then(response => response.json())
+            .then(data => console.log(data))
 
+    }
+    const optionsDHLservices = [
+        { label: "DHL 1", id: "servicio 1" },
+        { label: "DHL 2", id: "servicio 2" },
+    ]
     return (
         <Card>
             <Grid>
@@ -67,7 +90,8 @@ const EditServices = ({ dataUser }) => {
 
                                 </Checkbox>
                             </FormControl>
-                        </Cell><Cell span={4}>
+                        </Cell>
+                        <Cell span={4}>
                             <FormControl
                                 label={() => "N"}
                                 caption={() => "Servicio N"}>
@@ -117,6 +141,21 @@ const EditServices = ({ dataUser }) => {
 
                     </Grid>
                 </form>
+            </Card>
+            <Grid>
+                <Cell span={12}> <h2>Configurar cotización DHL</h2></Cell>
+                <Cell span={12}><hr /></Cell>
+            </Grid>
+            <Card>
+                <Grid>
+                        <Select
+                            options={optionsDHLservices}
+                            value={dhlServicesOption}
+                            placeholder="Selecciona el servicio de DHL deseado para cotizar"
+                            onChange={params => handleChangeDHLservices(params)}
+                        />
+
+                </Grid>
             </Card>
         </Card>
     )
