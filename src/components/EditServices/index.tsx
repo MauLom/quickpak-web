@@ -31,6 +31,7 @@ const EditServices = ({ dataUser }) => {
             O: O,
             Uno: Uno
         }
+
         const URLEditServices = "http://localhost:8080/editservices"
         console.log(URLEditServices)
         fetch(URLEditServices, {
@@ -44,7 +45,7 @@ const EditServices = ({ dataUser }) => {
                 "user": dataUser
             })
         }).then(response => response.json())
-        .then(data => console.log(data))
+            .then(data => console.log(data))
     }
 
     return (
@@ -87,29 +88,29 @@ const EditServices = ({ dataUser }) => {
 
                                 </Checkbox>
                             </FormControl>
-                            </Cell>
-                            <Cell span={4}>
-                                <FormControl
-                                    label={() => "O"}
-                                    caption={() => "Servicio O"}>
-                                    <Checkbox
-                                        checked={O}
-                                        onChange={() => setO(!O)}>
+                        </Cell>
+                        <Cell span={4}>
+                            <FormControl
+                                label={() => "O"}
+                                caption={() => "Servicio O"}>
+                                <Checkbox
+                                    checked={O}
+                                    onChange={() => setO(!O)}>
 
-                                    </Checkbox>
-                                </FormControl>
-                            </Cell>
-                            <Cell span={4}>
-                                <FormControl
-                                    label={() => "1"}
-                                    caption={() => "Servicio 1"}>
-                                    <Checkbox
-                                        checked={Uno}
-                                        onChange={() => setUno(!Uno)}>
+                                </Checkbox>
+                            </FormControl>
+                        </Cell>
+                        <Cell span={4}>
+                            <FormControl
+                                label={() => "1"}
+                                caption={() => "Servicio 1"}>
+                                <Checkbox
+                                    checked={Uno}
+                                    onChange={() => setUno(!Uno)}>
 
-                                    </Checkbox>
-                                </FormControl>
-                            </Cell>
+                                </Checkbox>
+                            </FormControl>
+                        </Cell>
                         <Cell span={12}>
                             <Button type="submit">Guardar Datos</Button>
                         </Cell>
