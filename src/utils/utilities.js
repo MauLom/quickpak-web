@@ -1,11 +1,13 @@
-import { getLabels } from "../services/labels"
+import { getLabels, getdataTracking } from "../services/labels"
 import { getUsers } from "../services/users"
+import axios from "axios"
 export const getDataTableLabels = (page, liwmit) => {
     // [IdCliente, Paqueteria, CP Origen, CP destino, No. Guia, Peso, Dimensiones]
     const arrFormatted = []
     const resolved = getLabels(page, liwmit)
         .then((data) => {
-            //console.log(data.entries)
+
+            console.log(data)
             data.entries.forEach(eachLabel => {
                 let nombreCliente = eachLabel.userId == "4xUVTqVZ1n1FuBikezmQ" ? "RedBox" : "SRS Express"
 
@@ -26,16 +28,21 @@ export const getDataTableLabels = (page, liwmit) => {
                         break;
                     case "DHL":
                         const weight = eachLabel.request.packages[0]?.Weight
+                        let infotrack = getdataTracking(eachLabel.response.ShipmentResponse?.ShipmentIdentificationNumber)
+                            .then((data) => {
+                                var infoTracking = data?.data?.ServiceEvent?.Description ? data.data.ServiceEvent.Description : 'sin información'
 
-                        eachTableElement.push(eachLabel.request.oZip)
-                        eachTableElement.push(eachLabel.request.dZip)
-                        eachTableElement.push(`${eachLabel.response.ShipmentResponse?.ShipmentIdentificationNumber}` || "error")
-                        eachTableElement.push(typeof weight === "string" ? weight : weight.Value)
-                        eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Height}`)
-                        eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Width}`)
-                        eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Length}`)
-                        eachTableElement.push(`${eachLabel.response.ShipmentResponse.PackagesResult?.PackageResult?.TrackingNumber ? eachLabel.response.ShipmentResponse.PackagesResult.PackageResult[0].TrackingNumber:"S/N"}` )
 
+
+                                eachTableElement.push(eachLabel.request.oZip)
+                                eachTableElement.push(eachLabel.request.dZip)
+                                eachTableElement.push(`${eachLabel.response.ShipmentResponse?.ShipmentIdentificationNumber}` || "error")
+                                eachTableElement.push(typeof weight === "string" ? weight : weight.Value)
+                                eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Height}`)
+                                eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Width}`)
+                                eachTableElement.push(`${eachLabel.request.packages[0].Dimensions.Length}`)
+                                eachTableElement.push(`${infoTracking}`)
+                            })
                         break;
                     default:
                         console.error("No se reconoce la paquteria de la etiqueta")
@@ -45,6 +52,7 @@ export const getDataTableLabels = (page, liwmit) => {
             })
             return arrFormatted
         })
+
     return resolved
 }
 
@@ -105,7 +113,7 @@ export const dataTraking = (userId) => {
     const arrFormatted = []
     const resolved = getLabels(0, 1500)
         .then((data) => {
-            
+
             data.entries.forEach(eachLabel => {
                 let nombreCliente = eachLabel.userId == "4xUVTqVZ1n1FuBikezmQ" ? "RedBox" : "SRS Express"
 
