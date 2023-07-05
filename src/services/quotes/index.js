@@ -10,6 +10,8 @@ const CORSHeaders = {
     }
 }
 export const getRatesEstafeta = (data) => {
+     
+
     const payload = {
         "alto": data.height,
         "ancho": data.width,
@@ -19,9 +21,11 @@ export const getRatesEstafeta = (data) => {
         "originZip": data.origin_zip,
         "destinyZip": data.destiny_zip,
         "userId": data.user_id,
-        "amount": data.amount
+        
     }
-
+    if (data.amount) {
+        payload.amount=data.amount
+    }
     const result = axios.post(`${URL}getRates/estafeta`, payload,
         CORSHeaders
     )
@@ -44,8 +48,10 @@ export const getRatesDHL = (data) => {
         "recipientZip": data.destiny_zip,
         "packages": [{ "@number": 1, "Weight": { "Value": data.weight, }, "Dimensions": { "Length": data.lenght, "Width": data.width, "Height": data.height } }],
         "insurance": "0",
-        "amount": data.amount,
         "userId": data.user_id
+    }
+    if (data.amount) {
+        payload.amount=data.amount
     }
     const result = axios.post(`${URL}getRates/`, payload,
         CORSHeaders)

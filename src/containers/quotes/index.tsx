@@ -15,6 +15,7 @@ const QuotesContainer = () => {
     const [dateValue, setDateValue] = useState()
     const [packageparts, setPackageparts] = React.useState(1)
     const [dateFormatted, setDateFormatted] = useState("")
+    const [validateAmount, SetValidateAmount]= React.useState(false)
     if (userData.userName !== "admin") {
         useEffect(() => {
             if (userId === "") {
@@ -42,8 +43,9 @@ const QuotesContainer = () => {
             height: e.target.height.value,
             user_id: userId,
         }
-        if (e?.target?.amount?.value) {
+        if (validateAmount===true) {
             dataPayloadDHL['amount'] = e.target.amount.value;
+            
         }
         userData.handleChangeRateData(dataPayloadDHL)
         const quotesArr = []
@@ -58,8 +60,9 @@ const QuotesContainer = () => {
                 destiny_zip: e.target.destiny_zip.value,
                 user_id: userId,
             }
-            if (e?.target?.amount?.value) {
-                dataPayloadDHL['amount'] = e.target.amount.value;
+            if (validateAmount===true) {
+                dataPayloadEstafeta['amount'] = e.target.amount.value;
+
             }
             Api.getRatesEstafeta(dataPayloadEstafeta)
                 .then((res) => {
@@ -127,7 +130,7 @@ const QuotesContainer = () => {
                 onChange={params => handleChangeUser(params)}
             />}
 
-            <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} packageparts={setPackageparts} />
+            <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} packageparts={setPackageparts} amount={SetValidateAmount} />
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
         </>
     )

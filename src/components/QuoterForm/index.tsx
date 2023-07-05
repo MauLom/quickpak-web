@@ -11,7 +11,7 @@ import { DatePicker } from "baseui/datepicker";
 import { Plus } from 'baseui/icon';
 import { getCityByZip } from '../../services/generalValues';
 import { Checkbox } from 'baseui/checkbox';
-const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) => {
+const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts, amount }) => {
     const [numpices, setNumpices] = React.useState(1)
     const [cityOrigin, setCityOrigin] = React.useState("A")
     const [cityDestiny, setCityDestiny] = React.useState("B")
@@ -55,7 +55,14 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
     const close = () => {
         setIsOpen(false)
     }
-
+    const removeAmount = (e)=>{
+        setChecked(!checked)
+        console.log( checked)
+        if (checked===true) {
+            amount(false)
+        }
+        
+    }
     return (
         <Style.QuotesFormStyle onSubmit={submitAction}>
             <Card>
@@ -120,7 +127,7 @@ const QuoterForm = ({ submitAction, dateValue, changeDateValue, packageparts }) 
                         <Cell span={2}>
                             <Checkbox
                                 checked={checked}
-                                onChange={() => setChecked(!checked)}
+                                onChange={(e) => {removeAmount(e)}}
                             >
                                 Agregar seguro
                             </Checkbox>
