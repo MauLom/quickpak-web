@@ -7,6 +7,7 @@ import DHLLogo from "../../assets/DHL-Logo.png"
 import EstafetaLogo from "../../assets/Estafeta-Logo.png"
 import { Select } from "baseui/select";
 import { UserCtx } from "../../context/userContext";
+import { getAllUsers } from '../../services/users';
 const QuotesContainer = () => {
     const userData = React.useContext(UserCtx)
     const [dataQuotesList, setDataQuotesList] = useState([])
@@ -22,7 +23,6 @@ const QuotesContainer = () => {
             }
         }, [userId, setUserId])
     }
-
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -107,6 +107,8 @@ const QuotesContainer = () => {
         setDateValue(newDate)
         setDateFormatted(dateAsType.toISOString())
     }
+    const usersOptions =  getAllUsers()
+    console.log("user?", usersOptions)
     const optionsUsers = [
         { label: "REDBOX", id: "4xUVTqVZ1n1FuBikezmQ" },
         { label: "SRS Express", id: "enc0UiLq0oNXm1GTFHB8" },

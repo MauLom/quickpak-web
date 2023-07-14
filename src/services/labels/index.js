@@ -43,8 +43,22 @@ export const getImageFroZPL = (zpl) => {
             'Accept': 'application/pdf'
         }
     })
-    .then(res => {
-        return res
-    })
+        .then(res => {
+            return res
+        })
+    return result
+}
+export const getdataTracking = async (labeID) => {
+    // const Url = "http://localhost:8080"
+    const result = axios.get(`${URL}/trackingLabel?label=${labeID}`, {
+        "headers": {
+            'Access-Control-Allow-Origin': '*'
+        }
+    }
+    )
+        .then(res => {
+            return res.data
+        })
+        .catch(error => { console.error("error fetching getLabels", error) })
     return result
 }

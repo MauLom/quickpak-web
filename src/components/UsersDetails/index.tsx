@@ -17,7 +17,7 @@ import EditUserForm from '../EditUserForm';
 import { formatDataTableUsers, getDataUsers } from '../../utils/utilities';
 import { Tabs, Tab } from "baseui/tabs-motion";
 import DirectionsNotebook from '../DirectionsNotebook';
-import EditServices from '../EditServices';
+import EditPackageandServices from '../EditPackageandServices';
 
 
 const StyledHeadingCell = withStyle(StyledCell, {
@@ -97,8 +97,8 @@ const UsersDetails = () => {
                     <Tab title="Libreta de direcciones">
                         <DirectionsNotebook dataUser={selectedUser} />
                     </Tab>
-                    <Tab title="Opciones de servicios">
-                        <EditServices dataUser={selectedUser} />
+                    <Tab title="Configuración de servicios">
+                        <EditPackageandServices dataUser={selectedUser} />
                     </Tab>
                 </Tabs>
             )}
