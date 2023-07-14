@@ -50,7 +50,6 @@ export const getRatesDHL = (data) => {
     const result = axios.post(`${URL}getRates/`, payload,
         CORSHeaders)
         .then((res) => {
-            console.log("Inside get service", res)
             return res.data
         })
         .catch(err => { console.error("Error fetching getRates Estafeta: ", err) })

@@ -34,11 +34,9 @@ export const getAllUsers = async () => {
     .catch((error) => {
       console.error('error fetching getLabels', error);
     });
-  return await result;
+  return result;
 }
 export const login = async (referencia, cifrado) => {
-  console.log("refe", referencia)
-  console.log("cifrado", cifrado)
   return await axios
     .post(`${URL}/getUsers`, {
       "referencia": referencia,

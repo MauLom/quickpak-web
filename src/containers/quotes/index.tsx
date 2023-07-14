@@ -16,6 +16,7 @@ const QuotesContainer = () => {
     const [dateValue, setDateValue] = useState()
     const [packageparts, setPackageparts] = React.useState(1)
     const [dateFormatted, setDateFormatted] = useState("")
+    const [userOptions, setUserOptions] = React.useState([])
     if (userData.userName !== "admin") {
         useEffect(() => {
             if (userId === "") {
@@ -26,7 +27,6 @@ const QuotesContainer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // console.log("datos",e.target.destiny_zip.value,e.target.amount.value )
         if (dataQuotesList.length > 0) {
             setDataQuotesList([])
         }
@@ -65,7 +65,6 @@ const QuotesContainer = () => {
                 .then((res) => {
                     if (res?.data && res.data.length > 0) {
                         res.data.forEach(eachQuote => {
-                            console.log("eachQuote", eachQuote)
                             let quoteObj = {}
                             quoteObj['parcelLogo'] = EstafetaLogo
                             quoteObj['serviceType'] = eachQuote.DescripcionServicio
@@ -81,7 +80,6 @@ const QuotesContainer = () => {
         } else { console.log('solo DHL') }
         Api.getRatesDHL(dataPayloadDHL)
             .then((res) => {
-                console.log("res DHL", res)
                 if (res?.data && res.data.length > 0) {
                     res.data.forEach(eachQuote => {
                         let quoteObj = {}
@@ -107,12 +105,14 @@ const QuotesContainer = () => {
         setDateValue(newDate)
         setDateFormatted(dateAsType.toISOString())
     }
-    const usersOptions =  getAllUsers()
-    console.log("user?", usersOptions)
-    const optionsUsers = [
-        { label: "REDBOX", id: "4xUVTqVZ1n1FuBikezmQ" },
-        { label: "SRS Express", id: "enc0UiLq0oNXm1GTFHB8" },
-    ]
+    const usersOptions =  getAllUsers().then(res=>{
+        const options=[]
+        res?.data.forEach(eachUser=>{
+            let newUser = {label: eachUser.referencia, id:eachUser.idServices}
+            options.push(newUser)
+        })
+        setUserOptions(options)
+    })
 
     const handleChangeUser = (params) => {
         setUserId(params.value[0].id)
@@ -123,12 +123,11 @@ const QuotesContainer = () => {
     return (
         <>
             {userData.userName === "admin" && <Select
-                options={optionsUsers}
+                options={userOptions}
                 value={userQuotes}
                 placeholder="Selecciona el usuario para cotizar"
                 onChange={params => handleChangeUser(params)}
             />}
-
             <QuoterForm submitAction={handleSubmit} dateValue={dateValue} changeDateValue={handleDateChangeValue} packageparts={setPackageparts} />
             {dataQuotesList.length > 0 && (<QuotesDetails quotesArr={dataQuotesList} />)}
         </>

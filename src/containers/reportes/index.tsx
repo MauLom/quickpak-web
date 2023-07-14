@@ -4,6 +4,7 @@ import { Select } from "baseui/select";
 import { UserCtx } from "../../context/userContext";
 import { Chart } from "react-google-charts";
 import { dataReports, dataTraking } from "../../utils/utilities";
+import { getAllUsers } from '../../services/users';
 
 const ReportsContainer = () => {
     const userData = React.useContext(UserCtx)
@@ -12,17 +13,16 @@ const ReportsContainer = () => {
     const [dataUserGuides, setDataUserGuides] = React.useState(0);
     const [dataUserTracking, setDataUserTracking]= React.useState(0);
     const [dataUserPrice, setDataUserPrice]= React.useState(0);
+    const [userOptions, setUserOptions] = React.useState([])
+
     const handleChangeUser = (params) => {
         setUserId(params.value[0].id)
         setUserQuotes(params.value)
-        console.log(params.value[0].id)
         dataReports(params.value[0].id).then(data=>{
             setDataUserGuides(data.length)
-            console.log('guias generadas',data.length)
         })
         dataTraking(params.value[0].id).then(data=>{
             setDataUserTracking(data.length)
-            console.log('guias con rastreo',data.length)
         })
     }
     const data = [
@@ -36,15 +36,20 @@ const ReportsContainer = () => {
         title: "Reporte de cotizaciones",
         subtitle:"Totales"
     };
-    const optionsUsers = [
-        { label: "REDBOX", id: "4xUVTqVZ1n1FuBikezmQ" },
-        { label: "SRS Express", id: "enc0UiLq0oNXm1GTFHB8" },
-    ]
+
+    const usersOptions =  getAllUsers().then(res=>{
+        const options=[]
+        res?.data.forEach(eachUser=>{
+            let newUser = {label: eachUser.referencia, id:eachUser.idServices}
+            options.push(newUser)
+        })
+        setUserOptions(options)
+    })
 
     return (
         <>
             {userData.userName === "admin" && <Select
-                options={optionsUsers}
+                options={userOptions}
                 value={userQuotes}
                 placeholder="Selecciona el usuario para cotizar"
                 onChange={params => handleChangeUser(params)}

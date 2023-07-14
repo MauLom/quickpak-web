@@ -73,7 +73,6 @@ const LabelForm = () => {
             })
         }).then(response => response.json())
             .then(data => {
-                console.log("Data on endpoint: ", data)
                 staticLabelFormData = {
                     oName: data.data?.name,
                     oCompany: data.data?.company,
@@ -129,8 +128,7 @@ const LabelForm = () => {
     }
 
     const downloadTheDHLLabel = () => {
-        // console.log("ZPL String", ZPLstring)
-        // const byteCharacters = atob(ZPLstring);
+ 
         const byteNumbers = new Array(ZPLstring.length);
         for (let i = 0; i < ZPLstring.length; i++) {
             byteNumbers[i] = ZPLstring.charCodeAt(i);
@@ -163,12 +161,10 @@ const LabelForm = () => {
     const handleConvertZPLToIMG = () => {
         Api.getImageFroZPL(ZPLstring)
             .then(response =>
-                // console.log("response", response)
                 response.data
             )
             .then((blob) => {
                 // Create blob link to download
-                console.log("readed,", new Blob([blob]))
                 const url = window.URL.createObjectURL(
                     new Blob([blob]),
                 );
@@ -232,12 +228,9 @@ const LabelForm = () => {
                     "dStreets2": e.target.dStreets2.value,
                     "dStreets3": e.target.dStreets3.value
                 }
-                console.log("Payload", objDefaultDHL)
                 Api.generateLabelDHL(objDefaultDHL)
                     .then(res => {
-                        console.log("res...", res.data)
                         let auxZPLdecoded = atob(res?.data?.ShipmentResponse?.LabelImage[0]?.GraphicImage)
-                        console.log("Res DHL", auxZPLdecoded)
                         setZPLString(auxZPLdecoded)
                         setIsOpenModal(true)
                     })
@@ -321,8 +314,7 @@ const LabelForm = () => {
     }
 
     const handleChangeInputValues = (e) => {
-        console.log("e: ", e.target.name)
-        console.log("New value", e.target.value)
+
         let data = JSON.parse(JSON.stringify(formData))
         data[e.target.name] = e.target.value
         setFormData(data)

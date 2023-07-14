@@ -50,7 +50,6 @@ const EditServices = ({ dataUser }) => {
             .then(data => console.log(data))
     }
     const handleChangeDHLservices = (params) => {
-        console.log(params.value[0].label)
         setDhlServicesOption(params.value)
         const URLEditServices = "http://localhost:8080/editservices/DHL"
         fetch(URLEditServices, {

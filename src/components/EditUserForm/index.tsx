@@ -92,12 +92,10 @@ const EditUserForm = ({ dataUser, changeUserData }) => {
             })
         })
             .then(res => {
-                console.log('response', res)
                 return res.json();
 
             })
             .then((data) => {
-                console.log('mensaje del servidor: ', data)
                 if (data.data === false || data.data === 'data' || data.data === null) {
                     console.log("ERROR: datos no guardados")
                 } else {
