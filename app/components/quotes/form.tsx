@@ -9,7 +9,7 @@ import {
     Button
 } from "@chakra-ui/react"
 
-const doSubmit = (e) =>{
+const doSubmit = (e:any) =>{
     e.preventDefault()
     console.log("Submit did!", e?.target?.date.value)
 }

@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react"
 
 
-const doSubmit = (e) => {
+const doSubmit = (e:any) => {
     console.log("Something with e", e)
 }
 

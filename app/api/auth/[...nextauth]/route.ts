@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 
 // async function auth(req: NextApiRequest, res: NextApiResponse) {
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: any, res: any) => {
   const providers = [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
