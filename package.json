@@ -1,62 +1,26 @@
 {
-  "name": "nextjs-baseweb",
-  "version": "1.0.0",
-  "license": "MIT",
+  "name": "quickpak-web",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "dev": "next",
-    "build": "npm i && next build",
-    "lint": "eslint 'src/**/*.{js,ts,tsx}'",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
-    "test": "jest",
-    "tsc": "tsc --noEmit"
-  },
-  "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "tsconfig.jest.json"
-      }
-    },
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
+    "lint": "next lint"
   },
   "dependencies": {
-    "@types/jest": "^27.0.2",
-    "@types/node": "^16.11.6",
-    "@types/react": "^17.0.34",
-    "@types/styletron-engine-atomic": "^1.1.1",
-    "@types/styletron-react": "^5.0.3",
-    "axios": "^1.2.1",
-    "baseui": "^10.5.0",
-    "crypto-js": "^4.1.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.3.1",
-    "ncrypt-js": "^2.0.0",
-    "next": "^12.0.2",
-    "prettier": "^2.4.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-google-charts": "^4.0.0",
-    "react-spreadsheet": "^0.7.7",
-    "scheduler": "^0.23.0",
-    "styletron-engine-atomic": "^1.4.8",
-    "styletron-react": "^6.0.2",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.4.4",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-react": "^7.31.11"
+    "@chakra-ui/icons": "^2.1.0",
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@types/node": "20.4.5",
+    "@types/react": "18.2.18",
+    "@types/react-dom": "18.2.7",
+    "framer-motion": "^10.15.0",
+    "next": "13.4.12",
+    "next-auth": "^4.22.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.1.6"
   }
 }
