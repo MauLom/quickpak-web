@@ -48,22 +48,24 @@ async function UsersTable() {
                     </Thead>
                     <Tbody>
                         {dataTable.map(
-                            each => (
-                                <Tr>
-                                    <Td>{each?.userName}</Td>
-                                    <Td>{each?.role}</Td>
-                                    <Td>
-                                        <ButtonGroup>
-                                            <Button>
-                                                <SettingsIcon />
-                                            </Button>
-                                            <Button>
-                                                <DeleteIcon />
-                                            </Button>
-                                        </ButtonGroup>
-                                    </Td>
-                                </Tr>
-                            )
+                            each => {
+                                return (
+                                    <Tr>
+                                        <Td>{each['userName']}</Td>
+                                        <Td>{each['role']}</Td>
+                                        <Td>
+                                            <ButtonGroup>
+                                                <Button>
+                                                    <SettingsIcon />
+                                                </Button>
+                                                <Button>
+                                                    <DeleteIcon />
+                                                </Button>
+                                            </ButtonGroup>
+                                        </Td>
+                                    </Tr>
+                                )
+                            }
                         )}
 
                     </Tbody>
