@@ -19,7 +19,7 @@ const UsersLayout = () => {
         <Box>
             <Grid templateColumns='repeat(1, 1fr)' gap={3} textAlign='center'>
                 <GridItem >
-                    <UsersTable />
+                    <UsersTable  />
                 </GridItem>
                 <GridItem>
                     <Button onClick={() => showUserRegisterForm()}>
@@ -35,5 +35,8 @@ const UsersLayout = () => {
         </Box>
     )
 }
+
+
+
 
 export default UsersLayout;

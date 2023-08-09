@@ -1,3 +1,5 @@
+import React from 'react'
+import { GetServerSideProps } from 'next'
 import {
     Table,
     Thead,
@@ -13,7 +15,25 @@ import {
 } from '@chakra-ui/react'
 
 import { SettingsIcon, DeleteIcon } from '@chakra-ui/icons'
-const UsersTable = () => {
+
+async function getData() {
+    const res = await fetch("https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/usersData")
+    if (!res.ok) {
+        throw new Error('Failed to fetch data')
+    }
+
+    return res.json()
+}
+
+async function UsersTable() {
+    const [dataTable, setDataTable] = React.useState([])
+    React.useEffect(() => {
+        getData().then(data => {
+            setDataTable(data?.users)
+        })
+
+    }, [])
+
     return (
         <Box>
             <TableContainer>
@@ -22,25 +42,30 @@ const UsersTable = () => {
                     <Thead>
                         <Tr>
                             <Th>Nombre de usuario</Th>
-                            <Th>Ultima conexion</Th>
+                            <Th>Rol</Th>
                             <Th>Acciones</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        <Tr>
-                            <Td>Test</Td>
-                            <Td>03/08/2023</Td>
-                            <Td>
-                                <ButtonGroup>
-                                    <Button>
-                                        <SettingsIcon />
-                                    </Button>
-                                    <Button>
-                                        <DeleteIcon />
-                                    </Button>
-                                </ButtonGroup>
-                            </Td>
-                        </Tr>
+                        {dataTable.map(
+                            each => (
+                                <Tr>
+                                    <Td>{each?.userName}</Td>
+                                    <Td>{each?.role}</Td>
+                                    <Td>
+                                        <ButtonGroup>
+                                            <Button>
+                                                <SettingsIcon />
+                                            </Button>
+                                            <Button>
+                                                <DeleteIcon />
+                                            </Button>
+                                        </ButtonGroup>
+                                    </Td>
+                                </Tr>
+                            )
+                        )}
+
                     </Tbody>
                     {/* <Tfoot>
                             <Tr>
@@ -56,5 +81,7 @@ const UsersTable = () => {
         </Box>
     )
 }
+
+// export default UsersTable;
 
 export default UsersTable;
