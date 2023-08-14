@@ -7,7 +7,7 @@ const Packages = () => {
     const [packagesArr, setPackagesArr] = useState([{ weight: 0, height: 0, width: 0, length: 0 }])
 
     function addPackage(){
-        setPackagesArr([...packagesArr, { weight: 0, height: 0, width: 0, lenght: 0 }])
+        setPackagesArr([...packagesArr, { weight: 0, height: 0, width: 0, length: 0 }])
     }
     function popPackage(){
         let arrAsVar = JSON.parse(JSON.stringify(packagesArr))
