@@ -6,7 +6,7 @@ const QuotesBoard = () => {
 
     return (
         <>
-            Quotes Board
+            {/* Quotes Board */}
             <QuotesForm />
           
         </>

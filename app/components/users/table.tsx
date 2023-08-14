@@ -15,24 +15,20 @@ import {
 } from '@chakra-ui/react'
 
 import { SettingsIcon, DeleteIcon } from '@chakra-ui/icons'
-
-async function getData() {
-    const res = await fetch("https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/usersData")
-    if (!res.ok) {
-        throw new Error('Failed to fetch data')
-    }
-
-    return res.json()
-}
+import { getUsers } from '../../lib/requests'
 
 async function UsersTable() {
     const [dataTable, setDataTable] = React.useState([])
     React.useEffect(() => {
-        getData().then(data => {
+        getUsers().then(data => {
             setDataTable(data?.users)
         })
 
     }, [])
+
+    const goToEdit = (userData: any) => {
+        console.log("User selected", userData)
+    }
 
     return (
         <Box>
@@ -55,7 +51,7 @@ async function UsersTable() {
                                         <Td>{each['role']}</Td>
                                         <Td>
                                             <ButtonGroup>
-                                                <Button>
+                                                <Button onClick={() => { goToEdit(each) }}>
                                                     <SettingsIcon />
                                                 </Button>
                                                 <Button>

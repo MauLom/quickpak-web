@@ -39,8 +39,8 @@ const DrawerNavigation: FC<NavigationProps> = (props) => {
                     <DrawerCloseButton />
                     <DrawerBody>
                         <ButtonGroup flexDirection={"column"} gap={3}>
-                            {props?.menuOptions?.map((eachOption) => (
-                                <Button onClick={() => { props?.changeContent(eachOption?.component) }}>{eachOption?.label}</Button>
+                            {props?.menuOptions?.map((eachOption, idx) => (
+                                <Button key={`idx-${idx}`} onClick={() => { props?.changeContent(eachOption?.component) }}>{eachOption?.label}</Button>
                             ))}
                         </ButtonGroup>
 

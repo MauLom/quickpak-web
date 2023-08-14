@@ -8,6 +8,7 @@ import {
     Input,
     Button
 } from "@chakra-ui/react"
+import Packages from "./packages"
 
 const doSubmit = (e: any) => {
     e.preventDefault()
@@ -59,17 +60,15 @@ const QuotesForm = () => {
                                     <Input />
                                 </FormControl>
                             </GridItem>
+                            <GridItem colSpan={4}>
+                                <Packages />
+                            </GridItem>
+                            <GridItem>
+                                <Button type="submit">
+                                    Continuar
+                                </Button>
+                            </ GridItem >
                         </Grid>
-
-
-
-
-
-
-
-                        <Button type="submit">
-                            Continuar
-                        </Button>
                     </form>
                 </GridItem>
                 <GridItem>
