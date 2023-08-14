@@ -24,7 +24,7 @@ interface Iuser {
 export default function Dashboard() {
     const { data: session } = useSession()
     const [contentToRender, setContentToRender] = useState(<ResumeBoard />)
-    const [user, setUser] = useState<Iuser>({})
+    const [user, setUser] = useState<Iuser>({id:"", name:"", matriz:"", role:""})
     const menuOptions = [
         { label: "Resumen", component: <ResumeBoard />, data: "" },
         { label: "Cotizar", component: <QuotesBoard />, data: "" },
