@@ -4,16 +4,22 @@ import { AddIcon, MinusIcon } from "@chakra-ui/icons"
 import { Box, Button, Card, CardBody, FormControl, FormLabel, Grid, GridItem, Input } from "@chakra-ui/react"
 
 const Packages = () => {
-    const [packagesArr, setPackagesArr] = useState([{ weight: 0, height: 0, width: 0, lenght: 0 }])
+    const [packagesArr, setPackagesArr] = useState([{ weight: 0, height: 0, width: 0, length: 0 }])
 
-    const addPackage = () => {
+    function addPackage(){
         setPackagesArr([...packagesArr, { weight: 0, height: 0, width: 0, lenght: 0 }])
     }
-
-    const popPackage = () => {
+    function popPackage(){
         let arrAsVar = JSON.parse(JSON.stringify(packagesArr))
         arrAsVar.pop()
         setPackagesArr(arrAsVar)
+    }
+    function updatePackage(e:any, idx:any, obj:any){
+        let propToBeChanged: string = e?.target?.name
+        let newArr = JSON.parse(JSON.stringify(packagesArr))
+        obj[propToBeChanged] = Number.parseInt(e?.target?.value)
+        newArr[idx] = obj
+        setPackagesArr(newArr)
     }
 
     return (
@@ -25,25 +31,25 @@ const Packages = () => {
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Peso</FormLabel>
-                                    <Input />
+                                    <Input onChange={(e) => updatePackage(e, idx, each)} name="weight"/>
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Alto</FormLabel>
-                                    <Input />
+                                    <Input onChange={(e) => updatePackage(e, idx, each)} name="height" />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Ancho</FormLabel>
-                                    <Input />
+                                    <Input onChange={(e) => updatePackage(e, idx, each)} name="width"/>
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Largo</FormLabel>
-                                    <Input />
+                                    <Input onChange={(e) => updatePackage(e, idx, each)} name="length"/>
                                 </FormControl>
                             </GridItem>
 
