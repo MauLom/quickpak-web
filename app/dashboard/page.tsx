@@ -41,7 +41,9 @@ export default function Dashboard() {
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
     ]
 
-    const parseSessionToLegible = () => {
+ 
+
+    useEffect(()=>{
         if(session){
             const userUnParsed:any = session?.user
             const userParsed = {
@@ -50,13 +52,10 @@ export default function Dashboard() {
                 matriz: userUnParsed['email'],
                 role: userUnParsed['image']
             }
+            console.log("user role", userUnParsed['image'])
             setUser(userParsed)
         }
-    }
-
-    useEffect(()=>{
-        parseSessionToLegible()
-    },[])
+    },[session])
 
     if (session) {
         return (

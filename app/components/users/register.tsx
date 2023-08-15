@@ -10,7 +10,7 @@ const UserRegister = () => {
 
     const createUser = (e: any) => {
         e.preventDefault()
-        console.log("Create User!", { mail: e.target.email.value, userName: e.target.username.value, password: e.target.password.value })
+        console.log("Create User!", { mail: e.target.email.value, userName: e.target.username.value })
     }
 
     return (
