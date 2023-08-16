@@ -7,10 +7,25 @@ import {
     FormErrorMessage,
     FormHelperText,
     Input,
-    Button
+    Button,
+    useToast,
+    Accordion,
+    AccordionItem,
+    AccordionButton,
+    AccordionPanel,
+    AccordionIcon,
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    TableContainer,
+    Image,
 } from "@chakra-ui/react"
 import Packages from "./packages"
-import { useToast } from '@chakra-ui/react'
 import isEmpty from "../../utils/isEmpty"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { getQuotes } from "../../lib/requests"
@@ -19,9 +34,25 @@ import { getQuotes } from "../../lib/requests"
 const QuotesForm = () => {
     const { data: session } = useSession()
     const [packagesArr, setPackagesArr] = useState([{ weight: 0, height: 0, width: 0, length: 0 }])
+    const [quotesArr, setQuotesArr] = useState([])
     const toast = useToast()
     function doSubmit(data: any) {
-        getQuotes(data)
+        getQuotes(data).then(result => {
+            if (result?.data && result.data.length > 0) {
+                let newArr = JSON.parse(JSON.stringify(quotesArr))
+                result.data.forEach((eachQuote: any) => {
+                    let quoteObj: any = {}
+                    quoteObj['parcelLogo'] = <Image src="https://www.estafeta.com/-/media/Images/Estafeta/Brand/logotipo-estafeta.svg?la=es&hash=8921A2FC9CD511FCE66DB199D611F5205497DF86" alt="Estafeta logo" />
+                    quoteObj['serviceType'] = eachQuote.DescripcionServicio
+                    quoteObj['weight'] = eachQuote.Peso
+                    quoteObj['subTotal'] = eachQuote.Subtotal
+                    quoteObj['IVA'] = eachQuote.IVA
+                    quoteObj['Total'] = eachQuote.CostoTotal
+                    newArr.push(quoteObj)
+                })
+                setQuotesArr(newArr)
+            }
+        })
     }
     function validateSubmit(e: any) {
         e.preventDefault()
@@ -65,7 +96,7 @@ const QuotesForm = () => {
                     break;
             }
             if (i === (formInputsNames.length - 1) && message === "") {
-                statusToast = "success"
+                statusToast = "loading"
                 titleToast = "Procesando datos"
             } else {
                 statusToast = "error"
@@ -105,7 +136,7 @@ const QuotesForm = () => {
             }
         }
 
-        if (statusToast == "success") {
+        if (statusToast == "loading") {
             dataToBeSended.package = packagesArr;
             dataToBeSended.data = {
                 originZip: e.target?.originZip?.value,
@@ -195,9 +226,63 @@ const QuotesForm = () => {
                         </Grid>
                     </form>
                 </GridItem>
-                <GridItem>
 
-                </GridItem>
+                {quotesArr.length > 0 &&
+                    <GridItem>
+                        <TableContainer>
+                            <Table variant='simple'>
+                                <Thead>
+                                    <Tr>
+                                        <Th>Paqueteria</Th>
+                                        <Th>Servicio</Th>
+                                        <Th>Sub total</Th>
+                                        <Th>Total</Th>
+                                        <Th>Ver mas</Th>
+                                        <Th>Generar Guia</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {quotesArr.map((eachService:any) => (
+                                        <Tr>
+                                            <Td>
+                                                {eachService?.parcelLogo}
+                                            </Td>
+                                            <Td>
+                                                {eachService?.serviceType}
+                                            </Td>
+                                            <Td>
+                                                {eachService?.subTotal}
+                                            </Td>
+                                            <Td>
+                                                {eachService?.Total}
+                                            </Td>
+                                            <Td>
+                                                <Accordion allowToggle>
+                                                    <AccordionItem>
+                                                        <AccordionButton _expanded={{ bg: 'tomato', color: 'white' }}>
+                                                            <Box as="span" flex='1' textAlign='left'>
+                                                                Detalles
+                                                            </Box>
+                                                            <AccordionIcon />
+                                                        </AccordionButton>
+                                                        <AccordionPanel>
+                                                            Lorem ipsum ...
+                                                        </AccordionPanel>
+                                                    </AccordionItem>
+                                                </Accordion>
+                                            </Td>
+                                            <Td>
+                                                <Button disabled={true}>
+                                                    Hacer Guia
+                                                </Button>
+                                            </Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        </TableContainer>
+                    </GridItem>}
+
 
             </Grid>
         </Box>
