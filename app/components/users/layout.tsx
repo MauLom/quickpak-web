@@ -11,7 +11,6 @@ const UsersLayout = () => {
     const [showForm, setShowForm] = useState(false)
 
     const showUserRegisterForm = () => {
-        console.log("func called")
         setShowForm(!showForm)
     }
 

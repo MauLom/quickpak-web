@@ -1,12 +1,12 @@
 'use client'
+import { Box } from "@chakra-ui/react"
 import LabelsForm from "./form"
 
 const LabelsBoard = () => {
     return (
-        <>
-            Labels Board
+        <Box padding="3rem">
             <LabelsForm />
-        </>
+        </Box>
     )
 }
 

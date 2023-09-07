@@ -4,7 +4,6 @@ import {
     Box, Grid, GridItem, Heading,
     FormControl,
     FormLabel,
-    FormErrorMessage,
     FormHelperText,
     Input,
     Button,
@@ -17,13 +16,13 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
-    TableCaption,
     TableContainer,
     Image,
+    Checkbox,
+    Text
 } from "@chakra-ui/react"
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
@@ -31,36 +30,58 @@ import { useSession, signIn, signOut } from "next-auth/react"
 import { getQuotes } from "../../lib/requests"
 
 
-const QuotesForm = () => {
+const QuotesForm = ({ ...props }) => {
     const { data: session } = useSession()
     const [packagesArr, setPackagesArr] = useState([{ weight: 0, height: 0, width: 0, length: 0 }])
     const [quotesArr, setQuotesArr] = useState([])
+    const [includeInsurance, setIncludeInsurance] = useState()
     const toast = useToast()
     function doSubmit(data: any) {
-        getQuotes(data).then(result => {
-            if (result?.data && result.data.length > 0) {
-                let newArr = JSON.parse(JSON.stringify(quotesArr))
-                result.data.forEach((eachQuote: any) => {
-                    let quoteObj: any = {}
-                    quoteObj['parcelLogo'] = <Image src="https://www.estafeta.com/-/media/Images/Estafeta/Brand/logotipo-estafeta.svg?la=es&hash=8921A2FC9CD511FCE66DB199D611F5205497DF86" alt="Estafeta logo" />
-                    quoteObj['serviceType'] = eachQuote.DescripcionServicio
-                    quoteObj['weight'] = eachQuote.Peso
-                    quoteObj['subTotal'] = eachQuote.Subtotal
-                    quoteObj['IVA'] = eachQuote.IVA
-                    quoteObj['Total'] = eachQuote.CostoTotal
-                    newArr.push(quoteObj)
+        !props?.isLabel &&
+            getQuotes(data)
+                .then(result => {
+                    let dataObj = result
+                    let parsedArr = JSON.parse(JSON.stringify(quotesArr))
+                    if (dataObj.data && dataObj.data.length > 0) {
+                        result.data.data.forEach((eachQuote: any) => {
+                            let quoteObj: any = {}
+                            quoteObj['parcelLogo'] = <Image src="https://www.estafeta.com/-/media/Images/Estafeta/Brand/logotipo-estafeta.svg?la=es&hash=8921A2FC9CD511FCE66DB199D611F5205497DF86" alt="Estafeta logo" />
+                            quoteObj['serviceType'] = eachQuote.DescripcionServicio
+                            quoteObj['weight'] = eachQuote.Peso
+                            quoteObj['subTotal'] = eachQuote.Subtotal
+                            quoteObj['IVA'] = eachQuote.IVA
+                            quoteObj['Total'] = eachQuote.CostoTotal
+                            quoteObj['details'] = eachQuote
+                            quoteObj['zone'] = dataObj?.zone
+                            quoteObj['oc'] = dataObj?.ocurreForzoso
+                            parsedArr.push(quoteObj)
+                        })
+                    }
+                    dataObj.dataDHL?.data.forEach((eachQuote: any) => {
+                        let quoteObj: any = {}
+                        quoteObj['parcelLogo'] = <Image maxH="5rem" 
+                        backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="Estafeta logo" />
+                        quoteObj['serviceType'] = eachQuote.ServiceName
+                        quoteObj['weight'] = eachQuote?.QuotedWeight
+                        quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
+                        quoteObj['IVA'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "IVA"))?.ChargeAmount
+                        quoteObj['Total'] = eachQuote?.TotalNet?.Amount
+                        quoteObj['details'] = eachQuote
+                        quoteObj['zone'] = result?.dataDHL?.zone
+                        parsedArr.push(quoteObj)
+                    
+                    })
+                    setQuotesArr(parsedArr)
+                    // })
                 })
-                setQuotesArr(newArr)
-            }
-        })
     }
     function validateSubmit(e: any) {
         e.preventDefault()
+
         let titleToast = ""
         let message = ""
         let statusToast: "error" | "info" | "loading" | "success" | "warning" = "error"
         let dataToBeSended: { package?: any, data?: object, userId?: string | null | undefined } = {}
-
         let formInputsNames = ["date", "originZip", "originCity", "destinyZip", "destinyCity"]
         for (let i = 0; i < formInputsNames.length; i++) {
             switch (formInputsNames[i]) {
@@ -139,21 +160,37 @@ const QuotesForm = () => {
         if (statusToast == "loading") {
             dataToBeSended.package = packagesArr;
             dataToBeSended.data = {
+                date: e.target?.date.value,
                 originZip: e.target?.originZip?.value,
                 originCity: e.target?.originCity.value,
                 destinyZip: e.target?.destinyZip.value,
-                destinyCity: e.target?.destinyCity.value
+                destinyCity: e.target?.destinyCity.value,
+                insurance: includeInsurance ? e.target?.insurance.value : 0
             }
             dataToBeSended.userId = "enc0UiLq0oNXm1GTFHB8"
+            doSubmit(dataToBeSended)
         }
-        doSubmit(dataToBeSended)
-        toast({
-            title: titleToast,
-            description: `${message}`,
-            status: statusToast,
-            duration: 5000,
-            isClosable: true
-        })
+
+        if (props?.isLabel) {
+            statusToast === "loading" ?
+                props.transferData(dataToBeSended)
+                :
+                toast({
+                    title: titleToast,
+                    description: `${message}`,
+                    status: statusToast,
+                    duration: 5000,
+                    isClosable: true
+                })
+        } else {
+            toast({
+                title: titleToast,
+                description: `${message}`,
+                status: statusToast,
+                duration: 5000,
+                isClosable: true
+            })
+        }
     }
     function addPackage() {
         setPackagesArr([...packagesArr, { weight: 0, height: 0, width: 0, length: 0 }])
@@ -170,27 +207,19 @@ const QuotesForm = () => {
         newArr[idx] = obj
         setPackagesArr(newArr)
     }
-
+    function changeIncludeInsurance(e: any) {
+        setIncludeInsurance(e.target.checked)
+    }
+    function emptyToReDoQuotes() {
+        setQuotesArr([])
+    }
     return (
         <Box>
             <Grid>
                 <GridItem>
-                    <Heading> Informacion de cotizacion</Heading>
+                    {props.isLabel ? <></> : <Heading> Informacion de cotizacion</Heading>}
                     <form onSubmit={(e) => { validateSubmit(e) }}>
-                        <Grid templateColumns='repeat(4, 1fr)' gap={2}>
-                            <GridItem>
-                                <FormControl>
-                                    <FormLabel>Fecha</FormLabel>
-                                    <Input
-                                        placeholder="Select Date and Time"
-                                        size="md"
-                                        type="datetime-local"
-                                        name="date"
-                                        min={Date()}
-                                    />
-                                    <FormHelperText>fecha de envio del paquete</FormHelperText>
-                                </FormControl>
-                            </GridItem>
+                        <Grid templateColumns='repeat(4, 1fr)' gap={3}>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Codigo postal de origen</FormLabel>
@@ -215,19 +244,61 @@ const QuotesForm = () => {
                                     <Input name="destinyCity" />
                                 </FormControl>
                             </GridItem>
+                            <GridItem >
+                                <FormControl>
+                                    <FormLabel>Fecha</FormLabel>
+                                    <Input
+                                        placeholder="Select Date and Time"
+                                        size="md"
+                                        type="datetime-local"
+                                        name="date"
+                                        min={Date()}
+                                    />
+                                    <FormHelperText>fecha de envio del paquete</FormHelperText>
+                                </FormControl>
+                            </GridItem>
+                            <GridItem verticalAlign={"end"}>
+                                <Checkbox value={includeInsurance} onChange={changeIncludeInsurance}><b>Incluir seguro</b></Checkbox>
+                                <Text>Indicar si se prefiere asegurar el envio</Text>
+                            </GridItem>
+                            {includeInsurance &&
+                                <GridItem >
+                                    <FormControl>
+                                        <FormLabel>Seguro</FormLabel>
+                                        <Input
+                                            disabled={!includeInsurance}
+                                            placeholder="Monto de seguro"
+                                            size="md"
+                                            type="number"
+                                            name="insurance"
+                                        />
+                                        {/* <FormHelperText>fecha de envio del paquete</FormHelperText> */}
+                                    </FormControl>
+                                </GridItem>
+                            }
+
                             <GridItem colSpan={4}>
                                 <Packages packagesArr={packagesArr} setPackages={setPackagesArr} popPackage={popPackage} addPackage={addPackage} updatePackage={updatePackage} />
                             </GridItem>
-                            <GridItem>
-                                <Button type="submit">
-                                    Continuar
-                                </Button>
+                            <GridItem padding={4}>
+                                {props?.isLabel ?
+                                    <Button colorScheme='teal' type="submit">
+                                        Validar
+                                    </Button> :
+                                    quotesArr.length > 0 ?
+                                        <Button onClick={emptyToReDoQuotes}>Re cotizar</Button> :
+                                        <Button type="submit">
+                                            Continuar
+                                        </Button>
+
+                                }
+
                             </ GridItem >
                         </Grid>
                     </form>
                 </GridItem>
 
-                {quotesArr.length > 0 &&
+                {quotesArr?.length > 0 &&
                     <GridItem>
                         <TableContainer>
                             <Table variant='simple'>
@@ -242,8 +313,8 @@ const QuotesForm = () => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {quotesArr.map((eachService:any) => (
-                                        <Tr>
+                                    {quotesArr?.map((eachService: any) => (
+                                        <Tr key={`${Math.floor(Math.random() * 99)}-${eachService?.Total}`}>
                                             <Td>
                                                 {eachService?.parcelLogo}
                                             </Td>
@@ -251,10 +322,10 @@ const QuotesForm = () => {
                                                 {eachService?.serviceType}
                                             </Td>
                                             <Td>
-                                                {eachService?.subTotal}
+                                                ${eachService?.subTotal}
                                             </Td>
                                             <Td>
-                                                {eachService?.Total}
+                                                ${eachService?.Total}
                                             </Td>
                                             <Td>
                                                 <Accordion allowToggle>
@@ -266,13 +337,23 @@ const QuotesForm = () => {
                                                             <AccordionIcon />
                                                         </AccordionButton>
                                                         <AccordionPanel>
-                                                            Lorem ipsum ...
+                                                            {`Ocurre Forzoso: ${eachService?.oc}`}
+                                                            <br />
+                                                            {`Zona: ${eachService?.zone}`}
+                                                            <br />
+                                                            {`Peso: ${eachService?.details?.Peso || 'error'}`}
+                                                            <br />
+                                                            {`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion || 0}`}
+                                                            <br />
+                                                            {`I.V.A.: ${eachService?.details?.IVA || 'error'}`}
+
+
                                                         </AccordionPanel>
                                                     </AccordionItem>
                                                 </Accordion>
                                             </Td>
                                             <Td>
-                                                <Button disabled={true}>
+                                                <Button isDisabled>
                                                     Hacer Guia
                                                 </Button>
                                             </Td>

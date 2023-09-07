@@ -24,7 +24,7 @@ interface Iuser {
 export default function Dashboard() {
     const { data: session } = useSession()
     const [contentToRender, setContentToRender] = useState(<ResumeBoard />)
-    const [user, setUser] = useState<Iuser>({id:"", name:"", matriz:"", role:""})
+    const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "" })
     const menuOptions = [
         { label: "Resumen", component: <ResumeBoard />, data: "" },
         { label: "Cotizar", component: <QuotesBoard />, data: "" },
@@ -41,21 +41,20 @@ export default function Dashboard() {
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
     ]
 
- 
 
-    useEffect(()=>{
-        if(session){
-            const userUnParsed:any = session?.user
+
+    useEffect(() => {
+        if (session) {
+            const userUnParsed: any = session?.user
             const userParsed = {
                 id: userUnParsed['id'],
                 name: userUnParsed['name'],
                 matriz: userUnParsed['email'],
                 role: userUnParsed['image']
             }
-            console.log("user role", userUnParsed['image'])
             setUser(userParsed)
         }
-    },[session])
+    }, [session])
 
     if (session) {
         return (
@@ -79,14 +78,19 @@ export default function Dashboard() {
     return (
         <Grid templateColumns='repeat(2, 1fr)' height="100%">
             <GridItem height="100%">
-                <Image src="https://mumbaimirror.indiatimes.com/photo/81132317.cms" alt="landing-img" objectFit='cover' />
+                <Image minH="40rem" src="https://mumbaimirror.indiatimes.com/photo/81132317.cms" alt="landing-img" />
             </GridItem>
             <GridItem padding="20">
-                {/* <Stack align="center" justifyContent="space-around"> */}
-                <Button onClick={() => signIn()}>
-                    Iniciar sesion
-                </Button>
-                {/* </Stack> */}
+                <Stack>
+                    <Image src="https://i.ibb.co/0GvqQcH/1-c2-1.jpg" alt="1-c2-1" />
+                    <Button onClick={() => signIn()}>
+                        Iniciar sesion
+                    </Button>
+                    {/* <iframe  src='/api/auth/signin' style={{height:"20rem", backgroundColor:"white"}}/>  */}
+                </Stack>
+            </GridItem>
+            <GridItem bgColor="teal" colSpan={2} >
+                Informacion de pie de pagina
             </GridItem>
         </Grid>
     )

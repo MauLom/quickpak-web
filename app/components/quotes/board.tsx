@@ -1,15 +1,13 @@
 'use client'
 import QuotesForm from "./form"
-import { Button } from "@chakra-ui/react"
+import { Box } from "@chakra-ui/react"
 
 const QuotesBoard = () => {
 
     return (
-        <>
-            {/* Quotes Board */}
+        <Box padding="3rem">
             <QuotesForm />
-          
-        </>
+        </Box>
     )
 }
 export default QuotesBoard
