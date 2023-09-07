@@ -42,8 +42,9 @@ const QuotesForm = ({ ...props }) => {
                 .then(result => {
                     let dataObj = result
                     let parsedArr = JSON.parse(JSON.stringify(quotesArr))
-                    if (dataObj.data && dataObj.data.length > 0) {
-                        result.data.data.forEach((eachQuote: any) => {
+                    console.log("dataObj", dataObj)
+                    if (dataObj?.data?.data && dataObj?.data?.data.length > 0) {
+                        dataObj?.data?.data.forEach((eachQuote: any) => {
                             let quoteObj: any = {}
                             quoteObj['parcelLogo'] = <Image src="https://www.estafeta.com/-/media/Images/Estafeta/Brand/logotipo-estafeta.svg?la=es&hash=8921A2FC9CD511FCE66DB199D611F5205497DF86" alt="Estafeta logo" />
                             quoteObj['serviceType'] = eachQuote.DescripcionServicio
@@ -52,12 +53,12 @@ const QuotesForm = ({ ...props }) => {
                             quoteObj['IVA'] = eachQuote.IVA
                             quoteObj['Total'] = eachQuote.CostoTotal
                             quoteObj['details'] = eachQuote
-                            quoteObj['zone'] = dataObj?.zone
-                            quoteObj['oc'] = dataObj?.ocurreForzoso
+                            quoteObj['zone'] = dataObj?.data?.zone
+                            quoteObj['oc'] = dataObj?.data?.ocurreForzoso
                             parsedArr.push(quoteObj)
                         })
                     }
-                    dataObj.dataDHL?.data.forEach((eachQuote: any) => {
+                    dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="5rem" 
                         backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="Estafeta logo" />
