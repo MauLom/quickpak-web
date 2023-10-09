@@ -72,10 +72,10 @@ export async function getQuotes(quotesData: any) {
     }
     dataDHL = resDHL.json()
     let result: any = { data: "", dataDHL: "" }
-    dataEstafeta !==  undefined && await dataEstafeta.then((data: any) => {
+    dataEstafeta !== undefined && await dataEstafeta.then((data: any) => {
         result.data = data
     })
-    dataDHL !==  undefined && await dataDHL.then((data: any) => {
+    dataDHL !== undefined && await dataDHL.then((data: any) => {
         result.dataDHL = data
     })
 
@@ -149,6 +149,50 @@ export async function generateEstafetaLabel(data: any) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(bodyEstafeta),
+    })
+    if (!res.ok) {
+        throw new Error('Failed to fetch data')
+    }
+    return res
+}
+
+export async function generateDHLLabel(data: any) {
+    let packages:any = []
+    /// Example obj quote : { "@number": 1, "Weight": "2", "Dimensions": { "Length": "10", "Width": "10", "Height": "10" } }
+    data?.quotes?.package.forEach((each:any,idx:number) =>{
+        packages.push({ "@number": idx+1, "Weight": each.weight, "Dimensions": { "Length": each.length, "Width": each.width, "Height": each.height } })
+    })
+    let formattedDate = data?.quotes?.data.date.split("T", 1)
+    const payload = {
+        "service": "G",
+        "date": formattedDate,
+        "desc": data?.descPckg || "descripcion de paquete",
+        "userId": data?.quotes.userId,
+
+        "oName": data.nombR,
+        "oCompany": data.compR,
+        "oPhone": data.phoneR,
+        "oEmail": data.mailR,
+        "oStreets": data.streetR,
+        "oCity": data?.quotes.data.originCity,
+        "oZip": data?.quotes.data.originZip,
+
+        "dName": data.nombD,
+        "dCompany": data.compD,
+        "dPhone": data.phoneD,
+        "dEmail": data.mailD,
+        "dStreets": data.streetD,
+        "dCity": data?.quotes.data.destinyCity,
+        "dZip": data?.quotes.data.destinyZip,
+        "packages": packages
+    }
+
+    const res = await fetch(`${URL}generateLabel`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
     })
     if (!res.ok) {
         throw new Error('Failed to fetch data')

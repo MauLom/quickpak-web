@@ -18,7 +18,7 @@ import {
     useDisclosure,
 } from "@chakra-ui/react"
 import QuotesForm from '../quotes/form'
-import { generateEstafetaLabel } from '../../lib/requests'
+import { generateDHLLabel, generateEstafetaLabel } from '../../lib/requests'
 
 const LabelsForm = (props: any) => {
     const [slctdPaqueteria, setSlctdPaqueteria] = React.useState("")
@@ -36,50 +36,57 @@ const LabelsForm = (props: any) => {
         let titleToast = ""
         let message = ""
         let statusToast: "error" | "info" | "loading" | "success" | "warning" = "error"
-        if (slctdPaqueteria === "") {
-            titleToast = "Error"
-            message = "No se eligio una paqueteria para la guia"
-            statusToast = "error"
-        } else if (slctdPaqueteria === "Estafeta") {
-            if (dataQuotes) {
-                ///Validation here
-            }
-            let payload = {
-                quotes: dataQuotes,
-                descPckg: e.target.descPckg.value,
 
-                nombR: e.target.nombR?.value || "cannot read",
-                compR: e.target.compR?.value || "cannot read",
-                phoneR: e.target.phoneR?.value || "cannot read",
-                mailR: e.target.emailR?.value || "cannot read",
-                streetR: e.target.streetR?.value || "cannot read",
-                colR: e.target.colR?.value || "cannot read",
-                refR: e.target.refR?.value || "cannot read",
+        let payload = {
+            quotes: dataQuotes,
+            descPckg: e.target.descPckg.value,
 
-                nombD: e.target.nombD?.value || "cannot read",
-                compD: e.target.compD?.value || "cannot read",
-                phoneD: e.target.phoneD?.value || "cannot read",
-                mailD: e.target.emailD?.value || "cannot read",
-                streetD: e.target.streetD?.value || "cannot read",
-                colD: e.target.colD?.value || "cannot read",
-                refD: e.target.refD?.value || "cannot read",
-            }
+            nombR: e.target.nombR?.value || "cannot read",
+            compR: e.target.compR?.value || "cannot read",
+            phoneR: e.target.phoneR?.value || "cannot read",
+            mailR: e.target.emailR?.value || "cannot read",
+            streetR: e.target.streetR?.value || "cannot read",
+            colR: e.target.colR?.value || "cannot read",
+            refR: e.target.refR?.value || "cannot read",
 
-            const response = await generateEstafetaLabel(payload)
-            const jsonResponse = await response.json()
-            if (jsonResponse) {
-                titleToast = "Exito"
-                message = "Se genero la etiqueta"
-                statusToast = "success"
-                setEstafetaLabelString(jsonResponse?.data?.data)
-                setIsModalOpen(true)
-
-            }
-        } else if (slctdPaqueteria === "DHL") {
-            console.log("do get quotes DHL") 
+            nombD: e.target.nombD?.value || "cannot read",
+            compD: e.target.compD?.value || "cannot read",
+            phoneD: e.target.phoneD?.value || "cannot read",
+            mailD: e.target.emailD?.value || "cannot read",
+            streetD: e.target.streetD?.value || "cannot read",
+            colD: e.target.colD?.value || "cannot read",
+            refD: e.target.refD?.value || "cannot read",
         }
 
-
+        switch (slctdPaqueteria) {
+            case "DHL":
+                const responseDHL = await generateDHLLabel(payload)
+                const jsonResponseDHL = await responseDHL.json()
+                if (jsonResponseDHL) {
+                    titleToast = "Exito"
+                    message = "Se genero la etiqueta"
+                    statusToast = "success"
+                    setEstafetaLabelString(jsonResponseDHL?.data?.ShipmentResponse?.LabelImage[0]?.GraphicImage)
+                    setIsModalOpen(true)
+                }
+                break;
+            case "Estafeta":
+                const response = await generateEstafetaLabel(payload)
+                const jsonResponse = await response.json()
+                if (jsonResponse) {
+                    titleToast = "Exito"
+                    message = "Se genero la etiqueta"
+                    statusToast = "success"
+                    setEstafetaLabelString(jsonResponse?.data?.data)
+                    setIsModalOpen(true)
+                }
+                break;
+            case "":
+                titleToast = "Error"
+                message = "No se eligio una paqueteria para la guia"
+                statusToast = "error"
+                break;
+        }
 
         toast({
             title: titleToast,
@@ -118,7 +125,7 @@ const LabelsForm = (props: any) => {
         link.href = url;
         link.setAttribute(
             'download',
-            `etiquetaEstafeta.pdf`,
+            `etiqueta${slctdPaqueteria}.pdf`,
         );
 
         // Append to html link element page
@@ -252,7 +259,7 @@ const LabelsForm = (props: any) => {
             <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false) }}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Etiqueta Estafeta</ModalHeader>
+                    <ModalHeader>Etiqueta {slctdPaqueteria}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Button onClick={() => { downloadTheEstafetaLabel(estafetaLabelString) }}>
