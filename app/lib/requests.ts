@@ -1,5 +1,7 @@
+const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/"
+//const URL = "http://localhost:8080/"
 export async function getUsers() {
-    const res = await fetch("https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/usersData")
+    const res = await fetch(`${URL}usersData`)
     if (!res.ok) {
         throw new Error('Failed to fetch data')
     }
@@ -22,10 +24,11 @@ export async function getQuotes(quotesData: any) {
             "userId": bodyUnParsed?.userId
         }
 
-        const res = await fetch("https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/getRates/estafeta", {
+        const res = await fetch(`${URL}getRates/estafeta`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(bodyEstafeta),
         })
@@ -56,11 +59,11 @@ export async function getQuotes(quotesData: any) {
         "userId": bodyUnParsed?.userId
     }
     let dataDHL: any = undefined
-    const resDHL = await fetch("https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/getRates", {
+    const resDHL = await fetch(`${URL}getRates`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyDHL),
     })
@@ -81,6 +84,65 @@ export async function getQuotes(quotesData: any) {
 }
 
 export async function generateEstafetaLabel(data: any) {
+    // let bodyEstafeta = {
+    //     "alto": data?.quotes.package[0]?.height,
+    //     "ancho": data?.quotes.package[0]?.length,
+    //     "esPaquete": true,
+    //     "largo": data?.quotes.package[0]?.width,
+    //     "peso": data?.quotes.package[0]?.weight,
+    //     "userId": data?.quotes.userId,
+    //     "seguro": "0",
+    //     "descripcionPaquete": data?.descPckg,
+    //     "dataOrigen": {
+    //         "direccion": {
+    //             "zip": data?.quotes.data.originZip,
+    //             "estado": data?.quotes.data.originCity,
+    //             "ciudad": data?.quotes.data.originZip,
+    //             "area": data.colR,
+    //             "calle1": data.streetR,
+    //             "calle2": "",
+    //             "numInt": "",
+    //             "numExt": "",
+    //             "entreCalles": "",
+    //             "referencia": data.refR
+    //         },
+    //         "contacto": {
+    //             "razonSocial": data.compR,
+    //             "nombreCortoDomicilio": data.compR,
+    //             "nombreContacto": data.nombR,
+    //             "telefono": data.phoneR,
+    //             "celular": data.phoneR,
+    //             "email1": data.mailR,
+    //             "email2": data.mailR,
+    //             "RFC": "AOPB010102ROA"
+    //         }
+    //     },
+    //     "dataDestino": {
+    //         "direccion": {
+    //             "zip": data?.quotes.data.destinyZip,
+    //             "estado": data?.quotes.data.destinyCity,
+    //             "ciudad": data?.quotes.data.destinyZip,
+    //             "area": data.colD,
+    //             "calle1": data.streetD,
+    //             "calle2": "",
+    //             "numInt": "",
+    //             "numExt": "",
+    //             "entreCalles": "",
+    //             "referencia": data.refD
+    //         },
+    //         "contacto": {
+    //             "razonSocial": data.compD,
+    //             "nombreCortoDomicilio": data.compD,
+    //             "nombreContacto": data.nombD,
+    //             "telefono": data.phoneD,
+    //             "celular": data.phoneD,
+    //             "email1": data.mailD,
+    //             "email2": data.mailD,
+    //             "RFC": "AOPB010102ROA"
+    //         }
+    //     }
+    // }
+    console.log("data?.descPc",data?.descPckg)
     let bodyEstafeta = {
         "alto": data?.quotes.package[0]?.height,
         "ancho": data?.quotes.package[0]?.length,
@@ -89,7 +151,8 @@ export async function generateEstafetaLabel(data: any) {
         "peso": data?.quotes.package[0]?.weight,
         "userId": data?.quotes.userId,
         "seguro": "0",
-        "descripcionPaquete": data?.descPckg,
+        "tipoServicioId": 70,
+        "descripcionPaquete": data?.descPckg || "descripcion de paquete",
         "dataOrigen": {
             "direccion": {
                 "zip": data?.quotes.data.originZip,
@@ -99,7 +162,7 @@ export async function generateEstafetaLabel(data: any) {
                 "calle1": data.streetR,
                 "calle2": "",
                 "numInt": "",
-                "numExt": "",
+                "numExt": "00",
                 "entreCalles": "",
                 "referencia": data.refR
             },
@@ -123,7 +186,7 @@ export async function generateEstafetaLabel(data: any) {
                 "calle1": data.streetD,
                 "calle2": "",
                 "numInt": "",
-                "numExt": "",
+                "numExt": "00",
                 "entreCalles": "",
                 "referencia": data.refD
             },
@@ -139,7 +202,8 @@ export async function generateEstafetaLabel(data: any) {
             }
         }
     }
-    const res = await fetch("https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/generateLabel/estafeta", {
+    console.log("bodyEstafeta",bodyEstafeta)
+    const res = await fetch(`${URL}generateLabel/estafeta`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -149,6 +213,6 @@ export async function generateEstafetaLabel(data: any) {
     if (!res.ok) {
         throw new Error('Failed to fetch data')
     }
-
+    console.log("res?", res.json())
     return res.json()
 }

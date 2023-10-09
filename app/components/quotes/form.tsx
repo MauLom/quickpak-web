@@ -22,12 +22,20 @@ import {
     TableContainer,
     Image,
     Checkbox,
-    Text
+    Text,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton
 } from "@chakra-ui/react"
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { getQuotes } from "../../lib/requests"
+import LabelsForm from "../labels/form"
 
 
 const QuotesForm = ({ ...props }) => {
@@ -35,6 +43,7 @@ const QuotesForm = ({ ...props }) => {
     const [packagesArr, setPackagesArr] = useState([{ weight: 0, height: 0, width: 0, length: 0 }])
     const [quotesArr, setQuotesArr] = useState([])
     const [includeInsurance, setIncludeInsurance] = useState()
+    const [isOpenModalLabels, setIsOpenModalLabels] = useState(false)
     const toast = useToast()
     function doSubmit(data: any) {
         !props?.isLabel &&
@@ -60,8 +69,8 @@ const QuotesForm = ({ ...props }) => {
                     }
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
-                        quoteObj['parcelLogo'] = <Image maxH="5rem" 
-                        backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="Estafeta logo" />
+                        quoteObj['parcelLogo'] = <Image maxH="5rem"
+                            backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="Estafeta logo" />
                         quoteObj['serviceType'] = eachQuote.ServiceName
                         quoteObj['weight'] = eachQuote?.QuotedWeight
                         quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
@@ -70,7 +79,7 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['details'] = eachQuote
                         quoteObj['zone'] = result?.dataDHL?.zone
                         parsedArr.push(quoteObj)
-                    
+
                     })
                     setQuotesArr(parsedArr)
                     // })
@@ -214,6 +223,10 @@ const QuotesForm = ({ ...props }) => {
     function emptyToReDoQuotes() {
         setQuotesArr([])
     }
+    function handleDoGuide(quote: any) {
+        console.log("Service being called", quote)
+        setIsOpenModalLabels(true)
+    }
     return (
         <Box>
             <Grid>
@@ -354,7 +367,7 @@ const QuotesForm = ({ ...props }) => {
                                                 </Accordion>
                                             </Td>
                                             <Td>
-                                                <Button isDisabled>
+                                                <Button onClick={()=>{handleDoGuide(eachService)}}>
                                                     Hacer Guia
                                                 </Button>
                                             </Td>
@@ -367,6 +380,16 @@ const QuotesForm = ({ ...props }) => {
 
 
             </Grid>
+            <Modal size={"xl"} closeOnOverlayClick={false} isOpen={isOpenModalLabels} onClose={() => { setIsOpenModalLabels(false) }}>
+                <ModalOverlay />
+                <ModalContent width={"80%"}>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        <LabelsForm hideQuotes={true}/>
+                    </ModalBody>
+
+                </ModalContent>
+            </Modal>
         </Box>
     )
 
