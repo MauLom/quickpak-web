@@ -51,7 +51,6 @@ const QuotesForm = ({ ...props }) => {
                 .then(result => {
                     let dataObj = result
                     let parsedArr = JSON.parse(JSON.stringify(quotesArr))
-                    console.log("dataObj", dataObj)
                     if (dataObj?.data?.data && dataObj?.data?.data.length > 0) {
                         dataObj?.data?.data.forEach((eachQuote: any) => {
                             let quoteObj: any = {}
@@ -224,7 +223,6 @@ const QuotesForm = ({ ...props }) => {
         setQuotesArr([])
     }
     function handleDoGuide(quote: any) {
-        console.log("Service being called", quote)
         setIsOpenModalLabels(true)
     }
     return (

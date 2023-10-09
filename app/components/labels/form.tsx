@@ -4,13 +4,18 @@ import {
     Box, Grid, GridItem, Heading,
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
     Input,
     Button,
     Select,
     useToast,
-    Divider
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
 } from "@chakra-ui/react"
 import QuotesForm from '../quotes/form'
 import { generateEstafetaLabel } from '../../lib/requests'
@@ -18,13 +23,15 @@ import { generateEstafetaLabel } from '../../lib/requests'
 const LabelsForm = (props: any) => {
     const [slctdPaqueteria, setSlctdPaqueteria] = React.useState("")
     const [dataQuotes, setDataQuotes] = React.useState({})
+    const [estafetaLabelString, setEstafetaLabelString] = React.useState("")
+    const [isModalOpen, setIsModalOpen] = React.useState(false)
     const toast = useToast()
 
     const handleChangePaqueteria = (e: any) => {
         setSlctdPaqueteria(e.target.value)
     }
 
-    const doSubmit = (e: any) => {
+    const doSubmit = async (e: any) => {
         e.preventDefault()
         let titleToast = ""
         let message = ""
@@ -58,7 +65,16 @@ const LabelsForm = (props: any) => {
             colD: e.target.colD?.value || "cannot read",
             refD: e.target.refD?.value || "cannot read",
         }
-        generateEstafetaLabel(payload)
+        const response = await generateEstafetaLabel(payload)
+        const jsonResponse = await response.json()
+        if (jsonResponse) {
+            titleToast = "Exito"
+            message = "Se genero la etiqueta"
+            statusToast = "success"
+            setEstafetaLabelString(jsonResponse?.data?.data)
+            setIsModalOpen(true)
+
+        }
         toast({
             title: titleToast,
             description: `${message}`,
@@ -77,6 +93,37 @@ const LabelsForm = (props: any) => {
             duration: 3000,
             isClosable: true
         })
+    }
+
+    const downloadTheEstafetaLabel = (pdfString: string) => {
+        const byteCharacters = atob(pdfString);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: '' });
+
+
+        const url = window.URL.createObjectURL(
+            blob,
+        );
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+            'download',
+            `etiquetaEstafeta.pdf`,
+        );
+
+        // Append to html link element page
+        document.body.appendChild(link);
+
+        // Start download
+        link.click();
+
+        // Clean up and remove the link
+        // link?.parentNode.removeChild(link);
+
     }
 
     return (
@@ -196,6 +243,24 @@ const LabelsForm = (props: any) => {
                 </GridItem>
 
             </Grid>
+            <Modal isOpen={isModalOpen} onClose={()=>{setIsModalOpen(false)}}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Etiqueta Estafeta</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Button onClick={() => { downloadTheEstafetaLabel(estafetaLabelString) }}>
+                            Descargar etiqueta
+                        </Button>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button colorScheme='blue' mr={3} onClick={()=>{setIsModalOpen(false)}}>
+                            Close
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Box>
     )
 }
