@@ -40,41 +40,47 @@ const LabelsForm = (props: any) => {
             titleToast = "Error"
             message = "No se eligio una paqueteria para la guia"
             statusToast = "error"
-        }
-        /// Add Validation to no have dataQuotes
-        if (dataQuotes) {
-            ///Validation here
-        }
-        let payload = {
-            quotes: dataQuotes,
-            descPckg: e.target.descPckg.value,
+        } else if (slctdPaqueteria === "Estafeta") {
+            if (dataQuotes) {
+                ///Validation here
+            }
+            let payload = {
+                quotes: dataQuotes,
+                descPckg: e.target.descPckg.value,
 
-            nombR: e.target.nombR?.value || "cannot read",
-            compR: e.target.compR?.value || "cannot read",
-            phoneR: e.target.phoneR?.value || "cannot read",
-            mailR: e.target.emailR?.value || "cannot read",
-            streetR: e.target.streetR?.value || "cannot read",
-            colR: e.target.colR?.value || "cannot read",
-            refR: e.target.refR?.value || "cannot read",
+                nombR: e.target.nombR?.value || "cannot read",
+                compR: e.target.compR?.value || "cannot read",
+                phoneR: e.target.phoneR?.value || "cannot read",
+                mailR: e.target.emailR?.value || "cannot read",
+                streetR: e.target.streetR?.value || "cannot read",
+                colR: e.target.colR?.value || "cannot read",
+                refR: e.target.refR?.value || "cannot read",
 
-            nombD: e.target.nombD?.value || "cannot read",
-            compD: e.target.compD?.value || "cannot read",
-            phoneD: e.target.phoneD?.value || "cannot read",
-            mailD: e.target.emailD?.value || "cannot read",
-            streetD: e.target.streetD?.value || "cannot read",
-            colD: e.target.colD?.value || "cannot read",
-            refD: e.target.refD?.value || "cannot read",
-        }
-        const response = await generateEstafetaLabel(payload)
-        const jsonResponse = await response.json()
-        if (jsonResponse) {
-            titleToast = "Exito"
-            message = "Se genero la etiqueta"
-            statusToast = "success"
-            setEstafetaLabelString(jsonResponse?.data?.data)
-            setIsModalOpen(true)
+                nombD: e.target.nombD?.value || "cannot read",
+                compD: e.target.compD?.value || "cannot read",
+                phoneD: e.target.phoneD?.value || "cannot read",
+                mailD: e.target.emailD?.value || "cannot read",
+                streetD: e.target.streetD?.value || "cannot read",
+                colD: e.target.colD?.value || "cannot read",
+                refD: e.target.refD?.value || "cannot read",
+            }
 
+            const response = await generateEstafetaLabel(payload)
+            const jsonResponse = await response.json()
+            if (jsonResponse) {
+                titleToast = "Exito"
+                message = "Se genero la etiqueta"
+                statusToast = "success"
+                setEstafetaLabelString(jsonResponse?.data?.data)
+                setIsModalOpen(true)
+
+            }
+        } else if (slctdPaqueteria === "DHL") {
+            console.log("do get quotes DHL") 
         }
+
+
+
         toast({
             title: titleToast,
             description: `${message}`,
@@ -243,7 +249,7 @@ const LabelsForm = (props: any) => {
                 </GridItem>
 
             </Grid>
-            <Modal isOpen={isModalOpen} onClose={()=>{setIsModalOpen(false)}}>
+            <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false) }}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Etiqueta Estafeta</ModalHeader>
@@ -255,7 +261,7 @@ const LabelsForm = (props: any) => {
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button colorScheme='blue' mr={3} onClick={()=>{setIsModalOpen(false)}}>
+                        <Button colorScheme='blue' mr={3} onClick={() => { setIsModalOpen(false) }}>
                             Close
                         </Button>
                     </ModalFooter>
