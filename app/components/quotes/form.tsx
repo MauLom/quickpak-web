@@ -365,7 +365,7 @@ const QuotesForm = ({ ...props }) => {
                                                 </Accordion>
                                             </Td>
                                             <Td>
-                                                <Button onClick={()=>{handleDoGuide(eachService)}}>
+                                                <Button isDisabled onClick={()=>{handleDoGuide(eachService)}}>
                                                     Hacer Guia
                                                 </Button>
                                             </Td>
