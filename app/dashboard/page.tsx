@@ -33,12 +33,14 @@ export default function Dashboard() {
         { label: "Administrar usuarios", component: <UsersLayout />, data: "" },
         { label: "Administrar valores", component: <DataSettingsValues />, data: "" },
         { label: "Administrar cuentas", component: <DataSettingsAccounts />, data: "" },
+        { label: "Desconexion", component: <Button onClick={() => signOut()}>Cerrar sesion</Button>, data: "" }
     ]
     const menuClientOptions = [
         { label: "Resumen", component: <ResumeBoard />, data: "" },
         { label: "Cotizar", component: <QuotesBoard />, data: "" },
         { label: "Generar guias", component: <LabelsBoard />, data: "" },
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
+        { label: "Desconexion", component: <Button onClick={() => signOut()}>Cerrar sesion</Button>, data: "" }
     ]
 
 
@@ -65,10 +67,7 @@ export default function Dashboard() {
                     </Button>
                     <DrawerNavigation menuOptions={user.role === 'admin' ? menuOptions : menuClientOptions} changeContent={setContentToRender} />
                 </GridItem>
-                <GridItem>
-                    {/* Conectado como: {session?.user} */}
-                    <Button onClick={() => signOut()}>Cerrar sesion</Button>
-                </GridItem>
+
                 <GridItem colSpan={4}>
                     {contentToRender}
                 </GridItem>
