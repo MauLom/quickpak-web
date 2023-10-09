@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
     Box, Grid, GridItem, Heading,
     FormControl,
@@ -29,13 +29,22 @@ import {
     ModalHeader,
     ModalFooter,
     ModalBody,
-    ModalCloseButton
+    ModalCloseButton,
+    Select
 } from "@chakra-ui/react"
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { getQuotes } from "../../lib/requests"
 import LabelsForm from "../labels/form"
+
+interface Iuser {
+    id: string,
+    name: string,
+    matriz: string,
+    role: string
+}
+
 
 
 const QuotesForm = ({ ...props }) => {
@@ -44,7 +53,24 @@ const QuotesForm = ({ ...props }) => {
     const [quotesArr, setQuotesArr] = useState([])
     const [includeInsurance, setIncludeInsurance] = useState()
     const [isOpenModalLabels, setIsOpenModalLabels] = useState(false)
+    const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "" })
+    const [userQuotes, setUserQuotes] = useState("")
     const toast = useToast()
+    useEffect(() => {
+        if (session) {
+            const userUnParsed: any = session?.user
+            const userParsed = {
+                id: userUnParsed['id'],
+                name: userUnParsed['name'],
+                matriz: userUnParsed['email'],
+                role: userUnParsed['image']
+            }
+            setUser(userParsed)
+        }
+    }, [session])
+
+    console.log("user", user)
+
     function doSubmit(data: any) {
         !props?.isLabel &&
             getQuotes(data)
@@ -225,10 +251,19 @@ const QuotesForm = ({ ...props }) => {
     function handleDoGuide(quote: any) {
         setIsOpenModalLabels(true)
     }
+
+    const handleChangeUsuarioCotizacion = (e: any) => {
+        setUserQuotes(e.target.value)
+    }
     return (
         <Box>
             <Grid>
                 <GridItem>
+                    {user.role === "admin" &&
+                        <Select placeholder="Usuario para cotizar" value={userQuotes} onChange={handleChangeUsuarioCotizacion}>
+                            <option value='someId'>Srs Express</option>
+                            {/* <option value='Estafeta'>Estafeta</option> */}
+                        </Select>}
                     {props.isLabel ? <></> : <Heading> Informacion de cotizacion</Heading>}
                     <form onSubmit={(e) => { validateSubmit(e) }}>
                         <Grid templateColumns='repeat(4, 1fr)' gap={3}>
@@ -365,7 +400,7 @@ const QuotesForm = ({ ...props }) => {
                                                 </Accordion>
                                             </Td>
                                             <Td>
-                                                <Button isDisabled onClick={()=>{handleDoGuide(eachService)}}>
+                                                <Button isDisabled onClick={() => { handleDoGuide(eachService) }}>
                                                     Hacer Guia
                                                 </Button>
                                             </Td>
@@ -383,7 +418,7 @@ const QuotesForm = ({ ...props }) => {
                 <ModalContent width={"80%"}>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        <LabelsForm hideQuotes={true}/>
+                        <LabelsForm hideQuotes={true} />
                     </ModalBody>
 
                 </ModalContent>
