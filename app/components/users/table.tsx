@@ -28,7 +28,6 @@ async function UsersTable(props:any) {
     }, [])
 
     const goToEdit = (userData: any) => {
-        console.log("User selected", userData)
         props.handleShowForm(userData)
     }
 

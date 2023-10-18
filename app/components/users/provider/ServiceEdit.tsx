@@ -40,8 +40,8 @@ const ServiceEditComponent: React.FC<ServiceEditComponentProps> = ({ providersWi
           <h3>Available Services for {selectedProvider}:</h3>
           {providersWithServices
             .find((provider) => provider.name === selectedProvider)
-            ?.services.map((service:any) => (
-              <div key={service}>
+            ?.services.map((service:any, index:number) => (
+              <div key={`${service}-${index}`}>
                 <label>
                   <input
                     type="checkbox"

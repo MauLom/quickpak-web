@@ -5,17 +5,6 @@ import ServicePreviewComponent from './provider/ServicePreview';
 import { User } from '../../types/UserTypes';
 import { ProviderWithServices } from '../../types/ProviderWithServicesType';
 
-const providersWithServices: ProviderWithServices[] = [
-  {
-    _id: {
-      $oid: "652cc056539deb02cdc4d108"
-    },
-    name: "DHL",
-    services: ["I", "O", "1", "G", "N"]
-  },
-  // ... Add more providers and services here
-];
-
 function extractAvailableServices(data: { provider_id: string; services: string[] }[]): string[] {
   const services: string[] = [];
 
@@ -25,7 +14,6 @@ function extractAvailableServices(data: { provider_id: string; services: string[
 
   return services;
 }
-
 interface UserManagementProps {
   selectedUser: User
 }
@@ -41,27 +29,32 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
 
   const [availableServices, setAvailableServices] = useState<string[]>([]);
   const [isEditingServices, setIsEditingServices] = useState(false);
-  const [providers, setProviders] = useState(providersWithServices)
-  // Load user data and available services from your API or data source
+  const [providers, setProviders] = useState([])
+
+const fetchProviders = async () => {
+  try {
+    const URL = process.env.NEXT_PUBLIC_API_URL
+    const response = await fetch(`${URL}api/provider`);
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch providers');
+    }
+
+    const data = await response.json();
+    setProviders(data);
+  } catch (error) {
+    console.error('Error fetching providers:', error);
+  }
+};
+
   useEffect(() => {
     if (selectedUser) {
       setUserData(selectedUser)
       const availableServices = extractAvailableServices(selectedUser.provider_access)
       setAvailableServices(availableServices)
+      fetchProviders()
     }
-
-    fetch('/api/providers') // Use the relative path to your API route
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("data")
-        setProviders(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-    // Fetch user data and available services and set them in state
-    // Example API call: fetchUserData() and fetchAvailableServices()
-  }, []); // Make sure to handle loading and errors
+  }, []); 
 
   const handleServiceEditToggle = () => {
     setIsEditingServices(!isEditingServices);
@@ -86,7 +79,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
     <div>
       <h2>User Management</h2>
 
-      {/* User Data Form */}
       <h3>Edit User Data</h3>
       <form>
         <div>
@@ -127,7 +119,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
         {isEditingServices ? 'Done Editing' : 'Edit Services'}
       </Button>
       {isEditingServices ? (
-        <ServiceEditComponent providersWithServices={providersWithServices} />
+        <ServiceEditComponent providersWithServices={providers} />
       ) : (
         <ServicePreviewComponent availableServices={availableServices} />
       )}
