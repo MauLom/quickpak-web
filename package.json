@@ -22,9 +22,10 @@
     "next": "13.4.12",
     "next-auth": "^4.22.3",
     "next-connect": "^1.0.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-spreadsheet": "^0.8.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-spreadsheet": "^0.8.6",
+    "scheduler": "^0.23.0",
     "typescript": "5.1.6"
   }
 }

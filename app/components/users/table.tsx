@@ -17,17 +17,19 @@ import {
 import { SettingsIcon, DeleteIcon } from '@chakra-ui/icons'
 import { getUsers } from '../../lib/requests'
 
-async function UsersTable() {
+async function UsersTable(props:any) {
     const [dataTable, setDataTable] = React.useState([])
     React.useEffect(() => {
         getUsers().then(data => {
-            setDataTable(data?.users)
+            console.log("data", data)
+            setDataTable(data)
         })
 
     }, [])
 
     const goToEdit = (userData: any) => {
         console.log("User selected", userData)
+        props.handleShowForm(userData)
     }
 
     return (
@@ -46,8 +48,8 @@ async function UsersTable() {
                         {dataTable.map(
                             each => {
                                 return (
-                                    <Tr>
-                                        <Td>{each['userName']}</Td>
+                                    <Tr key={each['_id']}>
+                                        <Td>{each['name']}</Td>
                                         <Td>{each['role']}</Td>
                                         <Td>
                                             <ButtonGroup>
@@ -80,6 +82,5 @@ async function UsersTable() {
     )
 }
 
-// export default UsersTable;
 
 export default UsersTable;

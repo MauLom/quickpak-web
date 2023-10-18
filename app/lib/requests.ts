@@ -1,7 +1,7 @@
-const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/"
+const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/api/"
 //const URL = "http://localhost:8080/"
 export async function getUsers() {
-    const res = await fetch(`${URL}usersData`)
+    const res = await fetch(`${URL}users`)
     if (!res.ok) {
         throw new Error('Failed to fetch data')
     }
