@@ -3,25 +3,22 @@ import { Box, Button, GridItem, Grid } from "@chakra-ui/react"
 import UsersTable from "./table";
 import { useState } from "react";
 import UserManagement from "./UserManagement";
-import { User } from "./UserTypes";
+import { User } from "../../types/UserTypes";
 
 
 
 const UsersLayout = () => {
     const [showForm, setShowForm] = useState(false)
-    const [isEditUser, setIsEditUser] = useState(false)
     const [userData, setUserData] = useState<User>({
         id: 0,
         name: '',
         email: '',
         role: ' ',
         provider_access: []
-        // Initialize other user data fields
     })
     const showUserRegisterForm = (e: any) => {
         setShowForm(!showForm)
         if (undefined !== e['_id']) {
-            setIsEditUser(true)
             setUserData(e)
         }
     }
@@ -42,7 +39,6 @@ const UsersLayout = () => {
 
                 {showForm && (
                     <GridItem>
-                        {/* <UserRegister userData={userData} isEdit={isEditUser} /> */}
                         <UserManagement selectedUser={userData} />
                     </GridItem>
                 )}

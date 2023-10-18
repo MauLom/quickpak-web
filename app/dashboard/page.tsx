@@ -6,9 +6,7 @@ import { SettingsIcon } from "@chakra-ui/icons"
 import LabelsForm from '../components/labels/form'
 import LabelsTable from '../components/labels/table'
 import { useEffect, useState } from 'react'
-import UsersEdit from '../components/users/edit'
-import DataSettingsValues from '../components/settings/data/values'
-import DataSettingsAccounts from '../components/settings/data/accounts'
+
 import QuotesBoard from '../components/quotes/board'
 import LabelsBoard from '../components/labels/board'
 import UsersLayout from '../components/users/layout'
@@ -31,8 +29,8 @@ export default function Dashboard() {
         { label: "Generar guias", component: <LabelsBoard />, data: "" },
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
         { label: "Administrar usuarios", component: <UsersLayout />, data: "" },
-        { label: "Administrar valores", component: <DataSettingsValues />, data: "" },
-        { label: "Administrar cuentas", component: <DataSettingsAccounts />, data: "" },
+        // { label: "Administrar valores", component: <DataSettingsValues />, data: "" },
+        // { label: "Administrar cuentas", component: <DataSettingsAccounts />, data: "" },
         { label: "Desconexion", component: <Button onClick={() => signOut()}>Cerrar sesion</Button>, data: "" }
     ]
     const menuClientOptions = [

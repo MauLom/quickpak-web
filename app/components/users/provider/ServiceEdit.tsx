@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ProviderWithServices } from './ProviderWithServicesType'; // Import the interface
+import { ProviderWithServices } from '../../../types/ProviderWithServicesType'; // Import the interface
 
 interface ServiceEditComponentProps {
   providersWithServices: ProviderWithServices[] | undefined;

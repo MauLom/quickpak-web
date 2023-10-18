@@ -2,8 +2,8 @@ import { Button, Input } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import ServiceEditComponent from './provider/ServiceEdit';
 import ServicePreviewComponent from './provider/ServicePreview';
-import { User } from './UserTypes';
-import { ProviderWithServices } from './provider/ProviderWithServicesType';
+import { User } from '../../types/UserTypes';
+import { ProviderWithServices } from '../../types/ProviderWithServicesType';
 
 const providersWithServices: ProviderWithServices[] = [
   {
