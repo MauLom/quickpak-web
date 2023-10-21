@@ -53,42 +53,50 @@ export default function Dashboard() {
                 role: userUnParsed['image']
             }
             setUser(userParsed)
+        } else {
+            const userParsed = {
+                id: "652cc056539deb02cdc4d107",
+                name: "admin",
+                matriz: "email@email.com",
+                role: "admin"
+            }
+            setUser(userParsed)
         }
     }, [session])
 
-    if (session) {
-        return (
-            <Grid templateColumns='repeat(2, 1fr)' gap={2}>
-                <GridItem>
-                    <Button colorScheme='cyan'>
-                        <SettingsIcon />
-                    </Button>
-                    <DrawerNavigation menuOptions={user.role === 'admin' ? menuOptions : menuClientOptions} changeContent={setContentToRender} />
-                </GridItem>
-
-                <GridItem colSpan={4}>
-                    {contentToRender}
-                </GridItem>
-            </Grid>
-        )
-    }
+    // if (session) {
     return (
-        <Grid templateColumns='repeat(2, 1fr)' height="100%">
-            <GridItem height="100%">
-                <Image minH="40rem" src="https://mumbaimirror.indiatimes.com/photo/81132317.cms" alt="landing-img" />
+        <Grid templateColumns='repeat(2, 1fr)' gap={2}>
+            <GridItem>
+                <Button colorScheme='cyan'>
+                    <SettingsIcon />
+                </Button>
+                <DrawerNavigation menuOptions={user.role === 'admin' ? menuOptions : menuClientOptions} changeContent={setContentToRender} />
             </GridItem>
-            <GridItem padding="20">
-                <Stack>
-                    <Image src="https://i.ibb.co/0GvqQcH/1-c2-1.jpg" alt="1-c2-1" />
-                    <Button onClick={() => signIn()}>
-                        Iniciar sesion
-                    </Button>
-                    {/* <iframe  src='/api/auth/signin' style={{height:"20rem", backgroundColor:"white"}}/>  */}
-                </Stack>
-            </GridItem>
-            <GridItem bgColor="teal" colSpan={2} >
-                Informacion de pie de pagina
+
+            <GridItem colSpan={4}>
+                {contentToRender}
             </GridItem>
         </Grid>
     )
+    // }
+    // return (
+    //     <Grid templateColumns='repeat(2, 1fr)' height="100%">
+    //         <GridItem height="100%">
+    //             <Image minH="40rem" src="https://mumbaimirror.indiatimes.com/photo/81132317.cms" alt="landing-img" />
+    //         </GridItem>
+    //         <GridItem padding="20">
+    //             <Stack>
+    //                 <Image src="https://i.ibb.co/0GvqQcH/1-c2-1.jpg" alt="1-c2-1" />
+    //                 <Button onClick={() => signIn()}>
+    //                     Iniciar sesion
+    //                 </Button>
+    //                 {/* <iframe  src='/api/auth/signin' style={{height:"20rem", backgroundColor:"white"}}/>  */}
+    //             </Stack>
+    //         </GridItem>
+    //         <GridItem bgColor="teal" colSpan={2} >
+    //             Informacion de pie de pagina
+    //         </GridItem>
+    //     </Grid>
+    // )
 }
