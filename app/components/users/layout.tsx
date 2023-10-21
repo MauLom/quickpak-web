@@ -3,17 +3,19 @@ import { Box, Button, GridItem, Grid } from "@chakra-ui/react"
 import UsersTable from "./table";
 import { useState } from "react";
 import UserManagement from "./UserManagement";
-import { User } from "../../types/UserTypes";
+import { User } from "../../types/UsersRelated";
 
 
 
 const UsersLayout = () => {
     const [showForm, setShowForm] = useState(false)
     const [userData, setUserData] = useState<User>({
-        id: 0,
-        name: '',
+        _id: 0,
+        userName: '',
         email: '',
         role: ' ',
+        password: "",
+        string_reference: "",
         provider_access: []
     })
     const showUserRegisterForm = (e: any) => {

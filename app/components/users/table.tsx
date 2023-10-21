@@ -35,7 +35,7 @@ async function UsersTable(props:any) {
         <Box>
             <TableContainer>
                 <Table variant='simple'>
-                    <TableCaption>Lista de usuarios registrados</TableCaption>
+                    {/* <TableCaption>Lista de usuarios registrados</TableCaption> */}
                     <Thead>
                         <Tr>
                             <Th>Nombre de usuario</Th>
@@ -48,7 +48,7 @@ async function UsersTable(props:any) {
                             each => {
                                 return (
                                     <Tr key={each['_id']}>
-                                        <Td>{each['name']}</Td>
+                                        <Td>{each['userName']}</Td>
                                         <Td>{each['role']}</Td>
                                         <Td>
                                             <ButtonGroup>

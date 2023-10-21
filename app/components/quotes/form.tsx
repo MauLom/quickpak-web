@@ -37,6 +37,7 @@ import isEmpty from "../../utils/isEmpty"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { getQuotes } from "../../lib/requests"
 import LabelsForm from "../labels/form"
+import { getZipCodeData } from "../../lib/v2/zipCodes"
 
 interface Iuser {
     id: string,
@@ -55,6 +56,8 @@ const QuotesForm = ({ ...props }) => {
     const [isOpenModalLabels, setIsOpenModalLabels] = useState(false)
     const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "" })
     const [userQuotes, setUserQuotes] = useState("")
+    const [originCity, setOriginCity] = useState("")
+    const [destinyCity, setDestinyCity]= useState("")
     const toast = useToast()
     useEffect(() => {
         if (session) {
@@ -255,6 +258,18 @@ const QuotesForm = ({ ...props }) => {
     const handleChangeUsuarioCotizacion = (e: any) => {
         setUserQuotes(e.target.value)
     }
+    async function handleZipOriginChange(e: any) {
+        if(e.target.value.length === 5){
+            const dataFromZip = await getZipCodeData(e.target.value)
+            setOriginCity(dataFromZip.codigo_postal.municipio)
+        } 
+    }
+    async function handleZipDestinyChange(e: any) {
+        if(e.target.value.length === 5){
+            const dataFromZip = await getZipCodeData(e.target.value)
+            setDestinyCity(dataFromZip.codigo_postal.municipio)
+        } 
+    }
     return (
         <Box>
             <Grid>
@@ -270,25 +285,25 @@ const QuotesForm = ({ ...props }) => {
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Codigo postal de origen</FormLabel>
-                                    <Input name="originZip" type='number' />
+                                    <Input name="originZip" type='number' onChange={handleZipOriginChange}/>
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Ciudad de origen</FormLabel>
-                                    <Input name="originCity" />
+                                    <Input value={originCity} name="originCity" />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Codigo postal de destino</FormLabel>
-                                    <Input name="destinyZip" type='number' />
+                                    <Input name="destinyZip" type='number' onChange={handleZipDestinyChange} />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Ciudad de destino</FormLabel>
-                                    <Input name="destinyCity" />
+                                    <Input value={destinyCity} name="destinyCity" />
                                 </FormControl>
                             </GridItem>
                             <GridItem >
