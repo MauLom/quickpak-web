@@ -217,7 +217,7 @@ const QuotesForm = ({ ...props }) => {
                 destinyCity: e.target?.destinyCity.value,
                 insurance: includeInsurance ? e.target?.insurance.value : 0
             }
-            dataToBeSended.userId = "enc0UiLq0oNXm1GTFHB8"
+            dataToBeSended.userId = userQuotes !== "" ? userQuotes : "enc0UiLq0oNXm1GTFHB8"
             doSubmit(dataToBeSended)
         }
 

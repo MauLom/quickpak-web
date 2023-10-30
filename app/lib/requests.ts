@@ -30,7 +30,7 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
                 "userId": bodyUnParsed?.userId
             };
 
-            const res = await fetch(`${URL}getRates/estafeta`, {
+            const res = await fetch(`${URL}rates/estafeta`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
