@@ -102,13 +102,13 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       "user_id": userData._id,
       "provider_id": providerToEdit,
       "service": serviceToEdit,
-      "pricing": parsed
+      "pricing": parsed,
+      "string_reference": userData.string_reference,
+      "provider_access": []
     }
     saveUserPricing(payload)
 
   }
-
-
 
   return (
     <Box padding={4}>

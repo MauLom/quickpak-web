@@ -35,7 +35,7 @@ import {
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
 import { useSession, signIn, signOut } from "next-auth/react"
-import { getQuotes } from "../../lib/requests"
+import { getQuotes, getUsers } from "../../lib/requests"
 import LabelsForm from "../labels/form"
 import { getZipCodeData } from "../../lib/v2/zipCodes"
 
@@ -45,7 +45,11 @@ interface Iuser {
     matriz: string,
     role: string
 }
-
+interface User {
+    _id: string;
+    userName: string;
+    provider_access: { provider_id: string; services: string[] }[];
+}
 
 
 const QuotesForm = ({ ...props }) => {
@@ -57,8 +61,16 @@ const QuotesForm = ({ ...props }) => {
     const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "" })
     const [userQuotes, setUserQuotes] = useState("")
     const [originCity, setOriginCity] = useState("")
-    const [destinyCity, setDestinyCity]= useState("")
+    const [destinyCity, setDestinyCity] = useState("")
+    const [usersOptions, setUsersOptions] = useState<any>([])
     const toast = useToast()
+
+    async function getUsersForSelect() {
+        const users = await getUsers()
+        console.log("eval", users)
+        users.length > 0 && setUsersOptions(users)
+    }
+
     useEffect(() => {
         if (session) {
             const userUnParsed: any = session?.user
@@ -70,9 +82,9 @@ const QuotesForm = ({ ...props }) => {
             }
             setUser(userParsed)
         }
+        getUsersForSelect()
     }, [session])
 
-    console.log("user", user)
 
     function doSubmit(data: any) {
         !props?.isLabel &&
@@ -259,33 +271,37 @@ const QuotesForm = ({ ...props }) => {
         setUserQuotes(e.target.value)
     }
     async function handleZipOriginChange(e: any) {
-        if(e.target.value.length === 5){
+        if (e.target.value.length === 5) {
             const dataFromZip = await getZipCodeData(e.target.value)
             setOriginCity(dataFromZip.codigo_postal.municipio)
-        } 
+        }
     }
     async function handleZipDestinyChange(e: any) {
-        if(e.target.value.length === 5){
+        if (e.target.value.length === 5) {
             const dataFromZip = await getZipCodeData(e.target.value)
             setDestinyCity(dataFromZip.codigo_postal.municipio)
-        } 
+        }
     }
+
     return (
         <Box>
             <Grid>
                 <GridItem>
-                    {user.role === "admin" &&
-                        <Select placeholder="Usuario para cotizar" value={userQuotes} onChange={handleChangeUsuarioCotizacion}>
-                            <option value='someId'>Srs Express</option>
-                            {/* <option value='Estafeta'>Estafeta</option> */}
-                        </Select>}
+                    {/* {user.role === "admin" && */}
+                    <Select placeholder="Usuario para cotizar" value={userQuotes} onChange={handleChangeUsuarioCotizacion}>
+
+                        {usersOptions.length > 0 && usersOptions.map((user: any) => (
+                            <option key={user._id} value={user._id}>{user.userName}</option>
+                        ))}
+                    </Select>
+                    {/* // } */}
                     {props.isLabel ? <></> : <Heading> Informacion de cotizacion</Heading>}
                     <form onSubmit={(e) => { validateSubmit(e) }}>
                         <Grid templateColumns='repeat(4, 1fr)' gap={3}>
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Codigo postal de origen</FormLabel>
-                                    <Input name="originZip" type='number' onChange={handleZipOriginChange}/>
+                                    <Input name="originZip" type='number' onChange={handleZipOriginChange} />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
