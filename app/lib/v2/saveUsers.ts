@@ -21,7 +21,7 @@ export async function saveUser(userData:any): Promise<any> {
     try {
       // Send the POST request
       const queryId = `${userData['_id'] !== 0 ? "/" + userData._id : ""}`
-      const response = await fetch(`${apiUrl}api/users${queryId}`, requestOptions);
+      const response = await fetch(`${apiUrl}users${queryId}`, requestOptions);
 
       if (!response.ok) {
         throw new Error('Failed to post data to the server');

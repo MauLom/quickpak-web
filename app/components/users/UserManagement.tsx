@@ -44,7 +44,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
   const fetchProviders = async () => {
     try {
       const URL = process.env.NEXT_PUBLIC_API_URL
-      const response = await fetch(`${URL}api/provider`);
+      const response = await fetch(`${URL}provider`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch providers');
@@ -87,7 +87,16 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       const parsedData = userPricingToSpreadsheet(matrizFromBD.pricing)
       setDataMatriz(parsedData)
     }
-    else { setDataMatriz(defaultSpreadsheetData.DHL) }
+    else {
+      switch (provider) {
+        case 'DHL':
+          setDataMatriz(defaultSpreadsheetData.DHL)
+          break;
+        case 'Estafeta':
+          setDataMatriz(defaultSpreadsheetData.Estafeta)
+          break;
+      }
+    }
     setShowSheet(true)
   }
 

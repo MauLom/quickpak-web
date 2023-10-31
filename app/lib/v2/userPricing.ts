@@ -21,7 +21,7 @@ export async function saveUserPricing(payloadData: any): Promise<any> {
   try {
     // Send the POST request
     const queryId = ``
-    const response = await fetch(`${apiUrl}api/userPricing`, requestOptions);
+    const response = await fetch(`${apiUrl}userPricing`, requestOptions);
 
     if (!response.ok) {
       throw new Error('Failed to post data to the server');
@@ -57,7 +57,7 @@ export async function getUserPricing(user_id: number,provider_id:string, service
   try {
     // Send the POST request
     const queryId = ``
-    const response = await fetch(`${apiUrl}api/userPricing?user_id=${user_id}&provider_id=${provider_id}&service=${service}`, requestOptions);
+    const response = await fetch(`${apiUrl}userPricing?user_id=${user_id}&provider_id=${provider_id}&service=${service}`, requestOptions);
     if (response.status === 404) {
       
       return { message: 'Resource not found', data: [] };

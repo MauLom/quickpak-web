@@ -15,7 +15,7 @@ export async function getZipCodeData(zipCode: number): Promise<any> {
   };
 
   try {
-    const response = await fetch(`${apiUrl}api/zip/${zipCode}`, requestOptions);
+    const response = await fetch(`${apiUrl}zip/${zipCode}`, requestOptions);
     if (!response.ok) {
       throw new Error('Failed to post data to the server');
     }

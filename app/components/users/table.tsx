@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react'
 
 import { SettingsIcon, DeleteIcon } from '@chakra-ui/icons'
-import { getUsers } from '../../lib/requests'
+import { deleteUser, getUsers } from '../../lib/requests'
 
 async function UsersTable(props:any) {
     const [dataTable, setDataTable] = React.useState([])
@@ -56,7 +56,7 @@ async function UsersTable(props:any) {
                                                     <SettingsIcon />
                                                 </Button>
                                                 <Button>
-                                                    <DeleteIcon />
+                                                    <DeleteIcon onClick={() =>{ deleteUser(each["_id"])}} />
                                                 </Button>
                                             </ButtonGroup>
                                         </Td>

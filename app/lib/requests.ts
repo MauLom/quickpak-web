@@ -1,4 +1,4 @@
-const URL = "https://clownfish-app-b2q4a.ondigitalocean.app/quickpak-node2/api/"
+const URL = process.env.NEXT_PUBLIC_API_URL
 //const URL = "http://localhost:8080/"
 export async function getUsers() {
     try {
@@ -11,7 +11,6 @@ export async function getUsers() {
         throw new Error(`Error occurred while fetching data: ${error.message}`);
     }
 }
-
 
 export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: any }> {
     try {
@@ -92,6 +91,15 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
     }
 }
 
+export async function deleteUser(userId:any) {
+    const res = await fetch(`${URL}users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+    return res.json()
+}
 
 export async function generateEstafetaLabel(data: any) {
     let bodyEstafeta = {
