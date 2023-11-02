@@ -10,19 +10,36 @@ import {
     Td,
     TableCaption,
     TableContainer,
-
+    useToast,
     Button, ButtonGroup, Box
 } from '@chakra-ui/react'
 
 import { SettingsIcon, DeleteIcon } from '@chakra-ui/icons'
 import { deleteUser, getUsers } from '../../lib/requests'
 
-async function UsersTable(props:any) {
+async function UsersTable(props: any) {
     const [dataTable, setDataTable] = React.useState([])
+    const toast = useToast()
+
+
     React.useEffect(() => {
+        toast({
+            title: "Cargando usuarios",
+            description: ``,
+            status: "loading",
+            duration: 5000,
+            isClosable: true
+          })
         getUsers().then(data => {
-            console.log("data", data)
+            console.log("This?")
             setDataTable(data)
+            toast({
+                title: "Usuarios cargados",
+                description: ``,
+                status: "success",
+                duration: 5000,
+                isClosable: true
+              })
         })
 
     }, [])
@@ -56,7 +73,7 @@ async function UsersTable(props:any) {
                                                     <SettingsIcon />
                                                 </Button>
                                                 <Button>
-                                                    <DeleteIcon onClick={() =>{ deleteUser(each["_id"])}} />
+                                                    <DeleteIcon onClick={() => { deleteUser(each["_id"]) }} />
                                                 </Button>
                                             </ButtonGroup>
                                         </Td>

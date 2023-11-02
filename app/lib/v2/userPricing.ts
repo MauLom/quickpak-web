@@ -24,14 +24,14 @@ export async function saveUserPricing(payloadData: any): Promise<any> {
     const response = await fetch(`${apiUrl}userPricing`, requestOptions);
 
     if (!response.ok) {
-      throw new Error('Failed to post data to the server');
+      return {status:"error", message:'Failed to post data to the server'};
     }
 
     const responseData = await response.json();
     return responseData;
   } catch (error) {
     console.error('Error:', error);
-    throw error;
+    return {status:"error", message:`${error}`};
   }
 }
 

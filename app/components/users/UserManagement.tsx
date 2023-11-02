@@ -1,4 +1,4 @@
-import { Button, Input, Box, Heading, Grid, GridItem, FormControl, FormLabel } from '@chakra-ui/react';
+import { Button, Input, Box, Heading, Grid, GridItem, FormControl, FormLabel, useToast } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import ServiceEditComponent from './provider/ServiceEdit';
 import ServicePreviewComponent from './provider/ServicePreview';
@@ -41,6 +41,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
   const [serviceToEdit, setServiceToEdit] = useState("")
   const [providerToEdit, setProviderToEdit] = useState("")
   const [dataMatriz, setDataMatriz] = useState<any>([])
+  const toast = useToast()
+  // let statusToast: "error" | "info" | "loading" | "success" | "warning" = "error"
+
+
   const fetchProviders = async () => {
     try {
       const URL = process.env.NEXT_PUBLIC_API_URL
@@ -52,6 +56,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
 
       const data = await response.json();
       setProviders(data);
+
     } catch (error) {
       console.error('Error fetching providers:', error);
     }
@@ -79,6 +84,13 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
   };
 
   const handleShowEditSheets = async (service: string, provider: string) => {
+    toast({
+      title: "Cargando matrices",
+      description: ``,
+      status: "loading",
+      duration: 5000,
+      isClosable: true
+    })
     setServiceToEdit(service)
     setProviderToEdit(provider)
     const matrizFromBD = await getUserPricing(userData._id, provider, service)
@@ -86,26 +98,80 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
     if (undefined !== matrizFromBD?.pricing) {
       const parsedData = userPricingToSpreadsheet(matrizFromBD.pricing)
       setDataMatriz(parsedData)
+      toast({
+        title: "Se cargo matriz de usuario",
+        description: ``,
+        status: "success",
+        duration: 5000,
+        isClosable: true
+      })
     }
     else {
       switch (provider) {
         case 'DHL':
           setDataMatriz(defaultSpreadsheetData.DHL)
+          toast({
+            title: "Se cargo matriz predeterminada DHL",
+            description: ``,
+            status: "success",
+            duration: 5000,
+            isClosable: true
+          })
           break;
         case 'Estafeta':
           setDataMatriz(defaultSpreadsheetData.Estafeta)
+          toast({
+            title: "Se cargo matriz predeterminada Estafeta",
+            description: ``,
+            status: "success",
+            duration: 5000,
+            isClosable: true
+          })
           break;
       }
     }
     setShowSheet(true)
   }
 
-  const handleSaveUserChanges = (e: any) => {
+  const handleSaveUserChanges = async (e: any) => {
+    toast({
+      title: "Guardando informacion de usuario",
+      description: ``,
+      status: "loading",
+      duration: 3000,
+      isClosable: true
+    })
     e.preventDefault()
-    saveUser(userData)
+    const result = await saveUser(userData)
+    
+    if (result?.status === "error") {
+      toast({
+        title: "No se pudo guardar la informacion del usuario",
+        description: ``,
+        status: "error",
+        duration: 3000,
+        isClosable: true
+      })
+
+    } else {
+      toast({
+        title: "Usuario guardado con exito",
+        description: ``,
+        status: "success",
+        duration: 3000,
+        isClosable: true
+      })
+    }
   };
 
-  const handleSaveUserPricing = () => {
+  const handleSaveUserPricing = async () => {
+    toast({
+      title: "Guardando matriz de usuario",
+      description: ``,
+      status: "loading",
+      duration: 3000,
+      isClosable: true
+    })
     const parsed = spreadSheetDataToUserPricing(dataMatriz)
     const payload = {
       "user_id": userData._id,
@@ -115,7 +181,25 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       "string_reference": userData.string_reference,
       "provider_access": []
     }
-    saveUserPricing(payload)
+    const result = await saveUserPricing(payload)
+    if (result?.status === "error") {
+      toast({
+        title: "No se pudo guardar la matriz del usuario",
+        description: ``,
+        status: "error",
+        duration: 3000,
+        isClosable: true
+      })
+
+    } else {
+      toast({
+        title: "Matriz guardada con exito",
+        description: ``,
+        status: "success",
+        duration: 3000,
+        isClosable: true
+      })
+    }
 
   }
 
