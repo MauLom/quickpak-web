@@ -12,6 +12,18 @@ export async function getUsers() {
     }
 }
 
+export async function getUser(id:string) {
+    try {
+        const res = await fetch(`${URL}users/${id}`);
+        if (!res.ok) {
+            throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
+        }
+        return await res.json();
+    } catch (error: any) {
+        throw new Error(`Error occurred while fetching data: ${error.message}`);
+    }
+}
+
 export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: any }> {
     try {
         const bodyUnParsed: any = quotesData;

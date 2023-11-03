@@ -35,9 +35,10 @@ import {
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
 import { useSession, signIn, signOut } from "next-auth/react"
-import { getQuotes, getUsers } from "../../lib/requests"
+import { getQuotes, getUser, getUsers } from "../../lib/requests"
 import LabelsForm from "../labels/form"
 import { getZipCodeData } from "../../lib/v2/zipCodes"
+import { getCookie } from '../../lib/manageUserSession'
 
 interface Iuser {
     id: string,
@@ -71,18 +72,27 @@ const QuotesForm = ({ ...props }) => {
         users.length > 0 && setUsersOptions(users)
     }
 
-    useEffect(() => {
-        if (session) {
-            const userUnParsed: any = session?.user
-            const userParsed = {
-                id: userUnParsed['id'],
-                name: userUnParsed['name'],
-                matriz: userUnParsed['email'],
-                role: userUnParsed['image']
-            }
-            setUser(userParsed)
+    async function loadUserFromId(id: string) {
+        const data = await getUser(id)
+        const userParsed = {
+            id: data._id,
+            name: data.userName,
+            matriz: data.provider_access,
+            role: data.role
         }
-        getUsersForSelect()
+        setUser(userParsed)
+    }
+
+    useEffect(() => {
+        const data = { userId: getCookie("userId"), userRole: getCookie("userRole") }
+
+        if (data.userId && data.userRole) {
+            loadUserFromId(data.userId)
+            setUserQuotes(data.userId)
+        }
+        if (data.userRole === "admin") {
+            getUsersForSelect()
+        }
     }, [session])
 
 
@@ -287,14 +297,14 @@ const QuotesForm = ({ ...props }) => {
         <Box>
             <Grid>
                 <GridItem>
-                    {/* {user.role === "admin" && */}
-                    <Select placeholder="Usuario para cotizar" value={userQuotes} onChange={handleChangeUsuarioCotizacion}>
+                    {user.role === "admin" &&
+                        <Select placeholder="Usuario para cotizar" value={userQuotes} onChange={handleChangeUsuarioCotizacion}>
 
-                        {usersOptions.length > 0 && usersOptions.map((user: any) => (
-                            <option key={user._id} value={user._id}>{user.userName}</option>
-                        ))}
-                    </Select>
-                    {/* // } */}
+                            {usersOptions.length > 0 && usersOptions.map((user: any) => (
+                                <option key={user._id} value={user._id}>{user.userName}</option>
+                            ))}
+                        </Select>
+                    }
                     {props.isLabel ? <></> : <Heading> Informacion de cotizacion</Heading>}
                     <form onSubmit={(e) => { validateSubmit(e) }}>
                         <Grid templateColumns='repeat(4, 1fr)' gap={3}>
