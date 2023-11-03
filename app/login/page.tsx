@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { setCookie } from '../lib/manageUserSession'
+import { FormControl, FormLabel, Input, Grid, GridItem, Button, Box} from "@chakra-ui/react"
 const URL = process.env.NEXT_PUBLIC_API_URL
 
 const Login = () => {
@@ -40,32 +41,38 @@ const Login = () => {
     };
 
     return (
-        <div>
-            <h1>Login</h1>
+        <Box>
             <form onSubmit={handleLogin}>
-                <label>
-                    Username:
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    Password:
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </label>
-                <br />
-                <button type="submit">Login</button>
+                <Grid>
+                    <GridItem>
+                        <FormControl>
+                            <FormLabel>
+                                Nombre de usuario
+                            </FormLabel>
+                            <Input type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required />
+                        </FormControl>
+                    </GridItem>
+                    <GridItem>
+                        <FormControl>
+                            Contraseña
+                        </FormControl>
+                        <Input type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required />
+                    </GridItem>
+                    <GridItem>
+                        <Button colorScheme='teal' type="submit">
+                            Conectar
+                        </Button>
+                    </GridItem>
+                </Grid>
+          
             </form>
-        </div>
+        </Box>
     );
 };
 
