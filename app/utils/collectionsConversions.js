@@ -41,45 +41,58 @@ export function spreadSheetDataToUserPricing(array) {
     return userPricing;
   }
   
-export function userPricingToSpreadsheet(userPricingData) {
+  export function userPricingToSpreadsheet(userPricingData) {
     const firstRow = [{ value: " KG", readOnly: true }];
     const zones = [];
-  
+
     // Extract zones from the user pricing data
     for (const entry of userPricingData) {
-      for (const price of entry.prices) {
-        if (!zones.includes(price.zone)) {
-          zones.push(price.zone);
+        for (const price of entry.prices) {
+            if (!zones.includes(price.zone)) {
+                zones.push(price.zone);
+            }
         }
-      }
     }
-  
+
     // Create the first row with zone names
     zones.forEach((zone) => {
-      firstRow.push({ value: zone, readOnly: true });
+        firstRow.push({ value: zone, readOnly: true });
     });
-  
+
     // Create the rows for each kg entry and the last row for extra Kgs
     const rows = [firstRow];
     for (let i = 1; i <= 30; i++) {
-      const row = [{ value: i, readOnly: true }];
-      for (const zone of zones) {
-        const price = userPricingData
-          .find((entry) => entry.kg === i)
-          .prices.find((p) => p.zone === zone);
-        row.push({ value: ` $ ${price.price.toFixed(2)}` });
-      }
-      rows.push(row);
+        const row = [{ value: i, readOnly: true }];
+        const entry = userPricingData.find((entry) => entry.kg === i);
+        if (entry) {
+            for (const zone of zones) {
+                const priceEntry = entry.prices.find((p) => p.zone === zone);
+                if (priceEntry && priceEntry.price !== null) {
+                    row.push({ value: ` $ ${priceEntry.price.toFixed(2)}` });
+                } else {
+                    row.push({ value: 'N/A' }); // Or any other value to represent null prices
+                }
+            }
+            rows.push(row);
+        }
     }
-  
+
     // Last row for extra Kgs
     const lastRow = [{ value: " Kg. Adic", readOnly: true }];
-    for (const zone of zones) {
-      const price = userPricingData[30].prices.find((p) => p.zone === zone);
-      lastRow.push({ value: ` $ ${price.price.toFixed(2)}` });
+    const lastEntry = userPricingData[30];
+    if (lastEntry) {
+        for (const zone of zones) {
+            const price = lastEntry.prices.find((p) => p.zone === zone);
+            if (price && price.price !== null) {
+                lastRow.push({ value: ` $ ${price.price.toFixed(2)}` });
+            } else {
+                lastRow.push({ value: 'N/A' }); // Or any other value to represent null prices
+            }
+        }
+        rows.push(lastRow);
     }
-    rows.push(lastRow);
-  
+
     return rows;
-  }
+}
+
   
