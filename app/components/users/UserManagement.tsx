@@ -171,6 +171,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       duration: 3000,
       isClosable: true
     })
+    console.log("[0] Hadir")
     const parsed = spreadSheetDataToUserPricing(dataMatriz)
     console.log("[1] Hadir", parsed)
 
