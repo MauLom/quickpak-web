@@ -143,7 +143,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
     })
     e.preventDefault()
     const result = await saveUser(userData)
-    
+    console.log(" result HADIR", result)
     if (result?.status === "error") {
       toast({
         title: "No se pudo guardar la informacion del usuario",
