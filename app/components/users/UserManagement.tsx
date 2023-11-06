@@ -172,6 +172,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       isClosable: true
     })
     console.log("[0] Hadir")
+    console.log("dataMatriz", dataMatriz)
     const parsed = spreadSheetDataToUserPricing(dataMatriz)
     console.log("[1] Hadir", parsed)
 
