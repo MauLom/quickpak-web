@@ -143,7 +143,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
     })
     e.preventDefault()
     const result = await saveUser(userData)
-    console.log(" result HADIR", result)
     if (result?.status === "error") {
       toast({
         title: "No se pudo guardar la informacion del usuario",
@@ -173,6 +172,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       isClosable: true
     })
     const parsed = spreadSheetDataToUserPricing(dataMatriz)
+    console.log("[1] Hadir", parsed)
+
     const payload = {
       "user_id": userData._id,
       "provider_id": providerToEdit,
@@ -182,6 +183,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       "provider_access": []
     }
     const result = await saveUserPricing(payload)
+    console.log("[2] Hadir", result)
     if (result?.status === "error") {
       toast({
         title: "No se pudo guardar la matriz del usuario",
