@@ -114,13 +114,25 @@ const QuotesForm = ({ ...props }) => {
                             quoteObj['details'] = eachQuote
                             quoteObj['zone'] = dataObj?.data?.zone
                             quoteObj['oc'] = dataObj?.data?.ocurreForzoso
+                            quoteObj['provider'] = "Estafeta"
                             parsedArr.push(quoteObj)
                         })
                     }
+
+                    //const filteredCharges = charges.filter(charge => charge.ChargeCode === targetChargeCode);
+
+
+
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="7rem"
                             backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="DHL logo" />
+                        let foundServiceBase = eachQuote?.Charges.Charge.filter((charge: any) => charge.ChargeName === eachQuote.ServiceName)
+                        console.log("fonded", foundServiceBase)
+                        quoteObj['baseService'] = foundServiceBase[0].ChargeAmount
+                        console.log("[00]", eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "FF"))?.ChargeAmount)
+                        quoteObj['ff'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "FF"))?.ChargeAmount
+                        quoteObj['ii'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "II"))?.ChargeAmount
                         quoteObj['serviceType'] = eachQuote.ServiceName
                         quoteObj['weight'] = eachQuote?.QuotedWeight
                         quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
@@ -128,6 +140,7 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['Total'] = eachQuote?.TotalNet?.Amount
                         quoteObj['details'] = eachQuote
                         quoteObj['zone'] = result?.dataDHL?.zone
+                        quoteObj['provider'] = "DHL"
                         parsedArr.push(quoteObj)
 
                     })
@@ -293,6 +306,48 @@ const QuotesForm = ({ ...props }) => {
         }
     }
 
+    function renderAccordeonDetails(eachService: any) {
+        switch (eachService?.provider) {
+
+            case "DHL":
+                return (
+                    <AccordionPanel>
+                        {`Servicio $${eachService?.baseService}`}
+                        <br />
+                        {`Cargo por combustible $${eachService?.ff}`}
+                        <br />
+                        {eachService?.ii !== 0 && `Seguro ${eachService?.ii}`}
+                        <br />
+                        {`Zona: ${eachService?.zone}`}
+                        <br />
+                        {`Peso calculado: ${eachService?.weight || 'error'}`}
+                        <br />
+                        {`I.V.A.: $${eachService?.IVA || 'error'}`}
+                    </AccordionPanel>
+                )
+            case "Estafeta":
+                return (
+                    <AccordionPanel>
+                        {/* {`Ocurre Forzoso: ${eachService?.oc}`} */}
+                        <br />
+                        {`Zona: ${eachService?.zone}`}
+                        <br />
+                        {`Peso: ${eachService?.details?.Peso || 'error'}`}
+                        <br />
+                        {`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion || 0}`}
+                        <br />
+                        {`I.V.A.: ${eachService?.details?.IVA || 'error'}`}
+                    </AccordionPanel>
+                )
+            default:
+                return (
+                    <AccordionPanel>No se pueden cargar estos detalles</AccordionPanel>
+                )
+
+        }
+
+    }
+
     return (
         <Box>
             <Grid>
@@ -424,19 +479,7 @@ const QuotesForm = ({ ...props }) => {
                                                             </Box>
                                                             <AccordionIcon />
                                                         </AccordionButton>
-                                                        <AccordionPanel>
-                                                            {`Ocurre Forzoso: ${eachService?.oc}`}
-                                                            <br />
-                                                            {`Zona: ${eachService?.zone}`}
-                                                            <br />
-                                                            {`Peso: ${eachService?.details?.Peso || 'error'}`}
-                                                            <br />
-                                                            {`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion || 0}`}
-                                                            <br />
-                                                            {`I.V.A.: ${eachService?.details?.IVA || 'error'}`}
-
-
-                                                        </AccordionPanel>
+                                                        {renderAccordeonDetails(eachService)}
                                                     </AccordionItem>
                                                 </Accordion>
                                             </Td>
