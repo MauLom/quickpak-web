@@ -25,11 +25,18 @@ const LabelsForm = (props: any) => {
     const [dataQuotes, setDataQuotes] = React.useState({})
     const [estafetaLabelString, setEstafetaLabelString] = React.useState("")
     const [isModalOpen, setIsModalOpen] = React.useState(false)
+
     const toast = useToast()
 
     const handleChangePaqueteria = (e: any) => {
         setSlctdPaqueteria(e.target.value)
     }
+    React.useEffect(() => {
+        if (props.hideQuotes) {
+            setSlctdPaqueteria(props.labelData?.provider)
+            setDataQuotes(props?.quotesData)
+        }
+    }, [])
 
     const doSubmit = async (e: any) => {
         e.preventDefault()
@@ -37,6 +44,7 @@ const LabelsForm = (props: any) => {
         let message = ""
         let statusToast: "error" | "info" | "loading" | "success" | "warning" = "error"
 
+        console.log("dataQuotes?", dataQuotes)
         let payload = {
             quotes: dataQuotes,
             descPckg: e.target.descPckg.value,
@@ -57,6 +65,7 @@ const LabelsForm = (props: any) => {
             colD: e.target.colD?.value || "cannot read",
             refD: e.target.refD?.value || "cannot read",
         }
+
 
         switch (slctdPaqueteria) {
             case "DHL":

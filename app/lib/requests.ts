@@ -12,7 +12,7 @@ export async function getUsers() {
     }
 }
 
-export async function getUser(id:string) {
+export async function getUser(id: string) {
     try {
         const res = await fetch(`${URL}users/${id}`);
         if (!res.ok) {
@@ -27,9 +27,10 @@ export async function getUser(id:string) {
 export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: any }> {
     try {
         const bodyUnParsed: any = quotesData;
-        let dataEstafeta: any = undefined;
 
-        if (bodyUnParsed?.package.length <= 1) {
+        const fetchEstafeta = async () => {
+            if (bodyUnParsed?.package?.length !== 1) return;
+
             const bodyEstafeta = {
                 "alto": bodyUnParsed?.package[0]?.height,
                 "ancho": bodyUnParsed?.package[0]?.width,
@@ -53,57 +54,53 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
                 throw new Error('Failed to fetch data from Estafeta');
             }
 
-            dataEstafeta = await res.json();
-        }
-
-        const packagesArrForDHL = bodyUnParsed?.package.map((eachPackage: any, idx: any) => ({
-            "@number": (idx + 1),
-            "Weight": { "Value": eachPackage?.weight },
-            "Dimensions": { "Length": eachPackage?.length, "Width": eachPackage?.width, "Height": eachPackage?.height }
-        }));
-
-        const bodyDHL = {
-            "timestamp": bodyUnParsed?.data?.date + "+GMT+0500",
-            "shipperCity": bodyUnParsed?.data?.originCity,
-            "shipperCountryCode": "MX",
-            "shipperZip": bodyUnParsed?.data?.originZip,
-            "recipientCity": bodyUnParsed?.data?.destinyCity,
-            "recipientCountryCode": "MX",
-            "recipientZip": bodyUnParsed?.data?.destinyZip,
-            "packages": packagesArrForDHL,
-            "insurance": bodyUnParsed?.data?.insurance,
-            "userId": bodyUnParsed?.userId
+            return res.json();
         };
 
-        const resDHL = await fetch(`${URL}rates/DHL`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bodyDHL),
-        });
+        const fetchDHL = async () => {
+            const packagesArrForDHL = bodyUnParsed?.package.map((eachPackage: any, idx: any) => ({
+                "@number": (idx + 1),
+                "Weight": { "Value": eachPackage?.weight },
+                "Dimensions": { "Length": eachPackage?.length, "Width": eachPackage?.width, "Height": eachPackage?.height }
+            }));
 
-        if (!resDHL.ok) {
-            throw new Error('Failed to fetch data from DHL');
-        }
+            const bodyDHL = {
+                "timestamp": bodyUnParsed?.data?.date + "+GMT+0500",
+                "shipperCity": bodyUnParsed?.data?.originCity,
+                "shipperCountryCode": "MX",
+                "shipperZip": bodyUnParsed?.data?.originZip,
+                "recipientCity": bodyUnParsed?.data?.destinyCity,
+                "recipientCountryCode": "MX",
+                "recipientZip": bodyUnParsed?.data?.destinyZip,
+                "packages": packagesArrForDHL,
+                "insurance": bodyUnParsed?.data?.insurance,
+                "userId": bodyUnParsed?.userId
+            };
 
-        const dataDHL = await resDHL.json();
+            const resDHL = await fetch(`${URL}rates/DHL`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyDHL),
+            });
 
-        const result: any = { data: '', dataDHL: '' };
-        if (dataEstafeta !== undefined) {
-            result.data = dataEstafeta;
-        }
-        if (dataDHL !== undefined) {
-            result.dataDHL = dataDHL;
-        }
+            if (!resDHL.ok) {
+                throw new Error('Failed to fetch data from DHL');
+            }
 
-        return result;
+            return resDHL.json();
+        };
+
+        const [dataEstafeta, dataDHL] = await Promise.all([fetchEstafeta(), fetchDHL()]);
+
+        return { data: dataEstafeta, dataDHL };
     } catch (error) {
         throw new Error(`Error occurred during processing: ${(error as Error).message}`);
     }
 }
 
-export async function deleteUser(userId:any) {
+export async function deleteUser(userId: any) {
     const res = await fetch(`${URL}users/${userId}`, {
         method: 'DELETE',
         headers: {
@@ -217,7 +214,7 @@ export async function generateDHLLabel(data: any) {
         "packages": packages
     }
 
-    const res = await fetch(`${URL}generateLabel`, {
+    const res = await fetch(`${URL}generateLabel/DHL`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

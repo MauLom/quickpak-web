@@ -64,6 +64,8 @@ const QuotesForm = ({ ...props }) => {
     const [originCity, setOriginCity] = useState("")
     const [destinyCity, setDestinyCity] = useState("")
     const [usersOptions, setUsersOptions] = useState<any>([])
+    const [labelData, setLabelData] = useState({})
+    const [dataQuotes, setDataQuotes] = useState({})
     const toast = useToast()
 
     async function getUsersForSelect() {
@@ -240,7 +242,9 @@ const QuotesForm = ({ ...props }) => {
                 destinyCity: e.target?.destinyCity.value,
                 insurance: includeInsurance ? e.target?.insurance.value : 0
             }
+
             dataToBeSended.userId = userQuotes !== "" ? userQuotes : "enc0UiLq0oNXm1GTFHB8"
+            setDataQuotes(dataToBeSended)
             doSubmit(dataToBeSended)
         }
 
@@ -287,6 +291,8 @@ const QuotesForm = ({ ...props }) => {
         setQuotesArr([])
     }
     function handleDoGuide(quote: any) {
+        console.log("quote", quote)
+        setLabelData({ "provider": quote.provider, service: quote.serviceType })
         setIsOpenModalLabels(true)
     }
 
@@ -484,7 +490,7 @@ const QuotesForm = ({ ...props }) => {
                                                 </Accordion>
                                             </Td>
                                             <Td>
-                                                <Button isDisabled onClick={() => { handleDoGuide(eachService) }}>
+                                                <Button onClick={() => { handleDoGuide(eachService) }}>
                                                     Hacer Guia
                                                 </Button>
                                             </Td>
@@ -502,7 +508,7 @@ const QuotesForm = ({ ...props }) => {
                 <ModalContent width={"80%"}>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
-                        <LabelsForm hideQuotes={true} />
+                        <LabelsForm hideQuotes={true} labelData={labelData} quotesData={dataQuotes} />
                     </ModalBody>
 
                 </ModalContent>
