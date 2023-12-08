@@ -30,7 +30,8 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    Select
+    Select,
+    Stack
 } from "@chakra-ui/react"
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
@@ -117,16 +118,14 @@ const QuotesForm = ({ ...props }) => {
                             quoteObj['zone'] = dataObj?.data?.zone
                             quoteObj['oc'] = dataObj?.data?.ocurreForzoso
                             quoteObj['provider'] = "Estafeta"
+                            quoteObj['Dias'] = eachQuote?.DiasEntrega
                             parsedArr.push(quoteObj)
                         })
                     }
-
                     //const filteredCharges = charges.filter(charge => charge.ChargeCode === targetChargeCode);
-
-
-
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
+                        console.log("eachQuptes", eachQuote.DeliveryTime)
                         quoteObj['parcelLogo'] = <Image maxH="7rem"
                             backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="DHL logo" />
                         let foundServiceBase = eachQuote?.Charges.Charge.filter((charge: any) => charge.ChargeName === eachQuote.ServiceName)
@@ -143,6 +142,7 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['details'] = eachQuote
                         quoteObj['zone'] = result?.dataDHL?.zone
                         quoteObj['provider'] = "DHL"
+                        quoteObj['fecEntrega'] = eachQuote?.DeliveryTime
                         parsedArr.push(quoteObj)
 
                     })
@@ -291,7 +291,6 @@ const QuotesForm = ({ ...props }) => {
         setQuotesArr([])
     }
     function handleDoGuide(quote: any) {
-        console.log("quote", quote)
         setLabelData({ "provider": quote.provider, service: quote.serviceType })
         setIsOpenModalLabels(true)
     }
@@ -312,37 +311,70 @@ const QuotesForm = ({ ...props }) => {
         }
     }
 
+    const renderDays = (obj: any) => {
+        // Join the values of the object into a string
+        const renderedDays = Object.entries(obj).map(([day, value]) => (
+
+            <span key={day}>{`${day}:${value}`}</span>
+        ));
+
+        return <Stack direction="column">{renderedDays}</Stack>;
+    };
+
+
     function renderAccordeonDetails(eachService: any) {
         switch (eachService?.provider) {
 
             case "DHL":
                 return (
                     <AccordionPanel>
-                        {`Servicio $${eachService?.baseService}`}
-                        <br />
-                        {`Cargo por combustible $${eachService?.ff}`}
-                        <br />
-                        {eachService?.ii !== 0 && `Seguro ${eachService?.ii}`}
-                        <br />
-                        {`Zona: ${eachService?.zone}`}
-                        <br />
-                        {`Peso calculado: ${eachService?.weight || 'error'}`}
-                        <br />
-                        {`I.V.A.: $${eachService?.IVA || 'error'}`}
+                        <Stack direction="row">
+                            <Box>
+                                <Stack direction="column">
+                                    <Box>{`${eachService?.zone}`}</Box>
+                                    <Box>{`Fecha de entrega: `}</Box>
+                                    <Box>{` ${eachService.fecEntrega}`}</Box>
+
+                                </Stack>
+
+
+                            </Box>
+                            <Box>
+                                {`Servicio $${eachService?.baseService}`}
+                                <br />
+                                {`Cargo por combustible $${eachService?.ff}`}
+                                <br />
+                                {eachService?.ii !== 0 && `Seguro ${eachService?.ii}`}
+                                <br />
+                                {`Peso calculado: ${eachService?.weight || 'error'}`}
+                                <br />
+                                {`I.V.A.: $${eachService?.IVA || 'error'}`}
+                            </Box>
+                        </Stack>
+
                     </AccordionPanel>
                 )
             case "Estafeta":
+                console.log("eachService", eachService)
                 return (
                     <AccordionPanel>
-                        {/* {`Ocurre Forzoso: ${eachService?.oc}`} */}
-                        <br />
-                        {`Zona: ${eachService?.zone}`}
-                        <br />
-                        {`Peso: ${eachService?.details?.Peso || 'error'}`}
-                        <br />
-                        {`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion || 0}`}
-                        <br />
-                        {`I.V.A.: ${eachService?.details?.IVA || 'error'}`}
+                        <Stack direction="row">
+                            <Box>
+                                <Stack>
+                                    <Box>{`${eachService?.zone}`}</Box>
+                                    {eachService?.oc && <Box>{`Ocurre Forzoso: ${eachService?.oc}`}</Box>}
+                                    <Box>{`Peso: ${eachService?.details?.Peso || 'error'}`}</Box>
+                                    {renderDays(eachService?.Dias)}
+                                </Stack>
+                            </Box>
+                            <Box>
+                                <Stack >
+                                    {eachService?.details?.CostoReexpedicion > 0 && <Box>{`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion}`}</Box>}
+
+                                    <Box>{`I.V.A.: ${eachService?.details?.IVA || 'error'}`}</Box>
+                                </Stack>
+                            </Box>
+                        </Stack>
                     </AccordionPanel>
                 )
             default:
@@ -503,12 +535,16 @@ const QuotesForm = ({ ...props }) => {
 
 
             </Grid>
-            <Modal size={"xl"} closeOnOverlayClick={false} isOpen={isOpenModalLabels} onClose={() => { setIsOpenModalLabels(false) }}>
+            <Modal size="xl" closeOnOverlayClick={false} isOpen={isOpenModalLabels} onClose={() => { setIsOpenModalLabels(false) }}>
                 <ModalOverlay />
-                <ModalContent width={"80%"}>
+                <ModalContent minWidth="fit-content"
+                    height="fit-content">
                     <ModalCloseButton />
-                    <ModalBody pb={6}>
-                        <LabelsForm hideQuotes={true} labelData={labelData} quotesData={dataQuotes} />
+                    <ModalBody>
+                        <Box>
+                            <LabelsForm hideQuotes={true} labelData={labelData} quotesData={dataQuotes} />
+
+                        </Box>
                     </ModalBody>
 
                 </ModalContent>

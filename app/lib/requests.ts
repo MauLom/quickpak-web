@@ -100,6 +100,23 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
     }
 }
 
+export async function getLabels(originLabels: any) {
+
+    try {
+        const resLabels = await fetch(`${URL}generateLabel?origin=${originLabels}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        return resLabels.json()
+    }
+    catch (error) {
+        throw new Error(`Error occurred during processing: ${(error as Error).message}`);
+    }
+}
+
 export async function deleteUser(userId: any) {
     const res = await fetch(`${URL}users/${userId}`, {
         method: 'DELETE',

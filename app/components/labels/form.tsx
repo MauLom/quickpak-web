@@ -44,7 +44,6 @@ const LabelsForm = (props: any) => {
         let message = ""
         let statusToast: "error" | "info" | "loading" | "success" | "warning" = "error"
 
-        console.log("dataQuotes?", dataQuotes)
         let payload = {
             quotes: dataQuotes,
             descPckg: e.target.descPckg.value,
@@ -176,7 +175,7 @@ const LabelsForm = (props: any) => {
                             </GridItem>
                             <GridItem>
                                 <FormControl>
-                                    <FormLabel>Nombre de compañia / Empresa</FormLabel>
+                                    <FormLabel>Empresa</FormLabel>
                                     <Input name="compR" />
                                 </FormControl>
                             </GridItem>
