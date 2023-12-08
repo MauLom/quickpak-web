@@ -119,7 +119,7 @@ const QuotesForm = ({ ...props }) => {
                             quoteObj['oc'] = dataObj?.data?.ocurreForzoso
                             quoteObj['provider'] = "Estafeta"
                             quoteObj['Dias'] = eachQuote?.DiasEntrega
-                            quoteObj['seguro'] =eachQuote?.seguro
+                            quoteObj['seguro'] = eachQuote?.seguro
                             parsedArr.push(quoteObj)
                         })
                     }
@@ -331,6 +331,7 @@ const QuotesForm = ({ ...props }) => {
                             <Box>
                                 <Stack direction="column">
                                     <Box>{`${eachService?.zone}`}</Box>
+                                    <Box>{`Peso calculado: ${eachService?.weight || 'error'}`}</Box>
                                     <Box>{`Fecha de entrega: `}</Box>
                                     <Box>{` ${eachService.fecEntrega}`}</Box>
 
@@ -343,9 +344,7 @@ const QuotesForm = ({ ...props }) => {
                                 <br />
                                 {`Cargo por combustible $${eachService?.ff}`}
                                 <br />
-                                {eachService?.ii !== 0 && `Seguro ${eachService?.ii}`}
-                                <br />
-                                {`Peso calculado: ${eachService?.weight || 'error'}`}
+                                {eachService?.ii !== 0 && `Seguro $${eachService?.ii}`}
                                 <br />
                                 {`I.V.A.: $${eachService?.IVA || 'error'}`}
                             </Box>
@@ -368,8 +367,8 @@ const QuotesForm = ({ ...props }) => {
                             <Box>
                                 <Stack >
                                     {eachService?.details?.CostoReexpedicion > 0 && <Box>{`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion}`}</Box>}
-                                    <Box>{`Seguro: ${eachService?.seguro}`}</Box>
-                                    <Box>{`I.V.A.: ${eachService?.details?.IVA || 'error'}`}</Box>
+                                    <Box>{`Seguro: $${eachService?.seguro}`}</Box>
+                                    <Box>{`I.V.A.: $${eachService?.details?.IVA || 'error'}`}</Box>
                                 </Stack>
                             </Box>
                         </Stack>
