@@ -39,7 +39,8 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
                 "peso": bodyUnParsed?.package[0]?.weight,
                 "originZip": bodyUnParsed?.data?.originZip,
                 "destinyZip": bodyUnParsed?.data?.destinyZip,
-                "userId": bodyUnParsed?.userId
+                "userId": bodyUnParsed?.userId,
+                "seguro": bodyUnParsed?.data?.insurance
             };
 
             const res = await fetch(`${URL}rates/estafeta`, {

@@ -119,13 +119,13 @@ const QuotesForm = ({ ...props }) => {
                             quoteObj['oc'] = dataObj?.data?.ocurreForzoso
                             quoteObj['provider'] = "Estafeta"
                             quoteObj['Dias'] = eachQuote?.DiasEntrega
+                            quoteObj['seguro'] =eachQuote?.seguro
                             parsedArr.push(quoteObj)
                         })
                     }
                     //const filteredCharges = charges.filter(charge => charge.ChargeCode === targetChargeCode);
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
-                        console.log("eachQuptes", eachQuote.DeliveryTime)
                         quoteObj['parcelLogo'] = <Image maxH="7rem"
                             backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="DHL logo" />
                         let foundServiceBase = eachQuote?.Charges.Charge.filter((charge: any) => charge.ChargeName === eachQuote.ServiceName)
@@ -231,7 +231,6 @@ const QuotesForm = ({ ...props }) => {
                 j >= (packagesArr.length) && (doEval = false);
             }
         }
-
         if (statusToast == "loading") {
             dataToBeSended.package = packagesArr;
             dataToBeSended.data = {
@@ -355,7 +354,6 @@ const QuotesForm = ({ ...props }) => {
                     </AccordionPanel>
                 )
             case "Estafeta":
-                console.log("eachService", eachService)
                 return (
                     <AccordionPanel>
                         <Stack direction="row">
@@ -370,7 +368,7 @@ const QuotesForm = ({ ...props }) => {
                             <Box>
                                 <Stack >
                                     {eachService?.details?.CostoReexpedicion > 0 && <Box>{`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion}`}</Box>}
-
+                                    <Box>{`Seguro: ${eachService?.seguro}`}</Box>
                                     <Box>{`I.V.A.: ${eachService?.details?.IVA || 'error'}`}</Box>
                                 </Stack>
                             </Box>
