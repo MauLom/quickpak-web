@@ -125,7 +125,7 @@ const QuotesForm = ({ ...props }) => {
                     }
                     //const filteredCharges = charges.filter(charge => charge.ChargeCode === targetChargeCode);
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
-                        console.log(" eachQuote?.Charges.Charge",  eachQuote?.Charges.Charge)
+                        console.log(" eachQuote?.Charges.Charge", eachQuote?.Charges.Charge)
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="7rem"
                             backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="DHL logo" />
@@ -137,6 +137,8 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['ii'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "II"))?.ChargeAmount
                         quoteObj['yy'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YY"))?.ChargeAmount
                         quoteObj['oo'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "OO"))?.ChargeAmount
+                        quoteObj['yb'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YB"))?.ChargeAmount
+                        quoteObj['ye'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YE"))?.ChargeAmount
                         quoteObj['serviceType'] = eachQuote.ServiceName
                         quoteObj['weight'] = eachQuote?.QuotedWeight
                         quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
@@ -352,9 +354,13 @@ const QuotesForm = ({ ...props }) => {
                                 <br />
                                 {`Cargo por combustible $${eachService?.ff}`}
                                 <br />
-                                {(eachService?.oo !== 0 && eachService?.oo !== undefined) &&`Cargo por area remota $${eachService?.oo}`}
+                                {(eachService?.yb !== 0 && eachService?.yb !== undefined) && `Cargo por exceso de peso $${eachService?.yb}`}
                                 <br />
-                                {(eachService?.yy !== 0 && eachService?.yy !== undefined) &&`Cargo por exceso de peso $${eachService?.yy}`}
+                                {(eachService?.oo !== 0 && eachService?.oo !== undefined) && `Cargo por area remota $${eachService?.oo}`}
+                                <br />
+                                {(eachService?.yy !== 0 && eachService?.yy !== undefined) && `Cargo por exceso de peso $${eachService?.yy}`}
+                                <br />
+                                {(eachService?.ye !== 0 && eachService?.ye !== undefined) && `Cargo por exceso de dimensiones $${eachService?.ye}`}
                                 <br />
                                 {eachService?.ii !== 0 && `Seguro $${eachService?.ii}`}
                                 <br />
