@@ -125,7 +125,6 @@ const QuotesForm = ({ ...props }) => {
                     }
                     //const filteredCharges = charges.filter(charge => charge.ChargeCode === targetChargeCode);
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
-                        console.log(" eachQuote?.Charges.Charge", eachQuote?.Charges.Charge)
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="7rem"
                             backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="DHL logo" />
