@@ -303,6 +303,12 @@ const QuotesForm = ({ ...props }) => {
             setOriginCity(dataFromZip.codigo_postal.municipio)
         }
     }
+    function handleOriginCityManualChange(e: any) {
+        setOriginCity(e.target.value)
+    }
+    function handleDestinyCityManualChange(e: any) {
+        setDestinyCity(e.target.value)
+    }
     async function handleZipDestinyChange(e: any) {
         if (e.target.value.length === 5) {
             const dataFromZip = await getZipCodeData(e.target.value)
@@ -407,7 +413,7 @@ const QuotesForm = ({ ...props }) => {
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Ciudad de origen</FormLabel>
-                                    <Input value={originCity} name="originCity" />
+                                    <Input value={originCity} name="originCity" onChange={handleOriginCityManualChange} />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
@@ -419,7 +425,7 @@ const QuotesForm = ({ ...props }) => {
                             <GridItem>
                                 <FormControl>
                                     <FormLabel>Ciudad de destino</FormLabel>
-                                    <Input value={destinyCity} name="destinyCity" />
+                                    <Input value={destinyCity} name="destinyCity" onChange={handleDestinyCityManualChange} />
                                 </FormControl>
                             </GridItem>
                             <GridItem >
