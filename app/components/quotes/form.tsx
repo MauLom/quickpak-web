@@ -353,13 +353,13 @@ const QuotesForm = ({ ...props }) => {
                                 <br />
                                 {`Cargo por combustible $${eachService?.ff}`}
                                 <br />
-                                {(eachService?.yb !== 0 && eachService?.yb !== undefined) && `Cargo por exceso de peso $${eachService?.yb}`}
+                                {(eachService?.yb !== 0 && eachService?.yb !== undefined) && `Cargo por exceso de dimensiones $${eachService?.yb}`}
                                 <br />
                                 {(eachService?.oo !== 0 && eachService?.oo !== undefined) && `Cargo por area remota $${eachService?.oo}`}
                                 <br />
                                 {(eachService?.yy !== 0 && eachService?.yy !== undefined) && `Cargo por exceso de peso $${eachService?.yy}`}
                                 <br />
-                                {(eachService?.ye !== 0 && eachService?.ye !== undefined) && `Cargo por exceso de dimensiones $${eachService?.ye}`}
+                                {(eachService?.ye !== 0 && eachService?.ye !== undefined) && `Cargo por multipieza $${eachService?.ye}`}
                                 <br />
                                 {eachService?.ii !== 0 && `Seguro $${eachService?.ii}`}
                                 <br />
