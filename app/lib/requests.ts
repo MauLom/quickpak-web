@@ -52,7 +52,8 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
             });
 
             if (!res.ok) {
-                throw new Error('Failed to fetch data from Estafeta');
+                /// TODO Handle possible errors 
+               return {};
             }
 
             return res.json();
