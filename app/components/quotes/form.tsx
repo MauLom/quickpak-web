@@ -125,6 +125,7 @@ const QuotesForm = ({ ...props }) => {
                     }
                     //const filteredCharges = charges.filter(charge => charge.ChargeCode === targetChargeCode);
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
+                        console.log(" eachQuote?.Charges.Charge",  eachQuote?.Charges.Charge)
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="7rem"
                             backgroundColor="yellow" borderRadius="5px" src="https://cdn.shopify.com/app-store/listing_images/edcb6c735e921133ca80c9c63be20fb5/icon/CIu5iaOJqPUCEAE=.png" alt="DHL logo" />
@@ -134,6 +135,8 @@ const QuotesForm = ({ ...props }) => {
                         console.log("[00]", eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "FF"))?.ChargeAmount)
                         quoteObj['ff'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "FF"))?.ChargeAmount
                         quoteObj['ii'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "II"))?.ChargeAmount
+                        quoteObj['yy'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YY"))?.ChargeAmount
+                        quoteObj['oo'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "OO"))?.ChargeAmount
                         quoteObj['serviceType'] = eachQuote.ServiceName
                         quoteObj['weight'] = eachQuote?.QuotedWeight
                         quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
@@ -340,7 +343,6 @@ const QuotesForm = ({ ...props }) => {
                                     <Box>{`Peso calculado: ${eachService?.weight || 'error'}`}</Box>
                                     <Box>{`Fecha de entrega: `}</Box>
                                     <Box>{` ${eachService.fecEntrega}`}</Box>
-
                                 </Stack>
 
 
@@ -349,6 +351,10 @@ const QuotesForm = ({ ...props }) => {
                                 {`Servicio $${eachService?.baseService}`}
                                 <br />
                                 {`Cargo por combustible $${eachService?.ff}`}
+                                <br />
+                                {(eachService?.oo !== 0 && eachService?.oo !== undefined) &&`Cargo por area remota $${eachService?.oo}`}
+                                <br />
+                                {(eachService?.yy !== 0 && eachService?.yy !== undefined) &&`Cargo por exceso de peso $${eachService?.yy}`}
                                 <br />
                                 {eachService?.ii !== 0 && `Seguro $${eachService?.ii}`}
                                 <br />
