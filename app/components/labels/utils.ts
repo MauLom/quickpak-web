@@ -4,10 +4,17 @@ export interface ParcelData {
     userId: string;
     labelID: string;
     parcel: string;
-    dimensions: string;
+    numberOfPieces: number; // New field
+    dimensions: {
+        length: string;
+        width: string;
+        height: string;
+    };
+    description: string; // New field
     weight: number;
     createdAt: number;
 }
+
 
 export interface User {
     _id: string;
@@ -29,19 +36,21 @@ export function extractParcelData(arr: any[]): ParcelData[] {
             item.response?.ShipmentResponse?.ShipmentIdentificationNumber;
         const parcel = item.data?.parcel || item.type;
 
-        let dimensions = "";
-        let weight = 0;
-        if (item.request?.packages?.[0]) {
-            const pkg = item.request.packages[0];
-            dimensions = `${pkg.Dimensions?.Height || ''}x${pkg.Dimensions?.Width || ''}x${pkg.Dimensions?.Length || ''}`;
-            weight = pkg.Weight;
-        } else {
-            dimensions = `${item.request?.alto || ''}x${item.request?.ancho || ''}x${item.request?.largo || ''}`;
-            weight = item.request?.peso;
-        }
+        const numberOfPieces = item.request?.packages?.[0]?.NumberOfPieces || 1; // Example extraction
+
+        let dimensions = {
+            length: item.request?.packages?.[0]?.Dimensions?.Length || item.request?.largo || '',
+            width: item.request?.packages?.[0]?.Dimensions?.Width || item.request?.ancho || '',
+            height: item.request?.packages?.[0]?.Dimensions?.Height || item.request?.alto || '',
+        };
+
+        const description = item.request?.description || ''; // Example extraction
+
+        let weight = item.request?.packages?.[0]?.Weight || item.request?.peso || 0;
 
         const createdAt = item.createdAt;
 
-        return { userId, labelID, parcel, dimensions, weight, createdAt };
+        return { userId, labelID, parcel, numberOfPieces, dimensions, description, weight, createdAt };
     });
 }
+
