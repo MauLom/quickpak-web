@@ -1,6 +1,7 @@
 // Additional imports if needed
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, GridItem, Heading, FormControl, FormLabel, Input, Button, Select, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, FormControl, FormLabel, Input, Button, Select, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Link } from '@chakra-ui/react';
+import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
 import QuotesForm from '../quotes/form';
 import { generateDHLLabel, generateEstafetaLabel } from '../../lib/requests';
 
@@ -14,6 +15,8 @@ const LabelsForm = (props: any) => {
     const [dataQuotes, setDataQuotes] = useState({});
     const [labelString, setLabelString] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [checkboxChecked, setCheckboxChecked] = useState(false);
+
     const toast = useToast();
 
     useEffect(() => {
@@ -106,21 +109,17 @@ const LabelsForm = (props: any) => {
             `etiqueta${selectedCarrier}.pdf`,
         );
 
-        // Append to html link element page
         document.body.appendChild(link);
-
-        // Start download
         link.click();
-
-        // Clean up and remove the link
-        // link?.parentNode.removeChild(link);
-
     }
 
     const handleChangePaqueteria = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCarrier(event.target.value);
     };
 
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckboxChecked(event.target.checked);
+    };
     const getDataFromQuotes = (data: any) => {
         setDataQuotes(data);
         toast({
@@ -243,7 +242,15 @@ const LabelsForm = (props: any) => {
                                 </FormControl>
                             </GridItem>
                         </Grid>
-                        <Button type="submit">
+                        <GridItem>
+                            <Checkbox
+                                isChecked={checkboxChecked}
+                                onChange={handleCheckboxChange}
+                            >
+                                He leido y acepto los <Link href="#">terminos y condiciones</Link>
+                            </Checkbox>
+                        </GridItem>
+                        <Button type="submit" isDisabled={!checkboxChecked}>
                             Continuar
                         </Button>
                     </form>

@@ -76,11 +76,11 @@ const LabelsTable = () => {
             <Td>{usersMap[eachSet.userId]}</Td>
             <Td>{eachSet.labelID}</Td>
             <Td>{eachSet.parcel}</Td>
-            <Td>{eachSet.numberOfPieces}</Td> {/* New data */}
-            <Td>{eachSet.dimensions.length}</Td> {/* New data */}
-            <Td>{eachSet.dimensions.width}</Td> {/* New data */}
-            <Td>{eachSet.dimensions.height}</Td> {/* New data */}
-            <Td>{eachSet.description}</Td> {/* New data */}
+            <Td>{eachSet.numberOfPieces}</Td> 
+            <Td>{eachSet.dimensions.length}</Td> 
+            <Td>{eachSet.dimensions.width}</Td> 
+            <Td>{eachSet.dimensions.height}</Td> 
+            <Td>{eachSet.description}</Td> 
             <Td>{eachSet.weight}</Td>
         </Tr>
     )), [filteredItems, usersMap]);
@@ -108,14 +108,14 @@ const LabelsTable = () => {
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
-                            <Th>Cliente</Th> {/* Previously Usuario */}
-                            <Th>No. Guía</Th> {/* Previously Id Guia */}
+                            <Th>Cliente</Th>
+                            <Th>No. Guía</Th> 
                             <Th>Paqueteria</Th>
-                            <Th>Piezas</Th> {/* New Column */}
-                            <Th>Largo</Th> {/* New Column */}
-                            <Th>Ancho</Th> {/* New Column */}
-                            <Th>Alto</Th> {/* New Column */}
-                            <Th>Contenido</Th> {/* New Column */}
+                            <Th>Piezas</Th> 
+                            <Th>Largo</Th> 
+                            <Th>Ancho</Th> 
+                            <Th>Alto</Th> 
+                            <Th>Contenido</Th> 
                             <Th>Peso</Th>
                         </Tr>
                     </Thead>
