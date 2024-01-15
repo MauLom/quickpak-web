@@ -1,122 +1,92 @@
-'use client'
-import * as React from 'react'
-import {
-    Box, Grid, GridItem, Heading,
-    FormControl,
-    FormLabel,
-    Input,
-    Button,
-    Select,
-    useToast,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    useDisclosure,
-} from "@chakra-ui/react"
-import QuotesForm from '../quotes/form'
-import { generateDHLLabel, generateEstafetaLabel } from '../../lib/requests'
+// Additional imports if needed
+import React, { useState, useEffect } from 'react';
+import { Box, Grid, GridItem, Heading, FormControl, FormLabel, Input, Button, Select, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import QuotesForm from '../quotes/form';
+import { generateDHLLabel, generateEstafetaLabel } from '../../lib/requests';
+
+interface FormData {
+    [key: string]: string;
+}
 
 const LabelsForm = (props: any) => {
-    const [slctdPaqueteria, setSlctdPaqueteria] = React.useState("")
-    const [dataQuotes, setDataQuotes] = React.useState({})
-    const [estafetaLabelString, setEstafetaLabelString] = React.useState("")
-    const [isModalOpen, setIsModalOpen] = React.useState(false)
+    const formRef = React.useRef<HTMLFormElement>(null);
+    const [selectedCarrier, setSelectedCarrier] = useState('');
+    const [dataQuotes, setDataQuotes] = useState({});
+    const [labelString, setLabelString] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const toast = useToast();
 
-    const toast = useToast()
-
-    const handleChangePaqueteria = (e: any) => {
-        setSlctdPaqueteria(e.target.value)
-    }
-    React.useEffect(() => {
+    useEffect(() => {
         if (props.hideQuotes) {
-            setSlctdPaqueteria(props.labelData?.provider)
-            setDataQuotes(props?.quotesData)
+            setSelectedCarrier(props.labelData?.provider);
+            setDataQuotes(props?.quotesData);
         }
-    }, [])
+    }, [props.hideQuotes, props.labelData, props.quotesData]);
 
-    const doSubmit = async (e: any) => {
-        e.preventDefault()
-        let titleToast = ""
-        let message = ""
-        let statusToast: "error" | "info" | "loading" | "success" | "warning" = "error"
-
-        let payload = {
-            quotes: dataQuotes,
-            descPckg: e.target.descPckg.value,
-
-            nombR: e.target.nombR?.value || "cannot read",
-            compR: e.target.compR?.value || "cannot read",
-            phoneR: e.target.phoneR?.value || "cannot read",
-            mailR: e.target.emailR?.value || "cannot read",
-            streetR: e.target.streetR?.value || "cannot read",
-            colR: e.target.colR?.value || "cannot read",
-            refR: e.target.refR?.value || "cannot read",
-
-            nombD: e.target.nombD?.value || "cannot read",
-            compD: e.target.compD?.value || "cannot read",
-            phoneD: e.target.phoneD?.value || "cannot read",
-            mailD: e.target.emailD?.value || "cannot read",
-            streetD: e.target.streetD?.value || "cannot read",
-            colD: e.target.colD?.value || "cannot read",
-            refD: e.target.refD?.value || "cannot read",
+    const isFormValid = (): boolean => {
+        if (formRef.current) {
+            const descPckg = formRef.current["descPckg"].value;
+            if (!descPckg) {
+                toastError('Validation Error', 'Description of the package is required.');
+                return false;
+            }
+            // Add more validation checks as required
         }
+        return true;
+    };
 
-
-        switch (slctdPaqueteria) {
-            case "DHL":
-                const responseDHL = await generateDHLLabel(payload)
-                const jsonResponseDHL = await responseDHL.json()
-                if (jsonResponseDHL) {
-                    titleToast = "Exito"
-                    message = "Se genero la etiqueta"
-                    statusToast = "success"
-                    setEstafetaLabelString(jsonResponseDHL?.data?.ShipmentResponse?.LabelImage[0]?.GraphicImage)
-                    setIsModalOpen(true)
-                }
-                break;
-            case "Estafeta":
-                const response = await generateEstafetaLabel(payload)
-                const jsonResponse = await response.json()
-                if (jsonResponse) {
-                    titleToast = "Exito"
-                    message = "Se genero la etiqueta"
-                    statusToast = "success"
-                    setEstafetaLabelString(jsonResponse?.data?.data)
-                    setIsModalOpen(true)
-                }
-                break;
-            case "":
-                titleToast = "Error"
-                message = "No se eligio una paqueteria para la guia"
-                statusToast = "error"
-                break;
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!isFormValid()) {
+            return; // Stop the form submission if validation fails
         }
+        const formData = new FormData(event.currentTarget);
+        const payload = Object.fromEntries(formData.entries());
 
+        try {
+            let response;
+            switch (selectedCarrier) {
+                case 'DHL':
+                    response = await generateDHLLabel(payload);
+                    break;
+                case 'Estafeta':
+                    response = await generateEstafetaLabel(payload);
+                    break;
+                default:
+                    throw new Error('No carrier selected');
+            }
+            const jsonResponse = await response.json();
+            if (jsonResponse) {
+                toastSuccess('Success', 'Label generated successfully');
+                setLabelString(jsonResponse?.data?.ShipmentResponse?.LabelImage[0]?.GraphicImage || jsonResponse?.data?.data);
+                setIsModalOpen(true);
+            }
+        } catch (error: any) {
+            toastError('Error', error.message);
+        }
+    };
+
+    const toastSuccess = (title: string, description: string) => {
         toast({
-            title: titleToast,
-            description: `${message}`,
-            status: statusToast,
+            title,
+            description,
+            status: 'success',
             duration: 5000,
-            isClosable: true
-        })
-    }
+            isClosable: true,
+        });
+    };
 
-    const getDataFromQuotes = (data: any) => {
-        setDataQuotes(data)
+    const toastError = (title: string, description: string) => {
         toast({
-            title: "Exito Validando Datos",
-            description: `Continua con la informacion del envio`,
-            status: "success",
-            duration: 3000,
-            isClosable: true
-        })
-    }
+            title,
+            description,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
+    };
 
-    const downloadTheEstafetaLabel = (pdfString: string) => {
+    const downloadLabel = (pdfString: string) => {
         const byteCharacters = atob(pdfString);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -133,7 +103,7 @@ const LabelsForm = (props: any) => {
         link.href = url;
         link.setAttribute(
             'download',
-            `etiqueta${slctdPaqueteria}.pdf`,
+            `etiqueta${selectedCarrier}.pdf`,
         );
 
         // Append to html link element page
@@ -147,21 +117,37 @@ const LabelsForm = (props: any) => {
 
     }
 
+    const handleChangePaqueteria = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCarrier(event.target.value);
+    };
+
+    const getDataFromQuotes = (data: any) => {
+        setDataQuotes(data);
+        toast({
+            title: "Éxito Validando Datos",
+            description: `Continúa con la información del envío`,
+            status: "success",
+            duration: 3000,
+            isClosable: true
+        });
+    };
+
+
     return (
         <Box >
             <Grid>
                 <GridItem>
-                    <Heading> Informacion de guia</Heading>
-                    {!props.hideQuotes && <Select placeholder="Paqueteria" value={slctdPaqueteria} onChange={handleChangePaqueteria}>
+                    <Heading> Información de guía</Heading>
+                    {!props.hideQuotes && <Select placeholder="Paqueteria" value={selectedCarrier} onChange={handleChangePaqueteria}>
                         <option value='DHL'>DHL</option>
                         <option value='Estafeta'>Estafeta</option>
                     </Select>}
 
                     {!props.hideQuotes && <QuotesForm isLabel={true} transferData={getDataFromQuotes} />}
                     <br />
-                    <form onSubmit={(e) => { doSubmit(e) }}>
+                    <form ref={formRef} onSubmit={handleSubmit}>
                         <FormControl>
-                            <FormLabel>Descripcion del contenido</FormLabel>
+                            <FormLabel>Descripción del contenido</FormLabel>
                             <Input name='descPckg' />
                         </FormControl>
                         <Heading as='h4' size="lg">Remitente</Heading>
@@ -181,19 +167,19 @@ const LabelsForm = (props: any) => {
                             </GridItem>
                             <GridItem>
                                 <FormControl>
-                                    <FormLabel>Telofono de contacto</FormLabel>
+                                    <FormLabel>Teléfono de contacto</FormLabel>
                                     <Input name="phoneR" />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
-                                    <FormLabel>Correo Electronico</FormLabel>
+                                    <FormLabel>Correo Electrónico</FormLabel>
                                     <Input name="emailR" />
                                 </FormControl>
                             </GridItem>
                             <GridItem>
                                 <FormControl>
-                                    <FormLabel>Calle y numero</FormLabel>
+                                    <FormLabel>Calle y número</FormLabel>
                                     <Input name="streetR" />
                                 </FormControl>
                             </GridItem>
@@ -222,7 +208,7 @@ const LabelsForm = (props: any) => {
                             </GridItem>
                             <GridItem>
                                 <FormControl>
-                                    <FormLabel>Nombre de compañia / Empresa</FormLabel>
+                                    <FormLabel>Nombre de compañía / Empresa</FormLabel>
                                     <Input name="compD" />
                                 </FormControl>
                             </GridItem>
@@ -267,10 +253,10 @@ const LabelsForm = (props: any) => {
             <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false) }}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Etiqueta {slctdPaqueteria}</ModalHeader>
+                    <ModalHeader>Etiqueta {selectedCarrier}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Button onClick={() => { downloadTheEstafetaLabel(estafetaLabelString) }}>
+                        <Button onClick={() => { downloadLabel }}>
                             Descargar etiqueta
                         </Button>
                     </ModalBody>
@@ -283,7 +269,7 @@ const LabelsForm = (props: any) => {
                 </ModalContent>
             </Modal>
         </Box>
-    )
-}
+    );
+};
 
-export default LabelsForm
+export default LabelsForm;
