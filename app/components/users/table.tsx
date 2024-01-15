@@ -50,7 +50,7 @@ async function UsersTable(props: any) {
 
     return (
         <Box>
-            <TableContainer>
+             <TableContainer style={{ maxHeight: "400px", overflowY: "auto" }}>
                 <Table variant='simple'>
                     {/* <TableCaption>Lista de usuarios registrados</TableCaption> */}
                     <Thead>
