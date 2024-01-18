@@ -181,26 +181,25 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
       "string_reference": userData.string_reference,
       "provider_access": []
     }
-    // const result = await saveUserPricing(payload)
-    // console.log("[2] Hadir", result)
-    // if (result?.status === "error") {
-    //   toast({
-    //     title: "No se pudo guardar la matriz del usuario",
-    //     description: ``,
-    //     status: "error",
-    //     duration: 3000,
-    //     isClosable: true
-    //   })
+    const result = await saveUserPricing(payload)
+    if (result?.status === "error") {
+      toast({
+        title: "No se pudo guardar la matriz del usuario",
+        description: ``,
+        status: "error",
+        duration: 3000,
+        isClosable: true
+      })
 
-    // } else {
-    //   toast({
-    //     title: "Matriz guardada con exito",
-    //     description: ``,
-    //     status: "success",
-    //     duration: 3000,
-    //     isClosable: true
-    //   })
-    // }
+    } else {
+      toast({
+        title: "Matriz guardada con exito",
+        description: ``,
+        status: "success",
+        duration: 3000,
+        isClosable: true
+      })
+    }
 
   }
 
