@@ -516,9 +516,9 @@ const QuotesForm = ({ ...props }) => {
                                             <Td>
                                                 {eachService?.serviceType}
                                             </Td>
-                                            <Td>
-                                                {/* ${eachService?.subTotal} */}
-                                            </Td>
+                                            {/* <Td>
+                                                ${eachService?.subTotal}
+                                            </Td> */}
                                             <Td>
                                                 ${eachService?.Total}
                                             </Td>
