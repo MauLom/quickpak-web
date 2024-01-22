@@ -121,47 +121,91 @@ export default function Dashboard() {
         );
     } else {
         contentToDisplay = (
-            <Grid templateColumns='repeat(2, 1fr)' height="100%">
-                <GridItem height="100%">
-                    <Image minH="40rem" src="https://mumbaimirror.indiatimes.com/photo/81132317.cms" alt="landing-img" />
+            <Grid templateColumns='repeat(2, 1fr)' height="100%" alignItems="center">
+                <GridItem alignSelf="center" padding="20% 0 0 0" height="100%">
+                    <Image src="https://i.ibb.co/0GvqQcH/1-c2-1.jpg" alt="1-c2-1" />
+
                 </GridItem>
-                <GridItem padding="20">
-                    <Stack>
-                        <Image src="https://i.ibb.co/0GvqQcH/1-c2-1.jpg" alt="1-c2-1" />
+                <GridItem
+                    style={{
+                        fontFamily: "'Arial', sans-serif",
+                        maxWidth: '400px',
+                        margin: '50px auto',
+                        padding: '40px',
+                        backgroundColor: '#ffffff',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        textAlign: 'center'
+                    }}
+                >
+                    <Stack spacing={4}>
                         <Box>
                             <form onSubmit={handleLogin}>
-                                <Grid>
+                                <Grid gap={4} templateColumns="repeat(1, 1fr)">
                                     <GridItem>
                                         <FormControl>
-                                            <FormLabel>
+                                            <FormLabel style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>
                                                 Nombre de usuario
                                             </FormLabel>
-                                            <Input type="text"
+                                            <Input
+                                                type="text"
                                                 value={username}
                                                 onChange={(e) => setUsername(e.target.value)}
-                                                required />
+                                                required
+                                                style={{
+                                                    padding: '15px',
+                                                    border: '2px solid #eaeaea',
+                                                    borderRadius: '8px',
+                                                    fontSize: '16px'
+                                                }}
+                                            />
                                         </FormControl>
                                     </GridItem>
                                     <GridItem>
                                         <FormControl>
-                                            Contraseña
+                                            <FormLabel style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>
+                                                Contraseña
+                                            </FormLabel>
+                                            <Input
+                                                type="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                                style={{
+                                                    padding: '15px',
+                                                    border: '2px solid #eaeaea',
+                                                    borderRadius: '8px',
+                                                    fontSize: '16px'
+                                                }}
+                                            />
                                         </FormControl>
-                                        <Input type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required />
                                     </GridItem>
                                     <GridItem>
-                                        <Button colorScheme='teal' type="submit">
+                                        <Button
+                                            colorScheme="teal"
+                                            type="submit"
+                                            style={{
+                                                width: '100%',
+                                                padding: '15px',
+                                                borderRadius: '8px',
+                                                backgroundColor: '#007bff',
+                                                color: 'white',
+                                                cursor: 'pointer',
+                                                fontSize: '16px',
+                                                border: 'none',
+                                                marginTop: '20px',
+                                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                                            }}
+                                        >
                                             Conectar
                                         </Button>
                                     </GridItem>
                                 </Grid>
-
                             </form>
                         </Box>
                     </Stack>
                 </GridItem>
+
             </Grid>
         );
     }
