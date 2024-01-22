@@ -44,8 +44,8 @@ const LabelsForm = (props: any) => {
             return; // Stop the form submission if validation fails
         }
         const formData = new FormData(event.currentTarget);
-        const payload = Object.fromEntries(formData.entries());
-
+        const dataForm = Object.fromEntries(formData.entries());
+        const payload = {...dataForm, 'quotes': dataQuotes}
         try {
             let response;
             switch (selectedCarrier) {
