@@ -501,7 +501,7 @@ const QuotesForm = ({ ...props }) => {
                                     <Tr>
                                         <Th>Paqueteria</Th>
                                         <Th>Servicio</Th>
-                                        <Th>Sub total</Th>
+                                        {/* <Th>Sub total</Th> */}
                                         <Th>Total</Th>
                                         <Th>Ver mas</Th>
                                         <Th>Generar Guia</Th>
@@ -517,7 +517,7 @@ const QuotesForm = ({ ...props }) => {
                                                 {eachService?.serviceType}
                                             </Td>
                                             <Td>
-                                                ${eachService?.subTotal}
+                                                {/* ${eachService?.subTotal} */}
                                             </Td>
                                             <Td>
                                                 ${eachService?.Total}
