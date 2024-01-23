@@ -1,9 +1,12 @@
 // utils.ts
 import { Box, Grid, GridItem, Heading, FormControl, FormLabel, Input, Button, Select, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Link } from '@chakra-ui/react';
-
+import { AddressData } from '../../types/Address';
 interface FormFieldProps {
     label: string;
     name: string;
+}
+export interface NotebookActionsProps {
+    suffix: string;
 }
 
 export interface ParcelData {
@@ -32,6 +35,23 @@ export interface User {
         provider_id: string;
         services: string[];
     }>;
+}
+
+export interface Direction {
+    nomb: string;
+    comp: string;
+    phone: string;
+    email: string;
+    street: string;
+    col: string;
+    ref: string;
+}
+
+export interface AddressModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    addresses: AddressData[];
+    onAddressSelect: ( address: AddressData) => void;
 }
 
 export function extractParcelData(arr: any[]): ParcelData[] {

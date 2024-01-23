@@ -1,5 +1,7 @@
 const URL = process.env.NEXT_PUBLIC_API_URL
 //const URL = "http://localhost:8080/"
+import { AddressData } from "../types/Address";
+
 export async function getUsers() {
     try {
         const res = await fetch(`${URL}users`);
@@ -53,7 +55,7 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
 
             if (!res.ok) {
                 /// TODO Handle possible errors 
-               return {};
+                return {};
             }
 
             return res.json();
@@ -244,4 +246,43 @@ export async function generateDHLLabel(data: any) {
         throw new Error('Failed to fetch data')
     }
     return res
+}
+
+export async function saveAddressToNotebook(userId: string, addressData: AddressData) {
+    try {
+        const res = await fetch(`${URL}directionsNotebook/saveAddress`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId, addressData })
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to save address: ${res.status} ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error: any) {
+        throw new Error(`Error occurred while saving address: ${error.message}`);
+    }
+}
+
+export async function getNotebookByUserId(userId: string) {
+    try {
+        const res = await fetch(`${URL}directionsNotebook/user/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch notebook: ${res.status} ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error: any) {
+        throw new Error(`Error occurred while fetching notebook: ${error.message}`);
+    }
 }
