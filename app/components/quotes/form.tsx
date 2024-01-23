@@ -26,8 +26,6 @@ import {
     Modal,
     ModalOverlay,
     ModalContent,
-    ModalHeader,
-    ModalFooter,
     ModalBody,
     ModalCloseButton,
     Select,
@@ -35,12 +33,12 @@ import {
 } from "@chakra-ui/react"
 import Packages from "./packages"
 import isEmpty from "../../utils/isEmpty"
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { getQuotes, getUser, getUsers } from "../../lib/requests"
 import LabelsForm from "../labels/form"
 import { getZipCodeData } from "../../lib/v2/zipCodes"
 import { getCookie } from '../../lib/manageUserSession'
-
+import { renderDHLDetails, renderEstafetaDetails } from "./renderAccordeonUtils"
 interface Iuser {
     id: string,
     name: string,
@@ -320,86 +318,16 @@ const QuotesForm = ({ ...props }) => {
         }
     }
 
-    const renderDays = (obj: any) => {
-        // Join the values of the object into a string
-        const renderedDays = Object.entries(obj).map(([day, value]) => (
-
-            <span key={day}>{`${day}:${value}`}</span>
-        ));
-
-        return <Stack direction="column">{renderedDays}</Stack>;
-    };
-
-
-    function renderAccordeonDetails(eachService: any) {
+    function renderAccordeonDetails(eachService:any) {
         switch (eachService?.provider) {
-
             case "DHL":
-                return (
-                    <AccordionPanel>
-                        <Stack direction="row">
-                            <Box>
-                                <Stack direction="column">
-                                    <Box>{`${eachService?.zone}`}</Box>
-                                    <Box>{`Peso calculado: ${eachService?.weight || 'error'}`}</Box>
-                                    <Box>{`Fecha de entrega: `}</Box>
-                                    <Box>{` ${eachService.fecEntrega}`}</Box>
-                                </Stack>
-
-
-                            </Box>
-                            <Box>
-                                {`Servicio $${eachService?.baseService}`}
-                                <br />
-                                {`Cargo por combustible $${eachService?.ff}`}
-                                <br />
-                                {(eachService?.yb !== 0 && eachService?.yb !== undefined) && `Cargo por exceso de dimensiones $${eachService?.yb}`}
-                                <br />
-                                {(eachService?.oo !== 0 && eachService?.oo !== undefined) && `Cargo por area remota $${eachService?.oo}`}
-                                <br />
-                                {(eachService?.yy !== 0 && eachService?.yy !== undefined) && `Cargo por exceso de peso $${eachService?.yy}`}
-                                <br />
-                                {(eachService?.ye !== 0 && eachService?.ye !== undefined) && `Cargo por multipieza $${eachService?.ye}`}
-                                <br />
-                                {eachService?.ii !== 0 && `Seguro $${eachService?.ii}`}
-                                <br />
-                                {`I.V.A.: $${eachService?.IVA || 'error'}`}
-                            </Box>
-                        </Stack>
-
-                    </AccordionPanel>
-                )
+                return renderDHLDetails(eachService);
             case "Estafeta":
-                return (
-                    <AccordionPanel>
-                        <Stack direction="row">
-                            <Box>
-                                <Stack>
-                                    <Box>{`${eachService?.zone}`}</Box>
-                                    {eachService?.oc && <Box>{`Ocurre Forzoso: ${eachService?.oc}`}</Box>}
-                                    <Box>{`Peso: ${eachService?.details?.Peso || 'error'}`}</Box>
-                                    {renderDays(eachService?.Dias)}
-                                </Stack>
-                            </Box>
-                            <Box>
-                                <Stack >
-                                    {eachService?.details?.CostoReexpedicion > 0 && <Box>{`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion}`}</Box>}
-                                    <Box>{`Seguro: $${eachService?.seguro}`}</Box>
-                                    <Box>{`I.V.A.: $${eachService?.details?.IVA || 'error'}`}</Box>
-                                </Stack>
-                            </Box>
-                        </Stack>
-                    </AccordionPanel>
-                )
+                return renderEstafetaDetails(eachService);
             default:
-                return (
-                    <AccordionPanel>No se pueden cargar estos detalles</AccordionPanel>
-                )
-
+                return <AccordionPanel>No se pueden cargar estos detalles</AccordionPanel>;
         }
-
     }
-
     return (
         <Box>
             <Grid>
