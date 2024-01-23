@@ -31,7 +31,6 @@ async function UsersTable(props: any) {
             isClosable: true
           })
         getUsers().then(data => {
-            console.log("This?")
             setDataTable(data)
             toast({
                 title: "Usuarios cargados",

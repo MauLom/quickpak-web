@@ -69,7 +69,6 @@ const QuotesForm = ({ ...props }) => {
 
     async function getUsersForSelect() {
         const users = await getUsers()
-        console.log("eval", users)
         users.length > 0 && setUsersOptions(users)
     }
 
@@ -127,9 +126,7 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['parcelLogo'] = <Image maxH="7rem" padding="10px"
                             backgroundColor="#FFCC00" borderRadius="5px" src="https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg" alt="DHL logo" />
                         let foundServiceBase = eachQuote?.Charges.Charge.filter((charge: any) => charge.ChargeName === eachQuote.ServiceName)
-                        console.log("fonded", foundServiceBase)
                         quoteObj['baseService'] = foundServiceBase[0].ChargeAmount
-                        console.log("[00]", eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "FF"))?.ChargeAmount)
                         quoteObj['ff'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "FF"))?.ChargeAmount
                         quoteObj['ii'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "II"))?.ChargeAmount
                         quoteObj['yy'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YY"))?.ChargeAmount

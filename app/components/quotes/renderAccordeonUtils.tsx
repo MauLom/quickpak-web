@@ -1,19 +1,48 @@
 import React from 'react';
-import { AccordionPanel, Stack, Box, Divider } from "@chakra-ui/react";
+import { AccordionPanel, Stack, Box, Text, List, ListItem, Divider } from "@chakra-ui/react";
 
-const renderDays = (obj: any) => {
-    // Join the values of the object into a string
-    const renderedDays = Object.entries(obj).map(([day, value]) => (
-        <span key={day}>{`${day}:${value}`}</span>
-    ));
+interface DayDetails {
+    [key: string]: string;
+}
 
-    return <Stack direction="column">{renderedDays}</Stack>;
-};
+interface ServiceDetails {
+    DiasEntrega?: DayDetails;
+    TarifaBase?: number;
+    DescripcionServicio?: string;
+    Peso?: number;
+    CostoReexpedicion?: string;
+    seguro?: string;
+    Subtotal?: string;
+    IVA?: string;
+    CostoTotal?: string;
+}
+
+interface EachServiceType {
+    parcelLogo?: {
+        src: string;
+        alt: string;
+    };
+    serviceType?: string;
+    weight?: number;
+    subTotal?: string;
+    IVA?: string;
+    Total?: string;
+    details?: ServiceDetails;
+    zone?: string;
+    provider?: string;
+    Dias?: DayDetails;
+    seguro?: string;
+}
+
+interface RenderEstafetaDetailsProps {
+    eachService: EachServiceType;
+}
+
 
 function formatDate(dateString: any) {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
@@ -21,7 +50,6 @@ function formatDate(dateString: any) {
 
 
 function renderCostItem(label: string, cost: number) {
-    console.log("Every cost:", cost)
     return (
         <Box>
             <Stack direction="row" justifyContent="space-between">
@@ -70,31 +98,47 @@ export function renderDHLDetails(eachService: any) {
     );
 }
 
-export function renderEstafetaDetails(eachService: any) {
+
+export const renderEstafetaDetails = (eachService: any) => {
+    const renderDaysList = (days: DayDetails | undefined) => {
+        if (!days) return <Text>No days available</Text>;
+
+        return (
+            <Stack direction="row">
+                {Object.entries(days).map(([day, value]) => (
+                    value && <Box key={day}>{day}</Box>
+                ))}
+            </Stack>
+        );
+    };
+
     return (
         <AccordionPanel>
-            <Stack direction="row">
-                <Box>
-                    <Stack>
-                        <Box>{`${eachService?.zone}`}</Box>
-                        {eachService?.oc && <Box>{`Ocurre Forzoso: ${eachService?.oc}`}</Box>}
-                        <Box>{`Peso: ${eachService?.details?.Peso || 'error'}`}</Box>
-                        {/* Assuming renderDays is another function you have */}
-                        {renderDays(eachService?.Dias)}
+            <Stack direction="row" spacing={4}>
+                <Box flex="1">
+                    <Stack spacing={2}>
+                        <Text fontWeight="bold">Zone: {eachService.zone || 'N/A'}</Text>
+                        <Text>Peso: {eachService.details?.Peso || 'error'}</Text>
+                        <Box>
+                            <Text fontWeight="bold">Dias de Entrega:</Text>
+                            {renderDaysList(eachService.Dias)}
+                        </Box>
                     </Stack>
                 </Box>
-                <Box>
-                    <Stack>
-                        {eachService?.details?.CostoReexpedicion > 0 && <Box>{`Reexpedicion/AR: ${eachService?.details?.CostoReexpedicion}`}</Box>}
-                        <Box>{`Seguro: $${eachService?.seguro}`}</Box>
-                        <Box>{`I.V.A.: $${eachService?.details?.IVA || 'error'}`}</Box>
+                <Box flex="1">
+                    <Stack spacing={2}>
+                        {eachService.details?.CostoReexpedicion && eachService.details.CostoReexpedicion !== "0.00" &&
+                            <Text>Reexpedicion/AR: {eachService.details.CostoReexpedicion}</Text>}
+                        <Text>Servicio: ${eachService.details.TarifaBase}</Text>
+                        {eachService.seguro !== "0.00" && <Text>Seguro: ${eachService.seguro}</Text>}
+                        <Divider />
+                        <Text>SubTotal: ${eachService.subTotal}</Text>
+                        <Text>I.V.A.: ${eachService.details?.IVA || 'error'}</Text>
                     </Stack>
                 </Box>
             </Stack>
         </AccordionPanel>
     );
 }
-
-
 
 

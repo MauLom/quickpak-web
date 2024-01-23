@@ -94,7 +94,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ selectedUser }) => {
     setServiceToEdit(service)
     setProviderToEdit(provider)
     const matrizFromBD = await getUserPricing(userData._id, provider, service)
-    console.log("response",)
     if (undefined !== matrizFromBD?.pricing) {
       const parsedData = userPricingToSpreadsheet(matrizFromBD.pricing)
       setDataMatriz(parsedData)
