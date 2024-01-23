@@ -1,4 +1,10 @@
 // utils.ts
+import { Box, Grid, GridItem, Heading, FormControl, FormLabel, Input, Button, Select, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Link } from '@chakra-ui/react';
+
+interface FormFieldProps {
+    label: string;
+    name: string;
+}
 
 export interface ParcelData {
     userId: string;
@@ -14,7 +20,6 @@ export interface ParcelData {
     weight: number;
     createdAt: number;
 }
-
 
 export interface User {
     _id: string;
@@ -54,3 +59,9 @@ export function extractParcelData(arr: any[]): ParcelData[] {
     });
 }
 
+export const FormField: React.FC<FormFieldProps> = ({ label, name }) => (
+    <FormControl>
+        <FormLabel>{label}</FormLabel>
+        <Input name={name} />
+    </FormControl>
+);

@@ -1,22 +1,18 @@
 // Additional imports if needed
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, GridItem, Heading, FormControl, FormLabel, Input, Button, Select, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Link } from '@chakra-ui/react';
-import { Checkbox, CheckboxGroup } from '@chakra-ui/react'
+import { Checkbox } from '@chakra-ui/react'
 import QuotesForm from '../quotes/form';
 import { generateDHLLabel, generateEstafetaLabel } from '../../lib/requests';
-
-interface FormData {
-    [key: string]: string;
-}
-
+import { FormField } from './utils';
 const LabelsForm = (props: any) => {
     const formRef = React.useRef<HTMLFormElement>(null);
     const [selectedCarrier, setSelectedCarrier] = useState('');
     const [dataQuotes, setDataQuotes] = useState({});
-    const [labelString, setLabelString] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [checkboxChecked, setCheckboxChecked] = useState(false);
-
+    const [pdfString, setPdfString] = useState('')
+    const [labelId, setLabelId] = useState('')
     const toast = useToast();
 
     useEffect(() => {
@@ -33,7 +29,6 @@ const LabelsForm = (props: any) => {
                 toastError('Validation Error', 'Description of the package is required.');
                 return false;
             }
-            // Add more validation checks as required
         }
         return true;
     };
@@ -45,7 +40,7 @@ const LabelsForm = (props: any) => {
         }
         const formData = new FormData(event.currentTarget);
         const dataForm = Object.fromEntries(formData.entries());
-        const payload = {...dataForm, 'quotes': dataQuotes}
+        const payload = { ...dataForm, 'quotes': dataQuotes }
         try {
             let response;
             switch (selectedCarrier) {
@@ -59,9 +54,20 @@ const LabelsForm = (props: any) => {
                     throw new Error('No carrier selected');
             }
             const jsonResponse = await response.json();
+
             if (jsonResponse) {
+                console.log("jsonResponse", jsonResponse)
+                switch (selectedCarrier) {
+                    case 'DHL':
+                        setPdfString(jsonResponse.data.ShipmentResponse.LabelImage[0].GraphicImage)
+                        setLabelId(jsonResponse.data.ShipmentResponse.ShipmentIdentificationNumber)
+                        break;
+                    case 'Estafeta':
+                        setPdfString(jsonResponse.data.data)
+                        setLabelId(jsonResponse.data.labelPetitionResult.elements[0].wayBill)
+                        break;
+                }
                 toastSuccess('Success', 'Label generated successfully');
-                setLabelString(jsonResponse?.data?.ShipmentResponse?.LabelImage[0]?.GraphicImage || jsonResponse?.data?.data);
                 setIsModalOpen(true);
             }
         } catch (error: any) {
@@ -89,7 +95,8 @@ const LabelsForm = (props: any) => {
         });
     };
 
-    const downloadLabel = (pdfString: string) => {
+    const downloadLabel = (pdfString: string, fileName:string) => {
+        console.log("This is being called")
         const byteCharacters = atob(pdfString);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -106,7 +113,7 @@ const LabelsForm = (props: any) => {
         link.href = url;
         link.setAttribute(
             'download',
-            `etiqueta${selectedCarrier}.pdf`,
+            `${fileName}.pdf`,
         );
 
         document.body.appendChild(link);
@@ -131,7 +138,6 @@ const LabelsForm = (props: any) => {
         });
     };
 
-
     return (
         <Box >
             <Grid>
@@ -151,48 +157,26 @@ const LabelsForm = (props: any) => {
                         </FormControl>
                         <Heading as='h4' size="lg">Remitente</Heading>
                         <Grid templateColumns='repeat(4, 1fr)' gap={2}>
-
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Nombre de contacto</FormLabel>
-                                    <Input name="nombR" />
-                                </FormControl>
+                                <FormField label="Nombre de contacto" name="nombR" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Empresa</FormLabel>
-                                    <Input name="compR" />
-                                </FormControl>
+                                <FormField label="Empresa" name="compR" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Teléfono de contacto</FormLabel>
-                                    <Input name="phoneR" />
-                                </FormControl>
+                                <FormField label="Teléfono de contacto" name="phoneR" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Correo Electrónico</FormLabel>
-                                    <Input name="emailR" />
-                                </FormControl>
+                                <FormField label="Correo Electrónico" name="emailR" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Calle y número</FormLabel>
-                                    <Input name="streetR" />
-                                </FormControl>
+                                <FormField label="Calle y número" name="streetR" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Colonia</FormLabel>
-                                    <Input name="colR" />
-                                </FormControl>
+                                <FormField label="Colonia" name="colR" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Referencias</FormLabel>
-                                    <Input name="refR" />
-                                </FormControl>
+                                <FormField label="Referencias" name="refR" />
                             </GridItem>
                         </Grid>
                         <hr />
@@ -200,48 +184,28 @@ const LabelsForm = (props: any) => {
 
                         <Grid templateColumns='repeat(4, 1fr)' gap={2}>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Nombre de contacto</FormLabel>
-                                    <Input name="nombD" />
-                                </FormControl>
+                                <FormField label="Nombre de contacto" name="nombD" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Nombre de compañía / Empresa</FormLabel>
-                                    <Input name="compD" />
-                                </FormControl>
+                                <FormField label="Nombre de compañía / Empresa" name="compD" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Telofono de contacto</FormLabel>
-                                    <Input name="phoneD" />
-                                </FormControl>
+                                <FormField label="Teléfono de contacto" name="phoneD" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Correo Electronico</FormLabel>
-                                    <Input name="emailD" />
-                                </FormControl>
+                                <FormField label="Correo Electrónico" name="emailD" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Calle y numero</FormLabel>
-                                    <Input name="streetD" />
-                                </FormControl>
+                                <FormField label="Calle y número" name="streetD" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Colonia</FormLabel>
-                                    <Input name="colD" />
-                                </FormControl>
+                                <FormField label="Colonia" name="colD" />
                             </GridItem>
                             <GridItem>
-                                <FormControl>
-                                    <FormLabel>Referencias</FormLabel>
-                                    <Input name="refD" />
-                                </FormControl>
+                                <FormField label="Referencias" name="refD" />
                             </GridItem>
                         </Grid>
+
                         <GridItem>
                             <Checkbox
                                 isChecked={checkboxChecked}
@@ -263,7 +227,7 @@ const LabelsForm = (props: any) => {
                     <ModalHeader>Etiqueta {selectedCarrier}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Button onClick={() => { downloadLabel }}>
+                        <Button onClick={() => { downloadLabel(pdfString, labelId) }}>
                             Descargar etiqueta
                         </Button>
                     </ModalBody>
