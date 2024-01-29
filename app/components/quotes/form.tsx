@@ -275,10 +275,12 @@ const QuotesForm = ({ ...props }) => {
         arrAsVar.pop()
         setPackagesArr(arrAsVar)
     }
+
     function updatePackage(e: any, idx: any, obj: any) {
         let propToBeChanged: string = e?.target?.name
         let newArr = JSON.parse(JSON.stringify(packagesArr))
-        obj[propToBeChanged] = Number.parseInt(e?.target?.value)
+        const numero = parseFloat(e?.target?.value);
+        obj[propToBeChanged] =  Math.ceil(numero);
         newArr[idx] = obj
         setPackagesArr(newArr)
     }
