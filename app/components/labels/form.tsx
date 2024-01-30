@@ -19,21 +19,17 @@ const LabelsForm = (props: any) => {
     const [isModalAddressesOpen, setIsModalAddressesOpen] = useState(false)
     const [addresses, setAddresses] = useState<AddressData[]>([]);
     const [directionSectionSuffix, setDirectionSectionSuffix] = useState("")
-    const mockData: Direction = {
-        nomb: "John Doe",
-        comp: "ABC Company",
-        phone: "123-456-7890",
-        email: "john.doe@example.com",
-        street: "123 Main St",
-        col: "Centro",
-        ref: "Near the park"
-    };
+    const [termsURL, setTermsURL] = useState("")
+
+    const DHLTermsURL = "https://mydhl.express.dhl/mx/es/legal/terms-and-conditions.html"
+    const EstafetaTermsURL = "https://www.estafeta.com/Atencion-al-Cliente/Contrato-de-servicios"
 
 
     useEffect(() => {
         if (props.hideQuotes) {
             setSelectedCarrier(props.labelData?.provider);
             setDataQuotes(props?.quotesData);
+            setTermsURL(props.labelData?.provider === "DHL" ? DHLTermsURL : EstafetaTermsURL)
         }
     }, [props.hideQuotes, props.labelData, props.quotesData]);
 
@@ -159,7 +155,7 @@ const LabelsForm = (props: any) => {
         setIsModalAddressesOpen(true);
     };
 
-    const handleAddressSelect = ( address: AddressData) => {
+    const handleAddressSelect = (address: AddressData) => {
         loadDataIntoForm(directionSectionSuffix, address);
         setIsModalAddressesOpen(false);
     };
@@ -313,7 +309,7 @@ const LabelsForm = (props: any) => {
                                 isChecked={checkboxChecked}
                                 onChange={handleCheckboxChange}
                             >
-                                He leido y acepto los <Link href="#">terminos y condiciones</Link>
+                                He leido y acepto los <Link href={termsURL}>terminos y condiciones</Link>
                             </Checkbox>
                         </GridItem>
                         <Button type="submit" isDisabled={!checkboxChecked}>

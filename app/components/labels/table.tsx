@@ -9,7 +9,7 @@ const LabelsTable = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterParcel, setFilterParcel] = useState('');
-    const itemsPerPage = 10;
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -76,17 +76,22 @@ const LabelsTable = () => {
             <Td>{usersMap[eachSet.userId]}</Td>
             <Td>{eachSet.labelID}</Td>
             <Td>{eachSet.parcel}</Td>
-            <Td>{eachSet.numberOfPieces}</Td> 
-            <Td>{eachSet.dimensions.length}</Td> 
-            <Td>{eachSet.dimensions.width}</Td> 
-            <Td>{eachSet.dimensions.height}</Td> 
-            <Td>{eachSet.description}</Td> 
+            <Td>{eachSet.numberOfPieces}</Td>
+            <Td>{eachSet.dimensions.length}</Td>
+            <Td>{eachSet.dimensions.width}</Td>
+            <Td>{eachSet.dimensions.height}</Td>
+            <Td>{eachSet.description}</Td>
             <Td>{eachSet.weight}</Td>
         </Tr>
     )), [filteredItems, usersMap]);
-    
+
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    const handleItemsPerPageChange = (event: any) => {
+        setItemsPerPage(Number(event.target.value) || 10);
+        setCurrentPage(1); // Reset to the first page when items per page changes
+    };
 
     return (
         <Box>
@@ -104,18 +109,26 @@ const LabelsTable = () => {
                     <option key={index} value={parcel}>{parcel}</option>
                 ))}
             </Select>
+            <Input
+                type="number"
+                placeholder="Items per page"
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                min={1}
+                max={100}
+            />
             <TableContainer>
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
                             <Th>Cliente</Th>
-                            <Th>No. Guía</Th> 
+                            <Th>No. Guía</Th>
                             <Th>Paqueteria</Th>
-                            <Th>Piezas</Th> 
-                            <Th>Largo</Th> 
-                            <Th>Ancho</Th> 
-                            <Th>Alto</Th> 
-                            <Th>Contenido</Th> 
+                            <Th>Piezas</Th>
+                            <Th>Largo</Th>
+                            <Th>Ancho</Th>
+                            <Th>Alto</Th>
+                            <Th>Contenido</Th>
                             <Th>Peso</Th>
                         </Tr>
                     </Thead>
