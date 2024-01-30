@@ -309,7 +309,7 @@ const LabelsForm = (props: any) => {
                                 isChecked={checkboxChecked}
                                 onChange={handleCheckboxChange}
                             >
-                                He leido y acepto los <Link href={termsURL}>terminos y condiciones</Link>
+                                He leido y acepto los <Link href={termsURL} color={"blue"}>terminos y condiciones</Link>
                             </Checkbox>
                         </GridItem>
                         <Button type="submit" isDisabled={!checkboxChecked}>
