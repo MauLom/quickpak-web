@@ -39,10 +39,21 @@ function ConvertPage() {
         [{ value: "KGadicional", readOnly: true }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }, { value: "", }],
 
     ]
-    function convertToJson(data:any){
-        let onString = JSON.stringify(data)
-        onString = onString.replaceAll('null', '{"value":""}')
+    function convertToJson(data: any) {
+        let onString = JSON.stringify(data);
+        onString = onString.replaceAll('null', '{"value":""}');
+        onString = onString.replaceAll('$', '');
+        onString = onString.replaceAll('.', ',');
+    
+        navigator.clipboard.writeText(onString).then(() => {
+            console.log('JSON string copied to clipboard');
+        }).catch(err => {
+            console.error('Failed to copy JSON string to clipboard: ', err);
+        });
+    
+        console.log(onString);
     }
+    
 
     React.useEffect(() => {
         setDataSpreadsheet(defaultDatosTabla)
