@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Button, ButtonGroup, useToast, Spinner, Input, Stack, FormControl, FormLabel } from '@chakra-ui/react';
-import { AddIcon, DeleteIcon, CopyIcon, RepeatIcon } from '@chakra-ui/icons';
-import { getClients, deleteClient, createClient,updateClient } from '../../lib/requests';
+import { AddIcon, DeleteIcon, CopyIcon, RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
+import { getClients, deleteClient, createClient, updateClient } from '../../lib/requests';
 
 export default function ClientsLayout() {
     const [clients, setClients] = useState([]);
@@ -138,6 +138,27 @@ export default function ClientsLayout() {
     const existingUsernames = clients.map((c: any) => c.basic_auth_username?.toUpperCase?.() || '');
     const userSuggestions = generateSuggestions(form.name, existingUsernames);
 
+    const handleToggleActive = async (client: any) => {
+        try {
+            await updateClient({ user_id: client.user_id, is_active: !client.is_active });
+            toast({
+                title: `Cliente ${!client.is_active ? 'activado' : 'desactivado'}`,
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+            });
+            fetchClients();
+        } catch (error: any) {
+            toast({
+                title: 'Error al actualizar estado',
+                description: error?.message || '',
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            });
+        }
+    };
+
     return (
         <Box paddingX={50} padding={10}>
             <h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 12 }}>Administrar clientes</h2>
@@ -180,6 +201,7 @@ export default function ClientsLayout() {
                         <Tr>
                             <Th>Nombre</Th>
                             <Th>Usuario</Th>
+                            <Th>Activo</Th>
                             <Th textAlign="right">Acciones</Th>
                         </Tr>
                     </Thead>
@@ -188,12 +210,53 @@ export default function ClientsLayout() {
                             <Tr key={client.user_id}>
                                 <Td>{client.name}</Td>
                                 <Td>{client.basic_auth_username}</Td>
-                                <Td textAlign="right">
-                                    <ButtonGroup>
-                                        <Button colorScheme="blue" size="sm" leftIcon={<RepeatIcon />} onClick={() => handleRegeneratePassword(client.user_id)}>
-                                            Regenerar y copiar contraseña
+                                <Td>
+                                    <ButtonGroup size="sm">
+                                        <Button
+                                            size="sm"
+                                            colorScheme={client.is_active ? 'green' : 'gray'}
+                                            variant={client.is_active ? 'solid' : 'outline'}
+                                            minW="32px"
+                                            title={client.is_active ? 'Cliente activo' : 'Cliente inactivo'}
+                                            aria-label={client.is_active ? 'Cliente activo' : 'Cliente inactivo'}
+                                            isDisabled
+                                        >
+                                            {client.is_active ? '✔' : '✖'}
                                         </Button>
-                                        <Button colorScheme="red" onClick={() => handleDelete(client.user_id)}>
+                                    </ButtonGroup>
+                                </Td>
+                                <Td textAlign="right">
+                                    <ButtonGroup size="sm">
+                                        <Button>
+                                            <SettingsIcon />
+                                        </Button>
+                                        <Button
+                                            colorScheme="blue"
+                                            minW="32px"
+                                            onClick={() => handleRegeneratePassword(client.user_id)}
+                                            title="Regenerar y copiar contraseña"
+                                            aria-label="Regenerar y copiar contraseña"
+                                        >
+                                            <RepeatIcon />
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            colorScheme={client.is_active ? 'yellow' : 'teal'}
+                                            variant="outline"
+                                            minW="32px"
+                                            onClick={() => handleToggleActive(client)}
+                                            title={client.is_active ? 'Desactivar usuario' : 'Activar usuario'}
+                                            aria-label={client.is_active ? 'Desactivar usuario' : 'Activar usuario'}
+                                        >
+                                            {client.is_active ? '⏸' : '▶'}
+                                        </Button>
+                                        <Button
+                                            colorScheme="red"
+                                            minW="32px"
+                                            onClick={() => handleDelete(client.user_id)}
+                                            title="Eliminar cliente"
+                                            aria-label="Eliminar cliente"
+                                        >
                                             <DeleteIcon />
                                         </Button>
                                     </ButtonGroup>

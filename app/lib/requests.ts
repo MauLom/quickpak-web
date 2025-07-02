@@ -287,13 +287,13 @@ export async function getNotebookByUserId(userId: string) {
     }
 }
 
-export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string }) {
+export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass, is_active }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass }),
+        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass, is_active }),
     });
     if (!res.ok) {
         const error = await res.json();
