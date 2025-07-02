@@ -286,3 +286,55 @@ export async function getNotebookByUserId(userId: string) {
         throw new Error(`Error occurred while fetching notebook: ${error.message}`);
     }
 }
+
+export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string }) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar cliente');
+    }
+    return res.json();
+}
+
+export async function createClient({ name, basic_auth_username, basic_auth_pass }: { name: string, basic_auth_username: string, basic_auth_pass?: string }) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, basic_auth_username, basic_auth_pass }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al crear cliente');
+    }
+    return res.json();
+}
+
+export async function getClients() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/all`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!res.ok) throw new Error('Error al obtener clientes');
+    return res.json();
+}
+
+export async function deleteClient(id) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing?user_id=${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!res.ok) throw new Error('Error al eliminar cliente');
+    return res.json();
+}
