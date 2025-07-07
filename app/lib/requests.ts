@@ -287,13 +287,13 @@ export async function getNotebookByUserId(userId: string) {
     }
 }
 
-export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass, is_active }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean }) {
+export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass, is_active, pricing_matrix }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean, pricing_matrix?: any }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass, is_active }),
+        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass, is_active, pricing_matrix }),
     });
     if (!res.ok) {
         const error = await res.json();
@@ -336,5 +336,49 @@ export async function deleteClient(id) {
         },
     });
     if (!res.ok) throw new Error('Error al eliminar cliente');
+    return res.json();
+}
+
+export async function getClientByUserId(user_id: string) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al obtener cliente');
+    }
+    return res.json();
+}
+
+export async function updateDHLMatrix(user_id: string, pricing_matrix_dhl: any) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/dhl`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, pricing_matrix_dhl }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar matriz DHL');
+    }
+    return res.json();
+}
+
+export async function updateEstafetaMatrix(user_id: string, pricing_matrix_estafeta: any) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/estafeta`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, pricing_matrix_estafeta }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar matriz Estafeta');
+    }
     return res.json();
 }
