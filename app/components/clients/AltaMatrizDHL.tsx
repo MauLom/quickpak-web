@@ -103,6 +103,7 @@ export default function AltaMatrizDHL({ userId, onSave, initialMatrix }: { userI
     const toast = useToast();
     const [separator, setSeparator] = useState<string>(", ");
     const [invalidCells, setInvalidCells] = useState<{ tabla: string, row: number, col: number }[]>([]);
+    const [clientReference, setClientReference] = useState<string>("");
     const nRefs = useRef(
         defaultRows.map(() => dhlColumns.map(() => React.createRef<HTMLInputElement>()))
     );
@@ -130,6 +131,9 @@ export default function AltaMatrizDHL({ userId, onSave, initialMatrix }: { userI
                         }
                     });
                 });
+            }
+            if (typeof initialMatrix.clientReference === 'string') {
+                setClientReference(initialMatrix.clientReference);
             }
         }
     }, [initialMatrix]);

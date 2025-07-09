@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react';
 import {
 	Box, Table, Thead, Tbody, Tr, Th, Td, Button, ButtonGroup, useToast, Spinner, Input, Stack, FormControl,
 	FormLabel, Checkbox, Card, CardHeader, CardBody, CardFooter, Avatar, Flex, Text, Badge,
-	AvatarBadge
+	AvatarBadge,
+	List
 } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon, CopyIcon, RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure } from '@chakra-ui/react';
 import { getClients, deleteClient, createClient, updateClient, getClientByUserId, updateDHLMatrix, updateEstafetaMatrix } from '../../lib/requests';
 import AltaMatrizUsuario from './AltaMatrizEstafeta';
 import AltaMatrizDHL from './AltaMatrizDHL';
+import LabelsBoard from '../labels/board';
 
 
 export default function ClientsLayout() {
 	const [clients, setClients] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [form, setForm] = useState({ name: '', basic_auth_username: '', basic_auth_pass: '' });
+	const [form, setForm] = useState({ name: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
 	const [creating, setCreating] = useState(false);
 	const [lastPassword, setLastPassword] = useState<string | null>(null);
 	const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +26,10 @@ export default function ClientsLayout() {
 	const [loadingDHL, setLoadingDHL] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const toast = useToast();
-
+	const [searchTerm, setSearchTerm] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 5;
+	
 	useEffect(() => {
 		fetchClients();
 	}, []);
@@ -80,7 +85,7 @@ export default function ClientsLayout() {
 				duration: 3000,
 				isClosable: true,
 			});
-			setForm({ name: '', basic_auth_username: '', basic_auth_pass: '' });
+			setForm({ name: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
 			setLastPassword(response.plainPassword || null);
 			setShowPassword(true);
 			fetchClients();
@@ -188,6 +193,17 @@ export default function ClientsLayout() {
 		}
 	};
 	
+	const filteredClients = clients.filter((client: any) =>
+		client.name.toLowerCase().includes(searchTerm.toLowerCase())
+	);
+
+	const paginatedClients = filteredClients.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
+
+	const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+
 	return (
 		<Box paddingX={50} padding={10}>
 			<h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 12 }}>Administrar clientes</h2>
@@ -214,6 +230,14 @@ export default function ClientsLayout() {
 							<FormLabel>Contraseña</FormLabel>
 							<Input name="basic_auth_pass" value={form.basic_auth_pass} onChange={handleChange} placeholder="Contraseña" />
 						</FormControl>
+						<FormControl isRequired position="relative">
+							<FormLabel>Referencia DHL</FormLabel>
+							<Input name="reference_dhl" value={form.reference_dhl} onChange={handleChange} placeholder="Referencia DHL" />
+						</FormControl>
+						<FormControl isRequired position="relative">
+							<FormLabel>Referencia Estafeta</FormLabel>
+							<Input name="reference_estafeta" value={form.reference_estafeta} onChange={handleChange} placeholder="Referencia Estafeta" />
+						</FormControl>
 						<Box flex="1" />
 						<FormControl minW="120px" maxW="160px" display="flex" flexDirection="column" alignItems="flex-end">
 							<FormLabel mb={1} textAlign="right" w="100%">Acciones</FormLabel>
@@ -225,30 +249,44 @@ export default function ClientsLayout() {
 			{loading ? (
 				<Spinner />
 			) : (
-				<Table variant="simple">
+				<>
+				<Box mb={4}>
+					<Input
+						placeholder="Buscar por nombre"
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+						size="md"
+						mb={4}
+					/>
+				</Box>
+				<Table variant="striped" size="sm" boxShadow="md" borderRadius={10} overflow="hidden" colorScheme='blue'>
 					<Thead>
 						<Tr>
-							<Th>Nombre</Th>
-							<Th>Usuario</Th>
-							<Th>Activo</Th>
-							<Th textAlign="right">Acciones</Th>
+							<Th textAlign="center">Nombre</Th>
+							<Th textAlign="center">Usuario</Th>
+							<Th textAlign="center">Referencia DHL</Th>
+							<Th textAlign="center">Referencia Estafeta</Th>
+							<Th textAlign="center">Activo</Th>
+							<Th textAlign="center">Acciones</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
-						{clients.map((client: any) => (
+						{paginatedClients.map((client: any) => (
 							<Tr key={client.user_id}>
 								<Td>{client.name}</Td>
-								<Td>{client.basic_auth_username}</Td>
-								<Td>
+								<Td textAlign="center">{client.basic_auth_username}</Td>
+								<Td textAlign="center">{client.reference_dhl}</Td>
+								<Td textAlign="center">{client.reference_estafeta}</Td>
+								<Td textAlign="center">
 									<Checkbox
 										size="md"
-										colorScheme='teal'
+										colorScheme="teal"
 										isChecked={client.is_active}
 										_readOnly='true'
 									>
 									</Checkbox>
 								</Td>
-								<Td textAlign="right">
+								<Td textAlign="center">
 									<ButtonGroup size="sm">
 										<Button
 											bg="gray.700"
@@ -279,6 +317,7 @@ export default function ClientsLayout() {
 										>
 											{client.is_active ? '⏸' : '▶'}
 										</Button>
+										
 										<Button
 											size='sm'
 											colorScheme="red"
@@ -294,9 +333,25 @@ export default function ClientsLayout() {
 						))}
 					</Tbody>
 				</Table>
+				<Box mt={4} display="flex" justifyContent="space-between" alignItems="center">
+					<Button
+						onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+						disabled={currentPage === 1}
+					>
+						Anterior
+					</Button>
+					<Text>Página {currentPage} de {totalPages}</Text>
+					<Button
+						onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+						disabled={currentPage === totalPages}
+					>
+						Siguiente
+					</Button>
+				</Box>
+				</>
 			)}
 			{/* Modal de configuración de usuario */}
-			<Modal isOpen={isOpen} onClose={onClose} size="xxl" >
+			<Modal isOpen={isOpen} onClose={onClose} onCloseComplete={fetchClients} size="xxl" >
 				<ModalOverlay />
 				<ModalContent m={8}>
 					<ModalHeader>Configuración de usuario</ModalHeader>
@@ -389,6 +444,66 @@ export default function ClientsLayout() {
 											</Button>
 										</Box>
 									</Flex>
+									<br/><hr/>
+									<Box m={5}>
+										<form
+											onSubmit={async (e) => {
+												e.preventDefault();
+												try {
+													console.log(selectedClient);
+													await updateClient({
+														user_id: selectedClient.user_id,
+														reference_dhl: selectedClient.reference_dhl,
+														reference_estafeta: selectedClient.reference_estafeta,
+													});
+													toast({
+														title: 'Referencias guardadas',
+														status: 'success',
+														duration: 3000,
+														isClosable: true,
+													});
+												} catch (error: any) {
+													toast({
+														title: 'Error al guardar referencias',
+														description: error?.message || '',
+														status: 'error',
+														duration: 4000,
+														isClosable: true,
+													});
+												}
+											}}
+										>
+											<Flex >
+												<label><i>Referencia DHL:</i></label>
+												<Input
+													value={selectedClient.reference_dhl || ''}
+													size="xs"
+													onChange={(e) => setSelectedClient((c: any) => ({ ...c, reference_dhl: e.target.value }))}
+													minWidth={200}
+													width="80px"
+													display="inline-block"
+													ml={2}
+													mr={2}
+													placeholder="Referencia DHL"
+												/>
+												<label><i>Referencia Estafeta:</i></label>
+												<Input
+													value={selectedClient.reference_estafeta || ''}
+													size="xs"
+													onChange={(e) => setSelectedClient((c: any) => ({ ...c, reference_estafeta: e.target.value }))}
+													minWidth={200}
+													width="80px"
+													display="inline-block"
+													ml={2}
+													mr={2}
+													placeholder="Referencia Estafeta"
+												/>
+												<Button type="submit" colorScheme="blue" size="sm" ml={2}>
+													Guardar
+												</Button>
+											</Flex>
+										</form>
+									</Box>
 								</CardHeader>
 								<CardBody>
 									{/* Alta de matriz personalizada tipo Estafeta */}
@@ -458,7 +573,7 @@ export default function ClientsLayout() {
 						)}
 					</ModalBody>
 					<ModalFooter>
-						<Button onClick={onClose}>Cerrar</Button>
+						<Button onClick={() => { onClose(); fetchClients(); }}>Cerrar</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>

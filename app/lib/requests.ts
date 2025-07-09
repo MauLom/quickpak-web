@@ -287,13 +287,13 @@ export async function getNotebookByUserId(userId: string) {
     }
 }
 
-export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass, is_active, pricing_matrix }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean, pricing_matrix?: any }) {
+export async function updateClient({ user_id, name, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta }: { user_id: string, name?: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean, pricing_matrix?: any, reference_dhl?: string, reference_estafeta?: string }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass, is_active, pricing_matrix }),
+        body: JSON.stringify({ user_id, name, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta }),
     });
     if (!res.ok) {
         const error = await res.json();
@@ -302,13 +302,14 @@ export async function updateClient({ user_id, name, basic_auth_username, basic_a
     return res.json();
 }
 
-export async function createClient({ name, basic_auth_username, basic_auth_pass }: { name: string, basic_auth_username: string, basic_auth_pass?: string }) {
+export async function createClient({ name, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta }: 
+    { name: string, basic_auth_username: string, basic_auth_pass?: string, reference_dhl?: string, reference_estafeta?: string }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, basic_auth_username, basic_auth_pass }),
+        body: JSON.stringify({ name, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta }),
     });
     if (!res.ok) {
         const error = await res.json();
@@ -368,7 +369,7 @@ export async function updateDHLMatrix(user_id: string, pricing_matrix_dhl: any) 
     return res.json();
 }
 
-export async function updateEstafetaMatrix(user_id: string, pricing_matrix_estafeta: any) {
+export async function updateEstafetaMatrix(user_id: string, pricing_matrix_estafeta: any, ) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/estafeta`, {
         method: 'PUT',
         headers: {
