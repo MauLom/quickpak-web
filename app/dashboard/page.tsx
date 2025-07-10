@@ -79,12 +79,12 @@ export default function Dashboard() {
 
     }
     const menuOptions = [
-        { label: "Resumen", component: <ResumeBoard />, data: "" },
+        // { label: "Resumen", component: <ResumeBoard />, data: "" },
         { label: "Cotizar", component: <QuotesBoard />, data: "" },
         { label: "Generar guias", component: <LabelsBoard />, data: "" },
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
         { label: "Administrar usuarios", component: <UsersLayout />, data: "" },
-        { label: "Administrar clientes", component: <ClientsLayout />, data: "" },
+        { label: "Administrar clientes API", component: <ClientsLayout />, data: "" },
         // { label: "Administrar valores", component: <DataSettingsValues />, data: "" },
         // { label: "Administrar cuentas", component: <DataSettingsAccounts />, data: "" },
         { label: "Desconexion", component: <Button onClick={() => desconexion()}>Cerrar sesion</Button>, data: "" }
@@ -100,7 +100,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (user.id !== '') {
-            setContentToRender(user.role === 'admin' ? <ResumeBoard /> : <QuotesBoard />);
+            setContentToRender(user.role === 'admin' ? <ClientsLayout /> : <QuotesBoard />);
         }
     }, [user]);
 
