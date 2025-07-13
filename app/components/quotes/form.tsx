@@ -105,7 +105,7 @@ const QuotesForm = ({ ...props }) => {
                     if (dataObj?.data?.data && dataObj?.data?.data.length > 0) {
                         dataObj?.data?.data.forEach((eachQuote: any) => {
                             let quoteObj: any = {}
-                            quoteObj['parcelLogo'] = <Image src="https://www.estafeta.com/-/media/Images/Estafeta/Brand/logotipo-estafeta.svg?la=es&hash=8921A2FC9CD511FCE66DB199D611F5205497DF86" alt="Estafeta logo" />
+                            quoteObj['parcelLogo'] = <Image src="/Logo-Estafeta.svg" alt="Estafeta logo" />
                             quoteObj['serviceType'] = eachQuote.DescripcionServicio
                             quoteObj['weight'] = eachQuote.Peso
                             quoteObj['subTotal'] = eachQuote.Subtotal
@@ -124,7 +124,7 @@ const QuotesForm = ({ ...props }) => {
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="7rem" padding="10px"
-                            backgroundColor="#FFCC00" borderRadius="5px" src="https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg" alt="DHL logo" />
+                            backgroundColor="#FFCC00" borderRadius="5px" src="/dhl-logo.svg" alt="DHL logo" />
                         let foundServiceBase = eachQuote?.Charges.Charge.filter((charge: any) => charge.ChargeName === eachQuote.ServiceName)
                         quoteObj['baseService'] = foundServiceBase[0].ChargeAmount
                         quoteObj['ff'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "FF"))?.ChargeAmount
@@ -374,7 +374,7 @@ const QuotesForm = ({ ...props }) => {
                                         size="md"
                                         type="datetime-local"
                                         name="date"
-                                        min={Date()}
+                                        min={new Date().toISOString().slice(0, 16)}
                                     />
                                     <FormHelperText>fecha de envio del paquete</FormHelperText>
                                 </FormControl>
@@ -484,7 +484,6 @@ const QuotesForm = ({ ...props }) => {
                     <ModalBody>
                         <Box>
                             <LabelsForm hideQuotes={true} labelData={labelData} quotesData={dataQuotes} />
-
                         </Box>
                     </ModalBody>
 

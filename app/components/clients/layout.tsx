@@ -10,8 +10,6 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, Modal
 import { getClients, deleteClient, createClient, updateClient, getClientByUserId, updateDHLMatrix, updateEstafetaMatrix } from '../../lib/requests';
 import AltaMatrizUsuario from './AltaMatrizEstafeta';
 import AltaMatrizDHL from './AltaMatrizDHL';
-import LabelsBoard from '../labels/board';
-
 
 export default function ClientsLayout() {
 	const [clients, setClients] = useState([]);
@@ -29,7 +27,7 @@ export default function ClientsLayout() {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
-	
+
 	useEffect(() => {
 		fetchClients();
 	}, []);
@@ -192,7 +190,7 @@ export default function ClientsLayout() {
 			});
 		}
 	};
-	
+
 	const filteredClients = clients.filter((client: any) =>
 		client.name.toLowerCase().includes(searchTerm.toLowerCase())
 	);
@@ -250,104 +248,104 @@ export default function ClientsLayout() {
 				<Spinner />
 			) : (
 				<>
-				<Box mb={4}>
-					<Input
-						placeholder="Buscar por nombre"
-						value={searchTerm}
-						onChange={(e) => setSearchTerm(e.target.value)}
-						size="md"
-						mb={4}
-					/>
-				</Box>
-				<Table variant="striped" size="sm" boxShadow="md" borderRadius={10} overflow="hidden" colorScheme='blue'>
-					<Thead>
-						<Tr>
-							<Th textAlign="center">Nombre</Th>
-							<Th textAlign="center">Usuario</Th>
-							<Th textAlign="center">Referencia DHL</Th>
-							<Th textAlign="center">Referencia Estafeta</Th>
-							<Th textAlign="center">Activo</Th>
-							<Th textAlign="center">Acciones</Th>
-						</Tr>
-					</Thead>
-					<Tbody>
-						{paginatedClients.map((client: any) => (
-							<Tr key={client.user_id}>
-								<Td>{client.name}</Td>
-								<Td textAlign="center">{client.basic_auth_username}</Td>
-								<Td textAlign="center">{client.reference_dhl}</Td>
-								<Td textAlign="center">{client.reference_estafeta}</Td>
-								<Td textAlign="center">
-									<Checkbox
-										size="md"
-										colorScheme="teal"
-										isChecked={client.is_active}
-										_readOnly='true'
-									>
-									</Checkbox>
-								</Td>
-								<Td textAlign="center">
-									<ButtonGroup size="sm">
-										<Button
-											bg="gray.700"
-											color="white"
-											_hover={{ bg: 'gray.800' }}
-											onClick={() => handleOpenSettings(client)}
-											title="Configurar usuario"
-											aria-label="Configurar usuario"
-										>
-											<SettingsIcon />
-										</Button>
-										<Button
-											colorScheme="blue"
-											size="sm"
-											onClick={() => handleRegeneratePassword(client.user_id)}
-											title="Regenerar y copiar contraseña"
-											aria-label="Regenerar y copiar contraseña"
-										>
-											<RepeatIcon />
-										</Button>
-										<Button
-											size="sm"
-											colorScheme={client.is_active ? 'yellow' : 'teal'}
-											variant="outline"
-											onClick={() => handleToggleActive(client)}
-											title={client.is_active ? 'Desactivar usuario' : 'Activar usuario'}
-											aria-label={client.is_active ? 'Desactivar usuario' : 'Activar usuario'}
-										>
-											{client.is_active ? '⏸' : '▶'}
-										</Button>
-										
-										<Button
-											size='sm'
-											colorScheme="red"
-											onClick={() => handleDelete(client.user_id)}
-											title="Eliminar cliente"
-											aria-label="Eliminar cliente"
-										>
-											<DeleteIcon />
-										</Button>
-									</ButtonGroup>
-								</Td>
+					<Box mb={4}>
+						<Input
+							placeholder="Buscar por nombre"
+							value={searchTerm}
+							onChange={(e) => setSearchTerm(e.target.value)}
+							size="md"
+							mb={4}
+						/>
+					</Box>
+					<Table variant="striped" size="sm" boxShadow="md" borderRadius={10} overflow="hidden" colorScheme='blue'>
+						<Thead>
+							<Tr>
+								<Th textAlign="center">Nombre</Th>
+								<Th textAlign="center">Usuario</Th>
+								<Th textAlign="center">Referencia DHL</Th>
+								<Th textAlign="center">Referencia Estafeta</Th>
+								<Th textAlign="center">Activo</Th>
+								<Th textAlign="center">Acciones</Th>
 							</Tr>
-						))}
-					</Tbody>
-				</Table>
-				<Box mt={4} display="flex" justifyContent="space-between" alignItems="center">
-					<Button
-						onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-						disabled={currentPage === 1}
-					>
-						Anterior
-					</Button>
-					<Text>Página {currentPage} de {totalPages}</Text>
-					<Button
-						onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-						disabled={currentPage === totalPages}
-					>
-						Siguiente
-					</Button>
-				</Box>
+						</Thead>
+						<Tbody>
+							{paginatedClients.map((client: any) => (
+								<Tr key={client.user_id}>
+									<Td>{client.name}</Td>
+									<Td textAlign="center">{client.basic_auth_username}</Td>
+									<Td textAlign="center">{client.reference_dhl}</Td>
+									<Td textAlign="center">{client.reference_estafeta}</Td>
+									<Td textAlign="center">
+										<Checkbox
+											size="md"
+											colorScheme="teal"
+											isChecked={client.is_active}
+											_readOnly='true'
+										>
+										</Checkbox>
+									</Td>
+									<Td textAlign="center">
+										<ButtonGroup size="sm">
+											<Button
+												bg="gray.700"
+												color="white"
+												_hover={{ bg: 'gray.800' }}
+												onClick={() => handleOpenSettings(client)}
+												title="Configurar usuario"
+												aria-label="Configurar usuario"
+											>
+												<SettingsIcon />
+											</Button>
+											<Button
+												colorScheme="blue"
+												size="sm"
+												onClick={() => handleRegeneratePassword(client.user_id)}
+												title="Regenerar y copiar contraseña"
+												aria-label="Regenerar y copiar contraseña"
+											>
+												<RepeatIcon />
+											</Button>
+											<Button
+												size="sm"
+												colorScheme={client.is_active ? 'yellow' : 'teal'}
+												variant="outline"
+												onClick={() => handleToggleActive(client)}
+												title={client.is_active ? 'Desactivar usuario' : 'Activar usuario'}
+												aria-label={client.is_active ? 'Desactivar usuario' : 'Activar usuario'}
+											>
+												{client.is_active ? '⏸' : '▶'}
+											</Button>
+
+											<Button
+												size='sm'
+												colorScheme="red"
+												onClick={() => handleDelete(client.user_id)}
+												title="Eliminar cliente"
+												aria-label="Eliminar cliente"
+											>
+												<DeleteIcon />
+											</Button>
+										</ButtonGroup>
+									</Td>
+								</Tr>
+							))}
+						</Tbody>
+					</Table>
+					<Box mt={4} display="flex" justifyContent="space-between" alignItems="center">
+						<Button
+							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+							disabled={currentPage === 1}
+						>
+							Anterior
+						</Button>
+						<Text>Página {currentPage} de {totalPages}</Text>
+						<Button
+							onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+							disabled={currentPage === totalPages}
+						>
+							Siguiente
+						</Button>
+					</Box>
 				</>
 			)}
 			{/* Modal de configuración de usuario */}
@@ -444,17 +442,20 @@ export default function ClientsLayout() {
 											</Button>
 										</Box>
 									</Flex>
-									<br/><hr/>
+									<br /><hr />
 									<Box m={5}>
 										<form
 											onSubmit={async (e) => {
 												e.preventDefault();
+												const form = e.target as HTMLFormElement;
+												const referenciaDHL = (form.DHL as HTMLInputElement).value;
+												const referenciaEstafeta = (form.Estafeta as HTMLInputElement).value;
 												try {
-													console.log(selectedClient);
+													console.log();
 													await updateClient({
 														user_id: selectedClient.user_id,
-														reference_dhl: selectedClient.reference_dhl,
-														reference_estafeta: selectedClient.reference_estafeta,
+														reference_dhl: referenciaDHL,
+														reference_estafeta: referenciaEstafeta,
 													});
 													toast({
 														title: 'Referencias guardadas',
@@ -476,9 +477,9 @@ export default function ClientsLayout() {
 											<Flex >
 												<label><i>Referencia DHL:</i></label>
 												<Input
-													value={selectedClient.reference_dhl || ''}
+													name="DHL"
+													defaultValue={selectedClient.reference_dhl || ''}
 													size="xs"
-													onChange={(e) => setSelectedClient((c: any) => ({ ...c, reference_dhl: e.target.value }))}
 													minWidth={200}
 													width="80px"
 													display="inline-block"
@@ -488,9 +489,9 @@ export default function ClientsLayout() {
 												/>
 												<label><i>Referencia Estafeta:</i></label>
 												<Input
-													value={selectedClient.reference_estafeta || ''}
+													name="Estafeta"
+													defaultValue={selectedClient.reference_estafeta  || ''}
 													size="xs"
-													onChange={(e) => setSelectedClient((c: any) => ({ ...c, reference_estafeta: e.target.value }))}
 													minWidth={200}
 													width="80px"
 													display="inline-block"
