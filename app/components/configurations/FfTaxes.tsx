@@ -367,11 +367,9 @@ const FfTaxesSection: React.FC = () => {
                 >
                   {editingId ? 'Actualizar' : 'Crear'}
                 </Button>
-                {editingId && (
-                  <Button onClick={resetForm} variant="outline">
+                <Button onClick={resetForm} variant="outline">
                     Cancelar
-                  </Button>
-                )}
+                </Button>
               </HStack>
             </Stack>
           </form>

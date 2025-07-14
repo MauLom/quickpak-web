@@ -206,7 +206,7 @@ export default function ClientsLayout() {
 
 	return (
 		<Box paddingX={50} padding={10}>
-			<h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 12 }}>Administrar clientes</h2>
+			<h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 12 }}>Administrar Usuarios</h2>
 			<Box mb={8}>
 				<form onSubmit={handleCreate} style={{ position: 'relative' }}>
 					<Stack direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%">
