@@ -233,7 +233,7 @@ const FfTaxesSection: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(!editingId && providers?.find(p => p.name.toLowerCase() === formData.paqueteria.toLowerCase())) {
+    if(!editingId && ffTaxes?.find(p => p?.paqueteria.toLowerCase() === formData.paqueteria.toLowerCase())) {
         toast({
           title: 'Waring',
           description: 'El proveedor ya tiene una tasa de combustible configurada',
