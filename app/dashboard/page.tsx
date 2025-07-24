@@ -13,6 +13,7 @@ import { getCookie, deleteCookie } from '../lib/manageUserSession'
 import QuotesBoard from '../components/quotes/board'
 import LabelsBoard from '../components/labels/board'
 import UsersLayout from '../components/users/layout'
+import ConfigurationPanel from '../components/configurations/FfTaxes'
 import ResumeBoard from '../components/resume/board'
 import { getUser } from '../lib/requests'
 import { useRouter } from 'next/navigation'
@@ -80,11 +81,12 @@ export default function Dashboard() {
     }
     const menuOptions = [
         // { label: "Resumen", component: <ResumeBoard />, data: "" },
+        { label: "Configuración", component: <ConfigurationPanel />, data: "" },
         { label: "Cotizar", component: <QuotesBoard />, data: "" },
         { label: "Generar guias", component: <LabelsBoard />, data: "" },
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
         { label: "Administrar usuarios", component: <UsersLayout />, data: "" },
-        { label: "Administrar clientes API", component: <ClientsLayout />, data: "" },
+        { label: "Administrar usuarios", component: <ClientsLayout />, data: "" },
         // { label: "Administrar valores", component: <DataSettingsValues />, data: "" },
         // { label: "Administrar cuentas", component: <DataSettingsAccounts />, data: "" },
         { label: "Desconexion", component: <Button onClick={() => desconexion()}>Cerrar sesion</Button>, data: "" }

@@ -3,9 +3,16 @@ import {
 	Box, Table, Thead, Tbody, Tr, Th, Td, Button, ButtonGroup, useToast, Spinner, Input, Stack, FormControl,
 	FormLabel, Checkbox, Card, CardHeader, CardBody, CardFooter, Avatar, Flex, Text, Badge,
 	AvatarBadge,
-	List
+	VStack,
+	Select,
+	Heading,
+	Accordion,
+	AccordionItem,
+	AccordionPanel,
+	AccordionButton,
+	AccordionIcon
 } from '@chakra-ui/react';
-import { AddIcon, DeleteIcon, CopyIcon, RepeatIcon, SettingsIcon } from '@chakra-ui/icons';
+import { DeleteIcon, RepeatIcon, SettingsIcon, EditIcon } from '@chakra-ui/icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure } from '@chakra-ui/react';
 import { getClients, deleteClient, createClient, updateClient, getClientByUserId, updateDHLMatrix, updateEstafetaMatrix } from '../../lib/requests';
 import AltaMatrizUsuario from './AltaMatrizEstafeta';
@@ -14,7 +21,7 @@ import AltaMatrizDHL from './AltaMatrizDHL';
 export default function ClientsLayout() {
 	const [clients, setClients] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [form, setForm] = useState({ name: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
+	const [form, setForm] = useState({ name: '', email: '', role: 'usuario', userName: '', password: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
 	const [creating, setCreating] = useState(false);
 	const [lastPassword, setLastPassword] = useState<string | null>(null);
 	const [showPassword, setShowPassword] = useState(false);
@@ -26,17 +33,22 @@ export default function ClientsLayout() {
 	const toast = useToast();
 	const [searchTerm, setSearchTerm] = useState('');
 	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 5;
+	const [totalPages, setTotalPages] = useState(1);
+	const itemsPerPage = 10;
+	const [isEditing, setIsEditing] = useState(false);
+	const [editingUserId, setEditingUserId] = useState<string | null>(null);
+	const [isAccordionOpen, setIsAccordionOpen] = useState(false);
 
 	useEffect(() => {
-		fetchClients();
-	}, []);
+		fetchClients(currentPage, itemsPerPage);
+	}, [currentPage, searchTerm]);
 
-	const fetchClients = async () => {
+	const fetchClients = async (page = 1, limit = itemsPerPage) => {
 		setLoading(true);
 		try {
-			const data = await getClients();
-			setClients(data);
+			const data = await getClients({ page, limit, search: searchTerm });
+			setClients(data.clients);
+			setTotalPages(data.totalPages);
 		} catch (error) {
 			toast({
 				title: 'Error al cargar clientes',
@@ -72,24 +84,40 @@ export default function ClientsLayout() {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleCreate = async (e: React.FormEvent) => {
+	const handleCreateOrUpdate = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setCreating(true);
 		try {
-			const response = await createClient(form);
-			toast({
-				title: 'Cliente creado',
-				status: 'success',
-				duration: 3000,
-				isClosable: true,
-			});
-			setForm({ name: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
-			setLastPassword(response.plainPassword || null);
-			setShowPassword(true);
+			if (isEditing && editingUserId) {
+				// Crea un objeto solo con los campos a actualizar
+				const updateData: any = { user_id: editingUserId, ...form };
+				if (!form.password) delete updateData.password;
+				if (!form.basic_auth_pass) delete updateData.basic_auth_pass;
+				await updateClient(updateData);
+				toast({
+					title: 'Cliente actualizado',
+					status: 'success',
+					duration: 3000,
+					isClosable: true,
+				});
+			} else {
+				const response = await createClient(form);
+				toast({
+					title: 'Cliente creado',
+					status: 'success',
+					duration: 3000,
+					isClosable: true,
+				});
+				setLastPassword(response.plainPassword || null);
+				setShowPassword(true);
+			}
+			setForm({ name: '', email: '', role: 'usuario', userName: '', password: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
+			setIsEditing(false);
+			setEditingUserId(null);
 			fetchClients();
 		} catch (error: any) {
 			toast({
-				title: 'Error al crear cliente',
+				title: isEditing ? 'Error al actualizar cliente' : 'Error al crear cliente',
 				description: error?.message || '',
 				status: 'error',
 				duration: 4000,
@@ -124,22 +152,42 @@ export default function ClientsLayout() {
 		}
 	};
 
-	// Sugerencias de usuario
-	const generateSuggestions = (name: string, existingUsernames: string[]) => {
+	// Sugerencias de usuario api
+	const generateUserNameAPISuggestions = (name: string, existingUsernames: string[]) => {
 		if (!name) return [];
 		// Iniciales de cada palabra
 		const initials = name.trim().split(/\s+/).map(w => w[0].toUpperCase()).join('');
 		const suggestions = [
+			(Math.random() + 1).toString(36).substring(2),
 			initials,
-			initials + '1',
-			initials + '123',
+			initials + Math.floor(Math.random() * 1000),
+			initials + Math.floor(Math.random() * 1000),
 			initials + Math.floor(Math.random() * 1000)
 		];
 		// Filtrar sugerencias que ya existen en la BD
 		return suggestions.filter(s => !existingUsernames.includes(s));
 	};
-	const existingUsernames = clients.map((c: any) => c.basic_auth_username?.toUpperCase?.() || '');
-	const userSuggestions = generateSuggestions(form.name, existingUsernames);
+
+	// Sugerencias de usuario web
+	const generateUserNameWebSuggestions = (name: string, existingUsernames: string[]) => {
+		if (!name) return [];
+		// Iniciales de cada palabra
+		const initials = name.trim().split(/\s+/).map(w => w[0].toUpperCase()).join('');
+		const suggestions = [
+			initials,
+			initials + Math.floor(Math.random() * 1000),
+			name.split(' ').map(w => w.toUpperCase()).join('_'),
+			name.split(' ').map(w => w.toUpperCase()).join('_') + Math.floor(Math.random() * 1000)
+		];
+		// Filtrar sugerencias que ya existen en la BD
+		return suggestions.filter(s => !existingUsernames.includes(s));
+	};
+
+	console.log(clients)
+	const existingUsernames = clients?.map((c: any) => c.basic_auth_username?.toUpperCase?.() || '');
+	const existingUsernamesWeb = clients?.map((c: any) => c.userName?.toUpperCase?.() || '');
+	const userSuggestions = generateUserNameAPISuggestions(form.name, existingUsernames);
+	const userWebSuggestions = generateUserNameWebSuggestions(form.name, existingUsernamesWeb);
 
 	const handleToggleActive = async (client: any) => {
 		try {
@@ -191,90 +239,148 @@ export default function ClientsLayout() {
 		}
 	};
 
-	const filteredClients = clients.filter((client: any) =>
-		client.name.toLowerCase().includes(searchTerm.toLowerCase())
-	);
-
-	const paginatedClients = filteredClients.slice(
-		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage
-	);
-
-	const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-
 	return (
 		<Box paddingX={50} padding={10}>
-			<h2 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 12 }}>Administrar clientes</h2>
-			<Box mb={8}>
-				<form onSubmit={handleCreate} style={{ position: 'relative' }}>
-					<Stack direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%">
-						<FormControl isRequired position="relative">
-							<FormLabel>Nombre</FormLabel>
-							<Input name="name" value={form.name} onChange={handleChange} placeholder="Nombre" />
-						</FormControl>
-						<FormControl isRequired position="relative">
-							<FormLabel>Usuario</FormLabel>
-							<Input name="basic_auth_username" value={form.basic_auth_username} onChange={handleChange} placeholder="Usuario" autoComplete="off" />
-							{form.name && userSuggestions.length > 0 && (
-								<Box mt={1} position="absolute" left={0} top="100%" width="100%" zIndex={10} bg="white" p={2} borderRadius={6} boxShadow="md">
-									<span style={{ fontSize: '0.9em', color: '#888' }}>Sugerencias: </span>
-									{userSuggestions.map((s, idx) => (
-										<Button key={idx} size="xs" variant="ghost" colorScheme="gray" ml={1} onClick={() => setForm(f => ({ ...f, basic_auth_username: s }))}>{s}</Button>
-									))}
-								</Box>
-							)}
-						</FormControl>
-						<FormControl isRequired position="relative">
-							<FormLabel>Contraseña</FormLabel>
-							<Input name="basic_auth_pass" value={form.basic_auth_pass} onChange={handleChange} placeholder="Contraseña" />
-						</FormControl>
-						<FormControl isRequired position="relative">
-							<FormLabel>Referencia DHL</FormLabel>
-							<Input name="reference_dhl" value={form.reference_dhl} onChange={handleChange} placeholder="Referencia DHL" />
-						</FormControl>
-						<FormControl isRequired position="relative">
-							<FormLabel>Referencia Estafeta</FormLabel>
-							<Input name="reference_estafeta" value={form.reference_estafeta} onChange={handleChange} placeholder="Referencia Estafeta" />
-						</FormControl>
-						<Box flex="1" />
-						<FormControl minW="120px" maxW="160px" display="flex" flexDirection="column" alignItems="flex-end">
-							<FormLabel mb={1} textAlign="right" w="100%">Acciones</FormLabel>
-							<Button colorScheme="teal" type="submit" isLoading={creating}><AddIcon /></Button>
-						</FormControl>
-					</Stack>
-				</form>
+			<Heading style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: 12 }}>Administrar Usuarios</Heading>
+			<Accordion allowToggle index={isAccordionOpen ? 0 : -1} onChange={(idx) => setIsAccordionOpen(idx === 0)}>
+				<AccordionItem>
+					<h1>
+						<AccordionButton _expanded={{ bg: 'teal.100', color: 'teal.800' }}>
+							<Box flex='1' textAlign='left' fontWeight={'bold'}>
+								Usuarios
+							</Box>
+							<AccordionIcon />
+						</AccordionButton>
+					</h1>
+					<AccordionPanel borderStyle={'solid'} borderWidth={2} borderColor="teal.100" padding={4}>
+						<Box mb={8}>
+							<form onSubmit={handleCreateOrUpdate} style={{ position: 'relative' }}>
+								<Stack direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%" >
+									<FormControl isRequired position="relative">
+										<FormLabel>Nombre</FormLabel>
+										<Input name="name" value={form.name} onChange={handleChange} placeholder="Nombre" />
+									</FormControl>
+									<FormControl position="relative">
+										<FormLabel>Correo</FormLabel>
+										<Input name="email" value={form.email} onChange={handleChange} placeholder="correo@mail.com.mx" type='email' />
+									</FormControl>
+									<FormControl isRequired position="relative">
+										<FormLabel>Rol</FormLabel>
+										<Select isRequired id="role" name="role" value={form.role} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setForm({ ...form, role: e.target.value })} placeholder="Selecciona un rol">
+											<option value="usuario">Ususario</option>
+											<option value="admin">Administrador</option>
+										</Select>
+									</FormControl>
+									<FormControl isRequired position="relative">
+										<FormLabel>Referencia DHL</FormLabel>
+										<Input name="reference_dhl" value={form.reference_dhl} onChange={handleChange} placeholder="Referencia DHL" />
+									</FormControl>
+									<FormControl isRequired position="relative">
+										<FormLabel>Referencia Estafeta</FormLabel>
+										<Input name="reference_estafeta" value={form.reference_estafeta} onChange={handleChange} placeholder="Referencia Estafeta" />
+									</FormControl>
+								</Stack>
+								<Stack direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%" mt={5}>
+									<Card width={'50%'} boxShadow="lg" borderRadius={10}>
+										<CardHeader fontSize="lg" bg="gray.50" borderTopRadius={10}>Autenticación Web</CardHeader>
+										<CardBody>
+											<VStack>
+												<FormControl isRequired position="relative">
+													<FormLabel>Usuario</FormLabel>
+													<Input name="userName" value={form.userName} onChange={handleChange} placeholder="Usuario" autoComplete="off" />
+													{form.name && userWebSuggestions.length > 0 && !form.userName && (
+														<Box mt={1} position="absolute" left={0} top="100%" width="100%" zIndex={10} bg="#E6FFFA" p={2} borderRadius={6} boxShadow="md">
+															<span style={{ fontSize: '0.9em', color: '#888' }}>Sugerencias: </span>
+															{userWebSuggestions.map((s, idx) => (
+																<Button key={idx} size="xs" variant="ghost" colorScheme="blue" ml={1} onClick={() => setForm(f => ({ ...f, userName: s }))}>{s}</Button>
+															))}
+														</Box>
+													)}
+												</FormControl>
+												<FormControl isRequired={!isEditing} position="relative">
+													<FormLabel>Contraseña</FormLabel>
+													<Input name="password" value={form.password} onChange={handleChange} placeholder="Contraseña" type='password' />
+												</FormControl>
+											</VStack>
+										</CardBody>
+									</Card>
+									<Card width={'50%'} boxShadow="lg" borderRadius={10}>
+										<CardHeader fontSize="lg" bg="gray.50" borderTopRadius={10}>Autenticación API</CardHeader>
+										<CardBody>
+											<VStack>
+												<FormControl isRequired position="relative">
+													<FormLabel>Usuario</FormLabel>
+													<Input name="basic_auth_username" value={form.basic_auth_username} onChange={handleChange} placeholder="Usuario" autoComplete="off" />
+													{form.name && userSuggestions.length > 0 && !form.basic_auth_username && (
+														<Box mt={1} position="absolute" left={0} top="100%" width="100%" zIndex={10} bg="#E6FFFA" p={2} borderRadius={6} boxShadow="md">
+															<span style={{ fontSize: '0.9em', color: '#888' }}>Sugerencias: </span>
+															{userSuggestions.map((s, idx) => (
+																<Button key={idx} size="xs" variant="ghost" colorScheme="blue" ml={1} onClick={() => setForm(f => ({ ...f, basic_auth_username: s }))}>{s}</Button>
+															))}
+														</Box>
+													)}
+												</FormControl>
+												<FormControl isRequired={!isEditing} position="relative">
+													<FormLabel>Contraseña</FormLabel>
+													<Input name="basic_auth_pass" value={form.basic_auth_pass} onChange={handleChange} placeholder="Contraseña" type='password' />
+												</FormControl>
+											</VStack>
+										</CardBody>
+									</Card>
+								</Stack>
+								<Stack flex={1} direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%" mt={5}>
+									<Button colorScheme="teal" type="submit" isLoading={creating} my={5} ml='auto'>Guardar</Button>
+									{isEditing && (
+										<Button
+											colorScheme="gray"
+											variant="outline"
+											onClick={() => {
+												setIsEditing(false);
+												setEditingUserId(null);
+												setForm({ name: '', email: '', role: 'usuario', userName: '', password: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
+											}}>
+											Cancelar edición
+										</Button>
+									)}
+								</Stack>
+							</form>
+						</Box>
+					</AccordionPanel>
+				</AccordionItem>
+			</Accordion>
+			<Box my={5}>
+				<Input
+					placeholder="Buscar por nombre"
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+					size="md"
+					mb={4}
+				/>
 			</Box>
 			{loading ? (
 				<Spinner />
 			) : (
 				<>
-					<Box mb={4}>
-						<Input
-							placeholder="Buscar por nombre"
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-							size="md"
-							mb={4}
-						/>
-					</Box>
 					<Table variant="striped" size="sm" boxShadow="md" borderRadius={10} overflow="hidden" colorScheme='blue'>
 						<Thead>
 							<Tr>
 								<Th textAlign="center">Nombre</Th>
-								<Th textAlign="center">Usuario</Th>
+								<Th textAlign="center">Usuario Web</Th>
 								<Th textAlign="center">Referencia DHL</Th>
 								<Th textAlign="center">Referencia Estafeta</Th>
-								<Th textAlign="center">Activo</Th>
+								<Th textAlign="center">Usuario API</Th>
+								<Th textAlign="center">Usuario API Activo</Th>
 								<Th textAlign="center">Acciones</Th>
 							</Tr>
 						</Thead>
 						<Tbody>
-							{paginatedClients.map((client: any) => (
+							{clients?.map((client: any) => (
 								<Tr key={client.user_id}>
 									<Td>{client.name}</Td>
-									<Td textAlign="center">{client.basic_auth_username}</Td>
+									<Td textAlign="center">{client.userName}</Td>
 									<Td textAlign="center">{client.reference_dhl}</Td>
 									<Td textAlign="center">{client.reference_estafeta}</Td>
+									<Td textAlign="center">{client.basic_auth_username}</Td>
 									<Td textAlign="center">
 										<Checkbox
 											size="md"
@@ -297,11 +403,38 @@ export default function ClientsLayout() {
 												<SettingsIcon />
 											</Button>
 											<Button
+												bg="teal"
+												color="white"
+												_hover={{ bg: 'gray.800' }}
+												onClick={async () => {
+													setIsAccordionOpen(true);
+													setIsEditing(true);
+													setEditingUserId(client.user_id);
+													// Carga los datos del usuario desde la BD (opcional, si ya tienes todos los datos en client puedes usar directamente)
+													const user = await getClientByUserId(client.user_id);
+													setForm({
+														name: user.name || '',
+														email: user.email || '',
+														role: user.role?.trim() || 'usuario',
+														userName: user.userName || '',
+														password: '',
+														basic_auth_username: user.basic_auth_username || '',
+														basic_auth_pass: '',
+														reference_dhl: user.reference_dhl || '',
+														reference_estafeta: user.reference_estafeta || ''
+													});
+												}}
+												title="Editar usuario"
+												aria-label="Editar usuario"
+											>
+												<EditIcon />
+											</Button>
+											<Button
 												colorScheme="blue"
 												size="sm"
 												onClick={() => handleRegeneratePassword(client.user_id)}
-												title="Regenerar y copiar contraseña"
-												aria-label="Regenerar y copiar contraseña"
+												title="Regenerar y copiar contraseña del usuario API"
+												aria-label="Regenerar y copiar contraseña del usuario API"
 											>
 												<RepeatIcon />
 											</Button>
@@ -332,19 +465,31 @@ export default function ClientsLayout() {
 						</Tbody>
 					</Table>
 					<Box mt={4} display="flex" justifyContent="space-between" alignItems="center">
-						<Button
-							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-							disabled={currentPage === 1}
-						>
-							Anterior
-						</Button>
+						<Stack flexFlow={"row"} spacing={2} alignItems="center">
+							<Button
+								onClick={() => setCurrentPage(1)}
+								isDisabled={currentPage === 1}>
+								Inicio
+							</Button>
+							<Button
+								onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+								isDisabled={currentPage === 1}>
+								Anterior
+							</Button>
+						</Stack>
 						<Text>Página {currentPage} de {totalPages}</Text>
-						<Button
-							onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-							disabled={currentPage === totalPages}
-						>
-							Siguiente
-						</Button>
+						<Stack flexFlow={"row"} spacing={2} alignItems="center">
+							<Button
+								onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+								isDisabled={currentPage === totalPages}>
+								Siguiente
+							</Button>
+							<Button
+								onClick={() => setCurrentPage(totalPages)}
+								isDisabled={currentPage === totalPages}>
+								Fin
+							</Button>
+						</Stack>
 					</Box>
 				</>
 			)}
@@ -490,7 +635,7 @@ export default function ClientsLayout() {
 												<label><i>Referencia Estafeta:</i></label>
 												<Input
 													name="Estafeta"
-													defaultValue={selectedClient.reference_estafeta  || ''}
+													defaultValue={selectedClient.reference_estafeta || ''}
 													size="xs"
 													minWidth={200}
 													width="80px"
