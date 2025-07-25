@@ -43,12 +43,17 @@ interface Iuser {
     id: string,
     name: string,
     matriz: string,
-    role: string
+    role: string,
+    basic_auth_username: string
+    basic_auth_pass: string
 }
 interface User {
     _id: string;
     userName: string;
     provider_access: { provider_id: string; services: string[] }[];
+    role: string;
+    basic_auth_username: string;
+    basic_auth_pass: string;
 }
 
 
@@ -58,7 +63,7 @@ const QuotesForm = ({ ...props }) => {
     const [quotesArr, setQuotesArr] = useState([])
     const [includeInsurance, setIncludeInsurance] = useState()
     const [isOpenModalLabels, setIsOpenModalLabels] = useState(false)
-    const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "" })
+    const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "", basic_auth_username: "", basic_auth_pass: "" })
     const [userQuotes, setUserQuotes] = useState("")
     const [originCity, setOriginCity] = useState("")
     const [destinyCity, setDestinyCity] = useState("")
@@ -67,10 +72,10 @@ const QuotesForm = ({ ...props }) => {
     const [dataQuotes, setDataQuotes] = useState({})
     const toast = useToast()
 
-    async function getUsersForSelect() {
-        const users = await getUsers()
-        users.length > 0 && setUsersOptions(users)
-    }
+    // async function getUsersForSelect() {
+    //     const users = await getUsers()
+    //     users.length > 0 && setUsersOptions(users)
+    // }
 
     async function loadUserFromId(id: string) {
         const data = await getUser(id)
@@ -78,7 +83,9 @@ const QuotesForm = ({ ...props }) => {
             id: data._id,
             name: data.userName,
             matriz: data.provider_access,
-            role: data.role
+            role: data.role,
+            basic_auth_username: data.basic_auth_username,
+            basic_auth_pass: data.password
         }
         setUser(userParsed)
     }
@@ -91,7 +98,8 @@ const QuotesForm = ({ ...props }) => {
             setUserQuotes(data.userId)
         }
         if (data.userRole === "admin") {
-            getUsersForSelect()
+            // getUsersForSelect()
+            //chido que seas admin pa
         }
     }, [session])
 
@@ -105,7 +113,7 @@ const QuotesForm = ({ ...props }) => {
                     if (dataObj?.data?.data && dataObj?.data?.data.length > 0) {
                         dataObj?.data?.data.forEach((eachQuote: any) => {
                             let quoteObj: any = {}
-                            quoteObj['parcelLogo'] = <Image src="https://www.estafeta.com/-/media/Images/Estafeta/Brand/logotipo-estafeta.svg?la=es&hash=8921A2FC9CD511FCE66DB199D611F5205497DF86" alt="Estafeta logo" />
+                            quoteObj['parcelLogo'] = <Image src="/Logo-Estafeta.svg" alt="Estafeta logo" />
                             quoteObj['serviceType'] = eachQuote.DescripcionServicio
                             quoteObj['weight'] = eachQuote.Peso
                             quoteObj['subTotal'] = eachQuote.Subtotal
@@ -124,7 +132,7 @@ const QuotesForm = ({ ...props }) => {
                     dataObj?.dataDHL?.data.forEach((eachQuote: any) => {
                         let quoteObj: any = {}
                         quoteObj['parcelLogo'] = <Image maxH="7rem" padding="10px"
-                            backgroundColor="#FFCC00" borderRadius="5px" src="https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg" alt="DHL logo" />
+                            backgroundColor="#FFCC00" borderRadius="5px" src="/dhl-logo.svg" alt="DHL logo" />
                         let foundServiceBase = eachQuote?.Charges.Charge.filter((charge: any) => charge.ChargeName === eachQuote.ServiceName)
                         quoteObj['baseService'] = foundServiceBase[0].ChargeAmount
                         quoteObj['ff'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "FF"))?.ChargeAmount
@@ -241,7 +249,7 @@ const QuotesForm = ({ ...props }) => {
                 insurance: includeInsurance ? e.target?.insurance.value : 0
             }
 
-            dataToBeSended.userId = userQuotes !== "" ? userQuotes : "enc0UiLq0oNXm1GTFHB8"
+            // dataToBeSended.userId = userQuotes !== "" ? userQuotes : "enc0UiLq0oNXm1GTFHB8"
             setDataQuotes(dataToBeSended)
             doSubmit(dataToBeSended)
         }
@@ -374,7 +382,7 @@ const QuotesForm = ({ ...props }) => {
                                         size="md"
                                         type="datetime-local"
                                         name="date"
-                                        min={Date()}
+                                        min={new Date().toISOString().slice(0, 16)}
                                     />
                                     <FormHelperText>fecha de envio del paquete</FormHelperText>
                                 </FormControl>
@@ -484,7 +492,6 @@ const QuotesForm = ({ ...props }) => {
                     <ModalBody>
                         <Box>
                             <LabelsForm hideQuotes={true} labelData={labelData} quotesData={dataQuotes} />
-
                         </Box>
                     </ModalBody>
 

@@ -4,7 +4,7 @@ import { AddressData } from "../types/Address";
 
 export async function getUsers() {
     try {
-        const res = await fetch(`${URL}users`);
+        const res = await fetch(`${URL}userPricing`);
         if (!res.ok) {
             throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
         }
@@ -16,7 +16,7 @@ export async function getUsers() {
 
 export async function getUser(id: string) {
     try {
-        const res = await fetch(`${URL}users/${id}`);
+        const res = await fetch(`${URL}userPricing/${id}`);
         if (!res.ok) {
             throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
         }
@@ -29,25 +29,33 @@ export async function getUser(id: string) {
 export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: any }> {
     try {
         const bodyUnParsed: any = quotesData;
+        const userSessionData = sessionStorage.getItem("informacion_usuario");
+
+        const userName = userSessionData ? JSON.parse(userSessionData).basic_auth_username : '';
+        const userPassword = userSessionData ? JSON.parse(userSessionData).basic_auth_pass : '';
+
+        console.log("creds: ", userName, userPassword)
+        const basicAuthCreds = btoa(`${userName}:${userPassword}`);
 
         const fetchEstafeta = async () => {
             if (bodyUnParsed?.package?.length !== 1) return;
 
             const bodyEstafeta = {
-                "alto": bodyUnParsed?.package[0]?.height,
-                "ancho": bodyUnParsed?.package[0]?.width,
-                "esPaquete": true,
-                "largo": bodyUnParsed?.package[0]?.length,
-                "peso": bodyUnParsed?.package[0]?.weight,
+                "height": bodyUnParsed?.package[0]?.height,
+                "width": bodyUnParsed?.package[0]?.width,
+                "isPackage": true,
+                "length": bodyUnParsed?.package[0]?.length,
+                "weight": bodyUnParsed?.package[0]?.weight,
                 "originZip": bodyUnParsed?.data?.originZip,
-                "destinyZip": bodyUnParsed?.data?.destinyZip,
-                "userId": bodyUnParsed?.userId,
-                "seguro": bodyUnParsed?.data?.insurance
+                "destinationZip": bodyUnParsed?.data?.destinyZip,
+                "insurance": bodyUnParsed?.data?.insurance
             };
 
-            const res = await fetch(`${URL}rates/estafeta`, {
+            // const basicAuthCreds 
+            const res = await fetch(`${URL}v3/rate/estafeta`, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Basic ${basicAuthCreds}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(bodyEstafeta),
@@ -81,9 +89,10 @@ export async function getQuotes(quotesData: any): Promise<{ data: any; dataDHL: 
                 "userId": bodyUnParsed?.userId
             };
 
-            const resDHL = await fetch(`${URL}rates/DHL`, {
+            const resDHL = await fetch(`${URL}v3/rate/DHL`, {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Basic ${basicAuthCreds}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(bodyDHL),
@@ -285,4 +294,107 @@ export async function getNotebookByUserId(userId: string) {
     } catch (error: any) {
         throw new Error(`Error occurred while fetching notebook: ${error.message}`);
     }
+}
+
+export async function updateClient({ user_id, name, email, role, userName, password, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta }:
+    { user_id: string, name?: string, email?: string, role: string, userName: string, password: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean, pricing_matrix?: any, reference_dhl?: string, reference_estafeta?: string }) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, name, email, role, userName, password, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar cliente');
+    }
+    return res.json();
+}
+
+export async function createClient({ name, email, role, userName, password, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta }:
+    { name: string, email?: string, role: string, userName: string, password: string, basic_auth_username: string, basic_auth_pass?: string, reference_dhl?: string, reference_estafeta?: string }) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, role, userName, password, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al crear cliente');
+    }
+    return res.json();
+}
+
+export async function getClients({ page = 1, limit = 10, search = "" }: { page?: number; limit?: number; search?: string }) {
+    const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        search,
+    });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/all?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!res.ok) throw new Error('Error al obtener clientes');
+    return res.json();
+}
+
+export async function deleteClient(id: any) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing?user_id=${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!res.ok) throw new Error('Error al eliminar cliente');
+    return res.json();
+}
+
+export async function getClientByUserId(user_id: string) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing?user_id=${user_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al obtener cliente');
+    }
+    return res.json();
+}
+
+export async function updateDHLMatrix(user_id: string, pricing_matrix_dhl: any) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/dhl`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, pricing_matrix_dhl }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar matriz DHL');
+    }
+    return res.json();
+}
+
+export async function updateEstafetaMatrix(user_id: string, pricing_matrix_estafeta: any,) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing/estafeta`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id, pricing_matrix_estafeta }),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar matriz Estafeta');
+    }
+    return res.json();
 }

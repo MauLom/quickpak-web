@@ -31,7 +31,7 @@ const DrawerNavigation: FC<NavigationProps> = (props) => {
             </Button>
             <Drawer
                 isOpen={isOpen}
-                placement='right'
+                placement='left'
                 onClose={onClose}
             >
                 <DrawerOverlay />
