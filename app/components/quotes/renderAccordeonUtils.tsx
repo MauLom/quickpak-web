@@ -54,7 +54,7 @@ function renderCostItem(label: string, cost: number) {
         <Box>
             <Stack direction="row" justifyContent="space-between">
                 <Box>{label}</Box>
-                <Box>{`$${cost.toFixed(2)}`}</Box>
+                <Box>{`$${cost?.toFixed(2)}`}</Box>
             </Stack>
         </Box>
     );

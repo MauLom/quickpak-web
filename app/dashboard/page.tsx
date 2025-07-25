@@ -1,21 +1,14 @@
 'use client'
-import { Button, Grid, GridItem, Image, Stack, Box, FormControl, FormLabel, Input } from '@chakra-ui/react'
-import { useSession, signIn, signOut } from "next-auth/react"
+import { Button, Grid, GridItem, Image, Stack, Box, FormControl, FormLabel, Input, useToast } from '@chakra-ui/react'
 import DrawerNavigation from '../components/drawer-menu/nav'
-import { SettingsIcon } from "@chakra-ui/icons"
-import LabelsForm from '../components/labels/form'
 import LabelsTable from '../components/labels/table'
 import { useEffect, useState } from 'react'
-import { getCookie, deleteCookie } from '../lib/manageUserSession'
-
-
+import { deleteCookie } from '../lib/manageUserSession'
 
 import QuotesBoard from '../components/quotes/board'
 import LabelsBoard from '../components/labels/board'
 import UsersLayout from '../components/users/layout'
 import ConfigurationPanel from '../components/configurations/FfTaxes'
-import ResumeBoard from '../components/resume/board'
-import { getUser } from '../lib/requests'
 import { useRouter } from 'next/navigation'
 import { setCookie } from '../lib/manageUserSession'
 import ClientsLayout from '../components/clients/layout'
@@ -24,7 +17,9 @@ interface Iuser {
     id: string,
     name: string,
     matriz: string,
-    role: string
+    role: string,
+    basic_auth_username: string
+    basic_auth_pass: string
 }
 const URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -32,9 +27,11 @@ const URL = process.env.NEXT_PUBLIC_API_URL
 export default function Dashboard() {
     const router = useRouter()
 
+    const toast = useToast();
+
     const [contentToRender, setContentToRender] = useState<JSX.Element | null>(null); // Initialize as null or the default component
 
-    const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "" })
+    const [user, setUser] = useState<Iuser>({ id: "", name: "", matriz: "", role: "", basic_auth_username: "", basic_auth_pass: "" });
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -57,12 +54,25 @@ export default function Dashboard() {
                     ...user,
                     id: data.id,
                     role: data.role,
+                    basic_auth_username: data.basic_auth_username,
+                    basic_auth_pass: data.password
+
                 });
 
                 setCookie("userId", data.id, 1);
                 setCookie("userRole", data.role, 1);
+                sessionStorage.setItem("informacion_usuario", JSON.stringify(data));
+
                 router.push('/dashboard', { scroll: false });
             } else {
+                toast({
+                    title: 'Error',
+                    description: 'Credenciales incorrectas. Por favor, inténtalo de nuevo.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+
                 console.error('Login failed');
             }
         } catch (error) {
@@ -75,7 +85,7 @@ export default function Dashboard() {
     function desconexion() {
         deleteCookie("userId")
         deleteCookie("userRole")
-        setUser({ id: "", name: "", matriz: "", role: "" })
+        setUser({ id: "", name: "", matriz: "", role: "", basic_auth_username: "", basic_auth_pass: "" });
         router.push('/dashboard', { scroll: false })
 
     }
