@@ -130,7 +130,24 @@ export default function ClientsLayout() {
 	const handleRegeneratePassword = async (user_id: string) => {
 		try {
 			const newPassword = Math.random().toString(36).slice(-10);
-			await updateClient({ user_id, basic_auth_pass: newPassword });
+			// Fetch current user data to get required fields
+			let user = clients.find((c: any) => c.user_id === user_id);
+			if (!user) {
+				user = await getClientByUserId(user_id);
+			}
+			await updateClient({
+				user_id,
+				role: user.role || 'usuario',
+				userName: user.userName || '',
+				password: user.password || '', 
+				basic_auth_username: user.basic_auth_username || '',
+				basic_auth_pass: newPassword,
+				name: user.name || '',
+				email: user.email || '',
+				reference_dhl: user.reference_dhl || '',
+				reference_estafeta: user.reference_estafeta || '',
+				is_active: user.is_active,
+			});
 			setLastGeneratedPassword(prev => ({ ...prev, [user_id]: newPassword }));
 			await navigator.clipboard.writeText(newPassword);
 			toast({
@@ -191,7 +208,19 @@ export default function ClientsLayout() {
 
 	const handleToggleActive = async (client: any) => {
 		try {
-			await updateClient({ user_id: client.user_id, is_active: !client.is_active });
+			await updateClient({
+				user_id: client.user_id,
+				role: client.role || 'usuario',
+				userName: client.userName || '',
+				password: client.password || '',
+				name: client.name || '',
+				email: client.email || '',
+				basic_auth_username: client.basic_auth_username || '',
+				basic_auth_pass: client.basic_auth_pass || '',
+				is_active: !client.is_active,
+				reference_dhl: client.reference_dhl || '',
+				reference_estafeta: client.reference_estafeta || ''
+			});
 			toast({
 				title: `Cliente ${!client.is_active ? 'activado' : 'desactivado'}`,
 				status: 'success',
@@ -386,7 +415,7 @@ export default function ClientsLayout() {
 											size="md"
 											colorScheme="teal"
 											isChecked={client.is_active}
-											_readOnly='true'
+											isReadOnly={true}
 										>
 										</Checkbox>
 									</Td>
@@ -596,9 +625,17 @@ export default function ClientsLayout() {
 												const referenciaDHL = (form.DHL as HTMLInputElement).value;
 												const referenciaEstafeta = (form.Estafeta as HTMLInputElement).value;
 												try {
-													console.log();
+													
 													await updateClient({
 														user_id: selectedClient.user_id,
+														role: selectedClient.role || 'usuario',
+														userName: selectedClient.userName || '',
+														password: selectedClient.password || '',
+														name: selectedClient.name || '',
+														email: selectedClient.email || '',
+														basic_auth_username: selectedClient.basic_auth_username || '',
+														basic_auth_pass: selectedClient.basic_auth_pass || '',
+														is_active: selectedClient.is_active,
 														reference_dhl: referenciaDHL,
 														reference_estafeta: referenciaEstafeta,
 													});
