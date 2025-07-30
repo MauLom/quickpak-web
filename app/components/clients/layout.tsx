@@ -131,7 +131,10 @@ export default function ClientsLayout() {
 		try {
 			const newPassword = Math.random().toString(36).slice(-10);
 			// Fetch current user data to get required fields
-			const user = clients.find((c: any) => c.user_id === user_id) || await getClientByUserId(user_id);
+			let user = clients.find((c: any) => c.user_id === user_id);
+			if (!user) {
+				user = await getClientByUserId(user_id);
+			}
 			await updateClient({
 				user_id,
 				role: user.role || 'usuario',
