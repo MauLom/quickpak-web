@@ -625,7 +625,7 @@ export default function ClientsLayout() {
 												const referenciaDHL = (form.DHL as HTMLInputElement).value;
 												const referenciaEstafeta = (form.Estafeta as HTMLInputElement).value;
 												try {
-													console.log();
+													
 													await updateClient({
 														user_id: selectedClient.user_id,
 														role: selectedClient.role || 'usuario',
