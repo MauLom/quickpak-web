@@ -19,7 +19,23 @@ import AltaMatrizUsuario from './AltaMatrizEstafeta';
 import AltaMatrizDHL from './AltaMatrizDHL';
 
 export default function ClientsLayout() {
-	const [clients, setClients] = useState([]);
+	type Client = {
+		user_id: string;
+		name: string;
+		email?: string;
+		role?: string;
+		userName?: string;
+		password?: string;
+		basic_auth_username?: string;
+		basic_auth_pass?: string;
+		reference_dhl?: string;
+		reference_estafeta?: string;
+		is_active?: boolean;
+		pricing_matrix_estafeta?: any;
+		pricing_matrix_dhl?: any;
+	};
+
+	const [clients, setClients] = useState<Client[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [form, setForm] = useState({ name: '', email: '', role: 'usuario', userName: '', password: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
 	const [creating, setCreating] = useState(false);
@@ -137,16 +153,16 @@ export default function ClientsLayout() {
 			}
 			await updateClient({
 				user_id,
-				role: user.role || 'usuario',
-				userName: user.userName || '',
-				password: user.password || '', 
-				basic_auth_username: user.basic_auth_username || '',
+				role: user?.role || 'usuario',
+				userName: user?.userName || '',
+				password: user?.password || '', 
+				basic_auth_username: user?.basic_auth_username || '',
 				basic_auth_pass: newPassword,
-				name: user.name || '',
-				email: user.email || '',
-				reference_dhl: user.reference_dhl || '',
-				reference_estafeta: user.reference_estafeta || '',
-				is_active: user.is_active,
+				name: user?.name || '',
+				email: user?.email || '',
+				reference_dhl: user?.reference_dhl || '',
+				reference_estafeta: user?.reference_estafeta || '',
+				is_active: user?.is_active,
 			});
 			setLastGeneratedPassword(prev => ({ ...prev, [user_id]: newPassword }));
 			await navigator.clipboard.writeText(newPassword);
