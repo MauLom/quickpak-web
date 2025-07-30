@@ -335,7 +335,7 @@ const FfTaxesSection: React.FC = () => {
                   onChange={e => {
                     setFormData({
                       ...formData,
-                      tasaAerea: e.target.value
+                      tasaAerea: Number.parseInt(e.target.value) || 0
                     });
                   }}
                 />
@@ -352,7 +352,7 @@ const FfTaxesSection: React.FC = () => {
                   onChange={e => {
                     setFormData({
                       ...formData,
-                      tasaTerrestre: e.target.value
+                      tasaTerrestre: Number.parseInt(e.target.value) || 0
                     });
                   }}
                 />
