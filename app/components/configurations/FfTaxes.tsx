@@ -328,7 +328,7 @@ const FfTaxesSection: React.FC = () => {
                 <FormLabel>Tasa Aérea</FormLabel>
                 <Input
                   type="text"
-                  inputMode="decimal"
+                  // inputMode="decimal"
                   pattern="^[0-9]*[.,]?[0-9]*$"
                   placeholder="Ej: 10.50"
                   value={formData.tasaAerea === 0 ? '' : String(formData.tasaAerea)}
@@ -345,7 +345,7 @@ const FfTaxesSection: React.FC = () => {
                 <FormLabel>Tasa Terrestre</FormLabel>
                 <Input
                   type="text"
-                  inputMode="decimal"
+                  // inputMode="decimal"
                   pattern="^[0-9]*[.,]?[0-9]*$"
                   placeholder="Ej: 20.31"
                   value={formData.tasaTerrestre === 0 ? '' : String(formData.tasaTerrestre)}
