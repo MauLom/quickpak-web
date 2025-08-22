@@ -95,7 +95,7 @@ export default function Dashboard() {
         { label: "Cotizar", component: <QuotesBoard />, data: "" },
         { label: "Generar guias", component: <LabelsBoard />, data: "" },
         { label: "Guias generadas", component: <LabelsTable />, data: "" },
-        { label: "Administrar usuarios", component: <UsersLayout />, data: "" },
+        // { label: "Administrar usuarios", component: <UsersLayout />, data: "" },
         { label: "Administrar usuarios", component: <ClientsLayout />, data: "" },
         // { label: "Administrar valores", component: <DataSettingsValues />, data: "" },
         // { label: "Administrar cuentas", component: <DataSettingsAccounts />, data: "" },
