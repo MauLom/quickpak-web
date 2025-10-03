@@ -398,3 +398,53 @@ export async function updateEstafetaMatrix(user_id: string, pricing_matrix_estaf
     }
     return res.json();
 }
+
+// CRUD para Providers Auth Settings
+export async function getProviders() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}v3/providers-auth-settings?isActive=true`);
+    if (!res.ok) {
+        throw new Error('Error al obtener providers');
+    }
+    return res.json();
+}
+
+export async function createProvider(providerData: any) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}v3/providers-auth-settings`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(providerData),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al crear provider');
+    }
+    return res.json();
+}
+
+export async function updateProvider(id: string, providerData: any) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}v3/providers-auth-settings/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(providerData),
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al actualizar provider');
+    }
+    return res.json();
+}
+
+export async function deleteProvider(id: string) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}v3/providers-auth-settings/${id}`, {
+        method: 'DELETE',
+    });
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Error al eliminar provider');
+    }
+    return res.json();
+}

@@ -10,11 +10,15 @@ import {
 	AccordionItem,
 	AccordionPanel,
 	AccordionButton,
-	AccordionIcon
+	AccordionIcon,
+	Switch,
+	HStack,
+	IconButton,
+	Tooltip
 } from '@chakra-ui/react';
 import { DeleteIcon, RepeatIcon, SettingsIcon, EditIcon } from '@chakra-ui/icons';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useDisclosure } from '@chakra-ui/react';
-import { getClients, deleteClient, createClient, updateClient, getClientByUserId, updateDHLMatrix, updateEstafetaMatrix } from '../../lib/requests';
+import { getClients, deleteClient, createClient, updateClient, getClientByUserId, updateDHLMatrix, updateEstafetaMatrix, getProviders, createProvider, updateProvider, deleteProvider } from '../../lib/requests';
 import AltaMatrizUsuario from './AltaMatrizEstafeta';
 import AltaMatrizDHL from './AltaMatrizDHL';
 
@@ -33,6 +37,7 @@ export default function ClientsLayout() {
 		is_active?: boolean;
 		pricing_matrix_estafeta?: any;
 		pricing_matrix_dhl?: any;
+		providers?: string[];
 	};
 
 	const [clients, setClients] = useState<Client[]>([]);
@@ -54,10 +59,36 @@ export default function ClientsLayout() {
 	const [isEditing, setIsEditing] = useState(false);
 	const [editingUserId, setEditingUserId] = useState<string | null>(null);
 	const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+	const [enableProviders, setEnableProviders] = useState(false);
+	const [providers, setProviders] = useState<any[]>([]);
+	const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
+	const [loadingProviders, setLoadingProviders] = useState(false);
 
 	useEffect(() => {
 		fetchClients(currentPage, itemsPerPage);
 	}, [currentPage, searchTerm]);
+
+	useEffect(() => {
+		if (enableProviders) {
+			fetchProviders();
+		}
+	}, [enableProviders]);
+
+	const fetchProviders = async () => {
+		setLoadingProviders(true);
+		try {
+			const data = await getProviders();
+			setProviders(data.data || []);
+		} catch (error) {
+			toast({
+				title: 'Error al cargar providers',
+				status: 'error',
+				duration: 4000,
+				isClosable: true,
+			});
+		}
+		setLoadingProviders(false);
+	};
 
 	const fetchClients = async (page = 1, limit = itemsPerPage) => {
 		setLoading(true);
@@ -130,6 +161,8 @@ export default function ClientsLayout() {
 			setForm({ name: '', email: '', role: 'usuario', userName: '', password: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
 			setIsEditing(false);
 			setEditingUserId(null);
+			setEnableProviders(false);
+			setSelectedProviders([]);
 			fetchClients();
 		} catch (error: any) {
 			toast({
@@ -221,6 +254,24 @@ export default function ClientsLayout() {
 	const existingUsernamesWeb = clients?.map((c: any) => c.userName?.toUpperCase?.() || '');
 	const userSuggestions = generateUserNameAPISuggestions(form.name, existingUsernames);
 	const userWebSuggestions = generateUserNameWebSuggestions(form.name, existingUsernamesWeb);
+
+	const handleProviderToggle = (providerId: string) => {
+		setSelectedProviders(prev => 
+			prev.includes(providerId) 
+				? prev.filter(id => id !== providerId)
+				: [...prev, providerId]
+		);
+	};
+
+	const handleSelectAll = () => {
+		if (selectedProviders.length === providers.length) {
+			// Si todos están seleccionados, deseleccionar todos
+			setSelectedProviders([]);
+		} else {
+			// Si no todos están seleccionados, seleccionar todos
+			setSelectedProviders(providers.map(p => p._id));
+		}
+	};
 
 	const handleToggleActive = async (client: any) => {
 		try {
@@ -326,7 +377,7 @@ export default function ClientsLayout() {
 									</FormControl>
 								</Stack>
 								<Stack direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%" mt={5}>
-									<Card width={'50%'} boxShadow="lg" borderRadius={10}>
+									<Card width={'50%'} height="400px" boxShadow="lg" borderRadius={10}>
 										<CardHeader fontSize="lg" bg="gray.50" borderTopRadius={10}>Autenticación Web</CardHeader>
 										<CardBody>
 											<VStack>
@@ -349,7 +400,7 @@ export default function ClientsLayout() {
 											</VStack>
 										</CardBody>
 									</Card>
-									<Card width={'50%'} boxShadow="lg" borderRadius={10}>
+									<Card width={'50%'} height="400px" boxShadow="lg" borderRadius={10}>
 										<CardHeader fontSize="lg" bg="gray.50" borderTopRadius={10}>Autenticación API</CardHeader>
 										<CardBody>
 											<VStack>
@@ -372,6 +423,104 @@ export default function ClientsLayout() {
 											</VStack>
 										</CardBody>
 									</Card>
+									<Card width={'50%'} height="400px" boxShadow="lg" borderRadius={10}>
+										<CardHeader fontSize="lg" bg="gray.50" borderTopRadius={10}>
+											<HStack justify="space-between">
+												<Text>Cálculo dinámico</Text>
+												<Switch 
+													colorScheme="teal" 
+													isChecked={enableProviders}
+													onChange={(e) => {
+														setEnableProviders(e.target.checked);
+														if (!e.target.checked) {
+															setSelectedProviders([]);
+														}
+													}}
+												/>
+											</HStack>
+										</CardHeader>
+										<CardBody overflow="auto">
+											{!enableProviders ? (
+												<Text color="gray.500" textAlign="center" py={4}>
+													Activar para configurar cuentas
+												</Text>
+											) : loadingProviders ? (
+												<Box textAlign="center" py={4}>
+													<Spinner size="md" />
+													<Text mt={2}>Cargando providers...</Text>
+												</Box>
+											) : providers.length === 0 ? (
+												<Text color="gray.500" textAlign="center" py={4}>
+													No hay providers disponibles
+												</Text>
+											) : (
+												<VStack align="stretch" spacing={3}>
+													<HStack justify="space-between" align="center" mb={2}>
+														<Text fontSize="sm" color="gray.600">
+															Selecciona las cuentas para este usuario:
+														</Text>
+														<Checkbox
+															colorScheme="teal"
+															isChecked={selectedProviders.length === providers.length && providers.length > 0}
+															isIndeterminate={selectedProviders.length > 0 && selectedProviders.length < providers.length}
+															onChange={handleSelectAll}
+															size="sm"
+														>
+															<Text fontSize="xs" color="gray.600">
+																Seleccionar todas
+															</Text>
+														</Checkbox>
+													</HStack>
+													{(() => {
+														// Agrupar providers por nombre de proveedor
+														const groupedProviders = providers.reduce((acc, provider) => {
+															if (!acc[provider.provider]) {
+																acc[provider.provider] = [];
+															}
+															acc[provider.provider].push(provider);
+															return acc;
+														}, {} as Record<string, any[]>);
+
+														return Object.entries(groupedProviders).map(([providerName, providerList]) => (
+															<Box key={providerName} border="1px" borderColor="gray.300" borderRadius="md" p={3}>
+																<Text fontWeight="bold" fontSize="md" color="teal.600" mb={2}>
+																	{providerName}
+																</Text>
+																<VStack align="stretch" spacing={2}>
+																	{providerList.map((provider) => (
+																		<Box key={provider._id} p={2} bg="gray.50" borderRadius="md">
+																			<HStack justify="space-between">
+																				<VStack align="start" spacing={0} flex={1}>
+																					<Text fontSize="sm" fontWeight="medium">
+																						{provider.user}
+																					</Text>
+																					<Text fontSize="xs" color="gray.500" noOfLines={1} fontStyle={'italic'}>
+																						{provider.password.replace(provider.password.substring(0, provider.password.length-4), '').padStart(10, 'x')}
+																					</Text>
+																				</VStack>
+																				<Checkbox
+																					colorScheme="teal"
+																					isChecked={selectedProviders.includes(provider._id)}
+																					onChange={() => handleProviderToggle(provider._id)}
+																				/>
+																			</HStack>
+																		</Box>
+																	))}
+																</VStack>
+															</Box>
+														));
+													})()}
+													{selectedProviders.length > 0 && (
+														<Box mt={2} p={2} bg="teal.50" borderRadius="md" position="sticky" bottom={0}>
+															<Text fontSize="xs" color="teal.700" textAlign="center">
+																✓ {selectedProviders.length} cuenta(s) seleccionada(s)
+															</Text>
+														</Box>
+													)}
+												</VStack>
+											)}
+										</CardBody>
+									</Card>
 								</Stack>
 								<Stack flex={1} direction={{ base: 'column', md: 'row' }} spacing={5} align="center" width="100%" mt={5}>
 									<Button colorScheme="teal" type="submit" isLoading={creating} my={5} ml='auto'>Guardar</Button>
@@ -383,6 +532,8 @@ export default function ClientsLayout() {
 												setIsEditing(false);
 												setEditingUserId(null);
 												setForm({ name: '', email: '', role: 'usuario', userName: '', password: '', basic_auth_username: '', basic_auth_pass: '', reference_dhl: '', reference_estafeta: '' });
+											setEnableProviders(false);
+											setSelectedProviders([]);
 											}}>
 											Cancelar edición
 										</Button>
