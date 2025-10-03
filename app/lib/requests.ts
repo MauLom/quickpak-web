@@ -296,14 +296,14 @@ export async function getNotebookByUserId(userId: string) {
     }
 }
 
-export async function updateClient({ user_id, name, email, role, userName, password, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta }:
-    { user_id: string, name?: string, email?: string, role: string, userName: string, password: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean, pricing_matrix?: any, reference_dhl?: string, reference_estafeta?: string }) {
+export async function updateClient({ user_id, name, email, role, userName, password, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta, hasDynamicCalculation, provider_auth_settings }:
+    { user_id: string, name?: string, email?: string, role: string, userName: string, password: string, basic_auth_username?: string, basic_auth_pass?: string, is_active?: boolean, pricing_matrix?: any, reference_dhl?: string, reference_estafeta?: string, hasDynamicCalculation?: boolean, provider_auth_settings?: string[] }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id, name, email, role, userName, password, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta }),
+        body: JSON.stringify({ user_id, name, email, role, userName, password, basic_auth_username, basic_auth_pass, is_active, pricing_matrix, reference_dhl, reference_estafeta, hasDynamicCalculation, provider_auth_settings }),
     });
     if (!res.ok) {
         const error = await res.json();
@@ -312,14 +312,14 @@ export async function updateClient({ user_id, name, email, role, userName, passw
     return res.json();
 }
 
-export async function createClient({ name, email, role, userName, password, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta }:
-    { name: string, email?: string, role: string, userName: string, password: string, basic_auth_username: string, basic_auth_pass?: string, reference_dhl?: string, reference_estafeta?: string }) {
+export async function createClient({ name, email, role, userName, password, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta, hasDynamicCalculation, provider_auth_settings }:
+    { name: string, email?: string, role: string, userName: string, password: string, basic_auth_username: string, basic_auth_pass?: string, reference_dhl?: string, reference_estafeta?: string, hasDynamicCalculation?: boolean, provider_auth_settings?: string[] }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}userPricing`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, role, userName, password, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta }),
+        body: JSON.stringify({ name, email, role, userName, password, basic_auth_username, basic_auth_pass, reference_dhl, reference_estafeta, hasDynamicCalculation, provider_auth_settings }),
     });
     if (!res.ok) {
         const error = await res.json();

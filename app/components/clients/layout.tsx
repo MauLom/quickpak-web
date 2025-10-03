@@ -38,6 +38,8 @@ export default function ClientsLayout() {
 		pricing_matrix_estafeta?: any;
 		pricing_matrix_dhl?: any;
 		providers?: string[];
+		hasDynamicCalculation?: boolean;
+		provider_auth_settings?: string[];
 	};
 
 	const [clients, setClients] = useState<Client[]>([]);
@@ -133,11 +135,29 @@ export default function ClientsLayout() {
 
 	const handleCreateOrUpdate = async (e: React.FormEvent) => {
 		e.preventDefault();
+		
+		// Validación: Si el cálculo dinámico está activo, debe haber al menos una cuenta seleccionada
+		if (enableProviders && selectedProviders.length === 0) {
+			toast({
+				title: 'Error de validación',
+				description: 'Si activas el cálculo dinámico, debes seleccionar al menos una cuenta.',
+				status: 'error',
+				duration: 5000,
+				isClosable: true,
+			});
+			return;
+		}
+		
 		setCreating(true);
 		try {
 			if (isEditing && editingUserId) {
 				// Crea un objeto solo con los campos a actualizar
-				const updateData: any = { user_id: editingUserId, ...form };
+				const updateData: any = { 
+					user_id: editingUserId, 
+					...form,
+					hasDynamicCalculation: enableProviders,
+					provider_auth_settings: selectedProviders
+				};
 				if (!form.password) delete updateData.password;
 				if (!form.basic_auth_pass) delete updateData.basic_auth_pass;
 				await updateClient(updateData);
@@ -148,7 +168,12 @@ export default function ClientsLayout() {
 					isClosable: true,
 				});
 			} else {
-				const response = await createClient(form);
+				const clientData = {
+					...form,
+					hasDynamicCalculation: enableProviders,
+					provider_auth_settings: selectedProviders
+				};
+				const response = await createClient(clientData);
 				toast({
 					title: 'Cliente creado',
 					status: 'success',
@@ -196,6 +221,8 @@ export default function ClientsLayout() {
 				reference_dhl: user?.reference_dhl || '',
 				reference_estafeta: user?.reference_estafeta || '',
 				is_active: user?.is_active,
+				hasDynamicCalculation: user?.hasDynamicCalculation,
+				provider_auth_settings: user?.provider_auth_settings,
 			});
 			setLastGeneratedPassword(prev => ({ ...prev, [user_id]: newPassword }));
 			await navigator.clipboard.writeText(newPassword);
@@ -286,7 +313,9 @@ export default function ClientsLayout() {
 				basic_auth_pass: client.basic_auth_pass || '',
 				is_active: !client.is_active,
 				reference_dhl: client.reference_dhl || '',
-				reference_estafeta: client.reference_estafeta || ''
+				reference_estafeta: client.reference_estafeta || '',
+				hasDynamicCalculation: client.hasDynamicCalculation,
+				provider_auth_settings: client.provider_auth_settings,
 			});
 			toast({
 				title: `Cliente ${!client.is_active ? 'activado' : 'desactivado'}`,
@@ -619,6 +648,9 @@ export default function ClientsLayout() {
 														reference_dhl: user.reference_dhl || '',
 														reference_estafeta: user.reference_estafeta || ''
 													});
+													// Cargar configuración de providers
+													setEnableProviders(user.hasDynamicCalculation || false);
+													setSelectedProviders(user.provider_auth_settings || []);
 												}}
 												title="Editar usuario"
 												aria-label="Editar usuario"
@@ -805,6 +837,8 @@ export default function ClientsLayout() {
 														is_active: selectedClient.is_active,
 														reference_dhl: referenciaDHL,
 														reference_estafeta: referenciaEstafeta,
+														hasDynamicCalculation: selectedClient.hasDynamicCalculation,
+														provider_auth_settings: selectedClient.provider_auth_settings,
 													});
 													toast({
 														title: 'Referencias guardadas',
