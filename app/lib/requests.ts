@@ -147,7 +147,10 @@ export async function generateEstafetaLabel(data: any) {
         "esPaquete": true,
         "largo": data?.quotes.package[0]?.width,
         "peso": data?.quotes.package[0]?.weight,
-        "userId": data?.quotes.userId,
+        "userId": (() => {
+            const info = sessionStorage.getItem("informacion_usuario");
+            return info ? JSON.parse(info).id : undefined;
+        })(), //data?.quotes.userId,
         "seguro": "0",
         "tipoServicioId": 70,
         "descripcionPaquete": data?.descPckg || "descripcion de paquete",
