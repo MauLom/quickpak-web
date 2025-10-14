@@ -465,7 +465,7 @@ const ProvidersAuthSection: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState<{ [key: string]: boolean }>({});
   const [formData, setFormData] = useState<ProviderAuthSetting>({
-    provider: '',
+    provider: 'DHL',
     account: '',
     user: '',
     password: '',
@@ -654,6 +654,7 @@ const ProvidersAuthSection: React.FC = () => {
     
     const dataToSend = {
       ...formData,
+      provider: 'DHL', // Forzar siempre DHL
     };
     
     if (editingId) {
@@ -666,7 +667,7 @@ const ProvidersAuthSection: React.FC = () => {
   // Reset form
   const resetForm = () => {
     setFormData({
-      provider: '',
+      provider: 'DHL', // Siempre DHL
       account: '',
       user: '',
       password: '',
@@ -679,7 +680,7 @@ const ProvidersAuthSection: React.FC = () => {
   // Edit Provider Auth Setting
   const editProviderAuthSetting = (setting: ProviderAuthSetting) => {
     setFormData({
-      provider: setting.provider,
+      provider: 'DHL', // Siempre DHL, no importa el valor original
       account: setting.account || '',
       user: setting.user,
       password: setting.password,
@@ -739,20 +740,11 @@ const ProvidersAuthSection: React.FC = () => {
                 <FormControl isRequired flex="1">
                   <FormLabel>Proveedor</FormLabel>
                   <Select
-                    value={formData.provider}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        provider: e.target.value.toUpperCase(),
-                      })
-                    }
-                    placeholder="Seleccione un proveedor"
+                    value="DHL"
+                    isDisabled={true}
+                    backgroundColor="gray.100"
                   >
-                    {providers.map((provider) => (
-                      <option key={provider._id} value={provider.name.toUpperCase()}>
-                        {provider.name}
-                      </option>
-                    ))}
+                    <option value="DHL">DHL</option>
                   </Select>
                 </FormControl>
 
