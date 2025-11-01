@@ -227,7 +227,7 @@ export async function generateDHLLabel(data: any) {
         "service": "G",
         "date": formattedDate,
         "desc": data?.descPckg || "descripcion de paquete",
-        "userId": data?.quotes.userId,
+        "userId": JSON.parse(sessionStorage.getItem("informacion_usuario") || '{}').id,
 
         "oName": data.nombR,
         "oCompany": data.compR,
