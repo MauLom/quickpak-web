@@ -68,7 +68,8 @@ export function renderDHLDetails(eachService: any) {
         { label: 'Cargo por area remota', cost: eachService?.oo },
         { label: 'Cargo por exceso de peso', cost: eachService?.yy },
         { label: 'Cargo por multipieza', cost: eachService?.ye },
-        { label: 'Seguro $', cost: eachService?.ii },
+        { label: 'Seguro', cost: eachService?.ii },
+        { label: 'Recargo por demanda', cost: eachService?.nx },
     ];
 
     return (
