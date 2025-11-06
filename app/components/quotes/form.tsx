@@ -141,6 +141,7 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['oo'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "OO"))?.ChargeAmount
                         quoteObj['yb'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YB"))?.ChargeAmount
                         quoteObj['ye'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YE"))?.ChargeAmount
+                        quoteObj['nx'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "NX"))?.ChargeAmount
                         quoteObj['serviceType'] = eachQuote.ServiceName
                         quoteObj['weight'] = eachQuote?.QuotedWeight
                         quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
