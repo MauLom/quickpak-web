@@ -510,13 +510,13 @@ export default function ClientsLayout() {
 															return acc;
 														}, {} as Record<string, any[]>);
 
-														return Object.entries(groupedProviders).map(([providerName, providerList]) => (
+														return Object.entries(groupedProviders).map(([providerName, providerList]: [any, any]) => (
 															<Box key={providerName} border="1px" borderColor="gray.300" borderRadius="md" p={3}>
 																<Text fontWeight="bold" fontSize="md" color="teal.600" mb={2}>
 																	{providerName}
 																</Text>
 																<VStack align="stretch" spacing={2}>
-																	{providerList.map((provider) => (
+																	{providerList.map((provider: any) => (
 																		<Box key={provider._id} p={2} bg="gray.50" borderRadius="md">
 																			<HStack justify="space-between">
 																				<VStack align="start" spacing={0} flex={1}>
