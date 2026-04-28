@@ -152,7 +152,7 @@ export async function generateEstafetaLabel(data: any) {
             return info ? JSON.parse(info).id : undefined;
         })(), //data?.quotes.userId,
         "seguro": "0",
-        "tipoServicioId": 70,
+        "tipoServicioId": data?.serviceCode || '70',
         "descripcionPaquete": data?.descPckg || "descripcion de paquete",
         "dataOrigen": {
             "direccion": {
@@ -224,7 +224,7 @@ export async function generateDHLLabel(data: any) {
     })
     let formattedDate = data?.quotes?.data.date.split("T", 1)
     const payload = {
-        "service": "G",
+        "service": data?.serviceCode || "G",
         "date": formattedDate,
         "desc": data?.descPckg || "descripcion de paquete",
         "userId": JSON.parse(sessionStorage.getItem("informacion_usuario") || '{}').id,

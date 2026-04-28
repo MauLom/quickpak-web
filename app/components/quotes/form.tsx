@@ -115,6 +115,7 @@ const QuotesForm = ({ ...props }) => {
                             let quoteObj: any = {}
                             quoteObj['parcelLogo'] = <Image src="/Logo-Estafeta.svg" alt="Estafeta logo" />
                             quoteObj['serviceType'] = eachQuote.DescripcionServicio
+                            quoteObj['serviceCode'] = eachQuote.DescripcionServicio
                             quoteObj['weight'] = eachQuote.Peso
                             quoteObj['subTotal'] = eachQuote.Subtotal
                             quoteObj['IVA'] = eachQuote.IVA
@@ -143,6 +144,7 @@ const QuotesForm = ({ ...props }) => {
                         quoteObj['ye'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "YE"))?.ChargeAmount
                         quoteObj['nx'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeCode === "NX"))?.ChargeAmount
                         quoteObj['serviceType'] = eachQuote.ServiceName
+                        quoteObj['serviceCode'] = eachQuote?.['@type']
                         quoteObj['weight'] = eachQuote?.QuotedWeight
                         quoteObj['subTotal'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "SubTotal"))?.ChargeAmount
                         quoteObj['IVA'] = eachQuote?.Charges.Charge.find(((charge: any) => charge?.ChargeType === "IVA"))?.ChargeAmount
@@ -300,7 +302,7 @@ const QuotesForm = ({ ...props }) => {
         setQuotesArr([])
     }
     function handleDoGuide(quote: any) {
-        setLabelData({ "provider": quote.provider, service: quote.serviceType })
+        setLabelData({ "provider": quote.provider, service: quote.serviceType, serviceCode: quote.serviceCode })
         setIsOpenModalLabels(true)
     }
 

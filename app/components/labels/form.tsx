@@ -7,9 +7,23 @@ import { generateDHLLabel, generateEstafetaLabel, getNotebookByUserId, saveAddre
 import { Direction, FormField, NotebookActionsProps } from './utils';
 import { AddressData } from '../../types/Address';
 import AddressModal from './addressModal';
+type ServiceType = 'Terrestre' | 'Aereo'
+
+const SERVICE_CODE_MAP: Record<string, Record<ServiceType, string>> = {
+    DHL:      { Terrestre: 'G',  Aereo: 'N'  },
+    Estafeta: { Terrestre: '70', Aereo: '60' },
+}
+
+function resolveServiceType(provider: string, serviceCode: string): ServiceType {
+    if (provider === 'DHL') return serviceCode === 'N' ? 'Aereo' : 'Terrestre'
+    if (provider === 'Estafeta') return serviceCode === 'Dia Sig.' || serviceCode === '60' ? 'Aereo' : 'Terrestre'
+    return 'Terrestre'
+}
+
 const LabelsForm = (props: any) => {
     const formRef = React.useRef<HTMLFormElement>(null);
     const [selectedCarrier, setSelectedCarrier] = useState('');
+    const [serviceType, setServiceType] = useState<ServiceType>('Terrestre');
     const [dataQuotes, setDataQuotes] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [checkboxChecked, setCheckboxChecked] = useState(false);
@@ -27,9 +41,13 @@ const LabelsForm = (props: any) => {
 
     useEffect(() => {
         if (props.hideQuotes) {
-            setSelectedCarrier(props.labelData?.provider);
+            const provider = props.labelData?.provider
+            setSelectedCarrier(provider);
             setDataQuotes(props?.quotesData);
-            setTermsURL(props.labelData?.provider === "DHL" ? DHLTermsURL : EstafetaTermsURL)
+            setTermsURL(provider === "DHL" ? DHLTermsURL : EstafetaTermsURL)
+            if (props.labelData?.serviceCode) {
+                setServiceType(resolveServiceType(provider, props.labelData.serviceCode))
+            }
         }
     }, [props.hideQuotes, props.labelData, props.quotesData]);
 
@@ -51,7 +69,8 @@ const LabelsForm = (props: any) => {
         }
         const formData = new FormData(event.currentTarget);
         const dataForm = Object.fromEntries(formData.entries());
-        const payload = { ...dataForm, 'quotes': dataQuotes }
+        const serviceCode = SERVICE_CODE_MAP[selectedCarrier]?.[serviceType] ?? (selectedCarrier === 'DHL' ? 'G' : '70')
+        const payload = { ...dataForm, 'quotes': dataQuotes, serviceCode }
         try {
             let response;
             switch (selectedCarrier) {
@@ -131,6 +150,11 @@ const LabelsForm = (props: any) => {
 
     const handleChangePaqueteria = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCarrier(event.target.value);
+        setServiceType('Terrestre');
+    };
+
+    const handleChangeServiceType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setServiceType(event.target.value as ServiceType);
     };
 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,6 +264,16 @@ const LabelsForm = (props: any) => {
                         <option value='DHL'>DHL</option>
                         <option value='Estafeta'>Estafeta</option>
                     </Select>}
+
+                    {selectedCarrier && (
+                        <FormControl mt={2}>
+                            <FormLabel>Tipo de servicio</FormLabel>
+                            <Select value={serviceType} onChange={handleChangeServiceType}>
+                                <option value='Terrestre'>Terrestre</option>
+                                <option value='Aereo'>Aéreo</option>
+                            </Select>
+                        </FormControl>
+                    )}
 
                     {!props.hideQuotes && <QuotesForm isLabel={true} transferData={getDataFromQuotes} />}
                     <br />
